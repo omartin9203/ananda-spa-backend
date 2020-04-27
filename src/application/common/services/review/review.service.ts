@@ -6,6 +6,8 @@ import { ReviewSettingService } from "../settings/review-settings.service";
 import { ReviewInput } from "../../dtos/inputs/review/review.input";
 import { AccreditedUpdate } from "../../dtos/inputs/review/accredited/accredited.update";
 import { AccreditedInputType } from "../../dtos/inputs/review/accredited/accredited.input";
+import { IReviewBlance } from "../../../../infrastructure/common/models/interfaces/generics/review-balance.interface";
+import { ReviewBalanceDto } from "../../dtos/dtos/review/review-balance.dto";
 
 @Injectable()
 export class ReviewService extends ResourceService<ReviewDto> {
@@ -67,5 +69,11 @@ export class ReviewService extends ResourceService<ReviewDto> {
             bonus: setting.bonus,
             payment: setting.payment,
         };
+    }
+
+    async getUserbalance(id: string): Promise<ReviewBalanceDto> {
+        const res = await this.repository.getUserBalance(id);
+        Logger.log(res, 'result')
+        return res;
     }
 }
