@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose';
-import { DEPARTMENT_MODEL_NAME } from '../../../../constants';
+import { DEPARTMENT_MODEL_NAME } from '../../../../constants/constants';
 import * as materializedPlugin from 'mongoose-materialized';
 
 const Schema = mongoose.Schema;

@@ -1,6 +1,6 @@
 import { Field, ObjectType } from 'type-graphql';
 
-@ObjectType('RecommendedProductType')
+@ObjectType()
 export class RecommendedProductType {
   @Field({nullable: true})
   daytime?: string;

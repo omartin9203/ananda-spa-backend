@@ -7,7 +7,7 @@ import { UpdateFacialFormInput } from '../../dtos/inputs/form/facial/facial-form
 import { FacialFormService } from '../../services/form/facial/facial-form.service';
 import { ClientService } from '../../services/client/client.service';
 import { PaginatedFacialFormResponse } from '../../dtos/dtos/form/facial/facial-form.paginate.dto';
-import { FACIALFORM_MODEL_NAME } from '../../../../constants';
+import { FACIALFORM_MODEL_NAME } from '../../../../constants/constants';
 
 @Resolver('FacialFormType')
 export class FacialFormResolver extends BaseFormResolver {

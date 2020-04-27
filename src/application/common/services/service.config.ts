@@ -6,14 +6,19 @@ import { DiagnosticService } from './diagnostic/diagnostic.service';
 import { VisitService } from './visit/visit.service';
 import { FilesService } from './images/FilesServices';
 import { AuthService } from './auth/auth.service';
+import { VisitRetentionService } from './visit/visitRetention.service';
+import { ReviewService } from './review/review.service';
+import { ReviewSettingService } from './settings/review-settings.service';
 
 export const ServicesConfig = {
-  imports: [
-  ],
-  providers: [
-    ClientService, UserService, FacialFormService, MassageFormService, DiagnosticService, VisitService, FilesService, AuthService,
-  ],
-  exports: [
-    ClientService, UserService, FacialFormService, MassageFormService, DiagnosticService, VisitService, FilesService, AuthService,
-  ],
+    imports: [
+    ],
+    providers: [
+        ClientService, UserService, FacialFormService, MassageFormService, DiagnosticService, VisitService, FilesService,
+        AuthService, VisitRetentionService, ReviewService, ReviewSettingService,
+    ],
+    exports: [
+        ClientService, UserService, FacialFormService, MassageFormService, DiagnosticService, VisitService, FilesService,
+        AuthService, VisitRetentionService, ReviewService, ReviewSettingService,
+    ],
 };

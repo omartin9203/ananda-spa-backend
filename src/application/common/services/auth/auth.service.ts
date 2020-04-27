@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { sign } from 'jsonwebtoken';
 import { UserService } from '../user/user.service';
-import { API_KEY, PROVIDER, STATUS } from '../../../../constants';
+import { API_KEY, PROVIDER, STATUS } from '../../../../constants/constants';
 import { JwtService } from '@nestjs/jwt';
 import { AuthDto } from '../../dtos/dtos/auth/auth-data.dto';
 import { AuthSSODto } from '../../dtos/dtos/auth/sso-auth-data.dto';

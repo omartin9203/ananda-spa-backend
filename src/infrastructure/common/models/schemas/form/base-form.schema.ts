@@ -1,5 +1,5 @@
 import { Schema } from 'mongoose';
-import { CLIENT_MODEL_NAME, BASEFORM_MODEL_NAME } from '../../../../../constants';
+import { CLIENT_MODEL_NAME, BASEFORM_MODEL_NAME } from '../../../../../constants/constants';
 
 const BaseFormSchema = new Schema(
   {

@@ -22,7 +22,7 @@ export class ResourceRepository<TResource extends ResourceModel> implements IRes
     resource = await resource.save();
     return resource;
   }
-  async getOne(id: string): Promise<TResource> {
+  async getOne(id: string) {
     let resource;
     try {
       resource = await this.resourceModel.findById(id).exec();

@@ -3,7 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 // import { Strategy } from 'passport-google-oauth20';
 import { AuthService } from '../../services/auth/auth.service';
 import { Strategy, StrategyOptionsWithRequest, Profile, VerifyCallback } from 'passport-google-oauth20';
-import { PROVIDER, URI_HELPER } from '../../../../constants';
+import { PROVIDER, URI_HELPER } from '../../../../constants/constants';
 import { JwtService } from '@nestjs/jwt';
 
 
@@ -11,8 +11,8 @@ import { JwtService } from '@nestjs/jwt';
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
   constructor(private readonly authService: AuthService, private readonly jwtService: JwtService) {
     super({
-      clientID    : '151152271985-0j9ms9vdief2kfosaificpdke8gs74m4.apps.googleusercontent.com',     // <- Replace this with your client id
-      clientSecret: 'hfEh816GQjGmXz10pi2GGpET', // <- Replace this with your client secret
+      clientID    : '494814491495-4kj638sfq8an0saapdd3lrnage6ajgc9.apps.googleusercontent.com',     // <- Replace this with your client id
+      clientSecret: 'PqD5KVyeZ414yg29DzfZT0gI', // <- Replace this with your client secret
       callbackURL : URI_HELPER.callback.auth.google,
       passReqToCallback: true,
       scope: ['profile', 'email'],

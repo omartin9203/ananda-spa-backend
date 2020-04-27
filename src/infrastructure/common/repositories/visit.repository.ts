@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ResourceRepository } from '../../core/repositories/resource.repository';
 import { InjectModel } from '@nestjs/mongoose';
-import { VISIT_MODEL_NAME } from '../../../constants';
+import { VISIT_MODEL_NAME } from '../../../constants/constants';
 import { QueryBuilderService } from '../../core/services/query-builder.service';
 import { Model } from 'mongoose';
 import { VisitModel } from '../models/models/visit.model';

@@ -3,7 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { GraphQLModule } from '@nestjs/graphql';
 import { MongooseModule } from '@nestjs/mongoose';
-import { CONNECTION } from './constants';
+import { CONNECTION } from './constants/constants';
 import { ApplicationModule } from './application/application.module';
 import { InfrastructureModule } from './infrastructure/infrastructure.module';
 import { MulterModule } from '@nestjs/platform-express';
@@ -27,14 +27,16 @@ const { URI, OPTIONS } = process.env.NODE_ENV === 'production' ? CONNECTION.ATLA
       introspection: true,
       playground: true,
       cors: false,
-      formatError(err) {
+      formatError(err: any) {
         if (!err.originalError) {
           return err;
         }
         // const data = err.originalError.data;
         const msg = err.message || 'An error occurred.';
         const code = 500;
-        return { message: msg, status: code };
+        // const res = Object(err.originalError.message) as { error: string, statusCode: number };
+        // return { message: err.originalError.response.error, status: err.originalError.response.statusCode };
+        return err.message;
       },
     }),
     // RoleModule,

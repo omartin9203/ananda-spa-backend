@@ -1,7 +1,7 @@
 
 import { BaseFormModel } from './base-form.model';
 import { IParentConsent } from '../../interfaces/generics/parent-consent.interface';
-import { FACIALFORM_MODEL_NAME } from '../../../../../constants';
+import { FACIALFORM_MODEL_NAME } from '../../../../../constants/constants';
 
 export class FacialFormModel extends BaseFormModel {
   recommendation: string;

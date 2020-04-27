@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { MassageFormModel } from '../../models/models/form/massage-form.model';
 import { ResourceRepository } from '../../../core/repositories/resource.repository';
-import { MASSAGEFORM_MODEL_NAME } from '../../../../constants';
+import { MASSAGEFORM_MODEL_NAME } from '../../../../constants/constants';
 import { QueryBuilderService } from '../../../core/services/query-builder.service';
 
 @Injectable()

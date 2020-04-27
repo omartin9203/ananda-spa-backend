@@ -18,18 +18,28 @@ import { DiagnosticFeature } from './models/schemas/diagnostic.schema';
 import { DiagnosticRepository } from './repositories/diagnostic.repository';
 import { VisitRepository } from './repositories/visit.repository';
 import { VisitFeature } from './models/schemas/visit.schema';
+import { VisitRetentionFeature } from './models/schemas/visitRetention.schema';
+import { VisitRetentionRepository } from './repositories/visitRetention.repository';
+import { ReviewFeature } from './models/schemas/review.schema';
+import { ReviewRepository } from './repositories/review.repository';
+import { BaseSettingFeature } from './models/schemas/settings/base-setting.schema';
+import { ReviewSettingProviders } from './providers/settings/review-setting.provider';
+import { ReviewSettingRepository } from './repositories/settings/review-setting.repository';
 
 @Module({
     imports: [
-        MongooseModule.forFeature([ BaseFormFeature, ClientFeature, UserFeature, RoleFeature, DepartmentFeature, DiagnosticFeature, VisitFeature ]),
+        MongooseModule.forFeature([
+            BaseFormFeature, ClientFeature, UserFeature, RoleFeature, DepartmentFeature,
+            DiagnosticFeature, VisitFeature, VisitRetentionFeature, ReviewFeature, BaseSettingFeature,
+        ]),
         InfrastructureCoreModule,
     ],
     providers: [
-        FacialFormRepository, MassageFormRepository, ClientRepository, ResourceRepository, QueryBuilderService,
-        UserRepository, DiagnosticRepository, VisitRepository, ...FacialFormProviders, ...MassageFormProviders],
+        FacialFormRepository, MassageFormRepository, ClientRepository, ResourceRepository, QueryBuilderService, VisitRetentionRepository, ReviewRepository, ReviewSettingRepository,
+        UserRepository, DiagnosticRepository, VisitRepository, ...FacialFormProviders, ...MassageFormProviders, ...ReviewSettingProviders],
     exports: [
-        MongooseModule.forFeature([ BaseFormFeature, ClientFeature, UserFeature, RoleFeature, DepartmentFeature ]),
-        FacialFormRepository, MassageFormRepository, ClientRepository, VisitRepository,
-        UserRepository, DiagnosticRepository, ...FacialFormProviders, ...MassageFormProviders],
+        MongooseModule.forFeature([BaseFormFeature, ClientFeature, UserFeature, RoleFeature, DepartmentFeature]),
+        FacialFormRepository, MassageFormRepository, ClientRepository, VisitRepository, VisitRetentionRepository, ReviewRepository, ReviewSettingRepository,
+        UserRepository, DiagnosticRepository, ...FacialFormProviders, ...MassageFormProviders, ...ReviewSettingProviders],
   })
 export class InfrastructureCommonModule { }

@@ -1,5 +1,5 @@
 import { ResourceModel } from 'src/infrastructure/core/models/models/resource.model';
-import { CLIENT_MODEL_NAME } from '../../../../constants';
+import { CLIENT_MODEL_NAME } from '../../../../constants/constants';
 
 export class ClientModel extends ResourceModel {
   readonly firstname: string;

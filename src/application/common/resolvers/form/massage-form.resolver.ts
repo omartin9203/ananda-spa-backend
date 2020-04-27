@@ -7,7 +7,7 @@ import { UpdateMassageFormInput } from '../../dtos/inputs/form/massage/massage-f
 import { ClientService } from '../../services/client/client.service';
 import { MassageFormService } from '../../services/form/massage/massage-form.service';
 import { PaginatedMassageFormResponse } from '../../dtos/dtos/form/massage/massage-form.paginate.dto';
-import { MASSAGEFORM_MODEL_NAME } from '../../../../constants';
+import { MASSAGEFORM_MODEL_NAME } from '../../../../constants/constants';
 
 @Resolver('MassageFormType')
 export class MassageFormResolver extends BaseFormResolver {

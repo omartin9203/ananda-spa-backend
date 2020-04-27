@@ -1,0 +1,15 @@
+export const CLIENT_MODEL_NAME = 'Client';
+export const ADVERTISEMENT_MODEL_NAME = 'Advertisement';
+export const USER_MODEL_NAME = 'User';
+export const FACIALFORM_MODEL_NAME = 'FacialForm';
+export const BASEFORM_MODEL_NAME = 'BaseForm';
+export const MASSAGEFORM_MODEL_NAME = 'MassageForm';
+export const ROLE_MODEL_NAME = 'Role';
+export const DEPARTMENT_MODEL_NAME = 'Department';
+export const DIAGNOSTIC_MODEL_NAME = 'Diagnostic';
+export const VISIT_MODEL_NAME = 'Visit';
+export const FILE_MODEL_NAME = 'files';
+export const VISIT_RETENTION_MODEL_NAME = 'Retention';
+export const REVIEW_MODEL_NAME = 'Review';
+export const BASE_SETTING_MODEL_NAME = 'Setting';
+export const REVIEW_SETTING_MODEL_NAME = 'ReviewSetting';

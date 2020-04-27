@@ -3,11 +3,12 @@ import { ResourceService } from '../../../core/services/resource.service';
 import { UserDto } from '../../dtos/dtos/user/user.dto';
 import { UserRepository } from '../../../../infrastructure/common/repositories/user.repository';
 import { QueryBuilderService } from '../../../../infrastructure/core/services/query-builder.service';
-import { STATUS } from '../../../../constants';
+import { STATUS } from '../../../../constants/constants';
 import { IPaginatedResponseClass } from '../../../../infrastructure/core/models/interfaces/paginate.interface';
 import { ClientDto } from '../../dtos/dtos/client/client.dto';
 import { Operators } from '../../../../infrastructure/core/utils/query/operators.enum';
 import { UserFilterInput } from '../../dtos/inputs/user/UserFilter';
+import { RetentionUserInput } from '../../dtos/inputs/user/retention.user.input';
 
 @Injectable()
 export class UserService extends ResourceService<UserDto> {
@@ -74,5 +75,7 @@ export class UserService extends ResourceService<UserDto> {
         hasMore: limit + skip < total,
       };
     }
-
+    async updateRetention(id: string, update: RetentionUserInput) {
+        await this.repository.updateRetention(id, update.total, update.important);
+    }
 }

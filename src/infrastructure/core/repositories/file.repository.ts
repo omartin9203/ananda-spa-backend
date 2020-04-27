@@ -2,7 +2,7 @@ import { InjectConnection } from '@nestjs/mongoose';
 import { IGridFSObject, IGridFSWriteOption, MongoGridFS } from 'mongo-gridfs';
 import { FileInfo, IFileInfo } from '../models/interfaces/IFileInfo.interface';
 import { Injectable } from '@nestjs/common';
-import { FILE_MODEL_NAME } from '../../../constants';
+import { FILE_MODEL_NAME } from '../../../constants/constants';
 
 const enum contentsType {
   image = 'image',

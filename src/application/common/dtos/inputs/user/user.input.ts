@@ -1,6 +1,6 @@
 import { Field, InputType } from 'type-graphql';
 import { IsEmail, IsAlphanumeric, IsAlpha, MinLength, IsPhoneNumber, IsString, IsIn, IsDate } from 'class-validator';
-import { GENDER_OPTIONS, GENDER_OPTIONSS_VALUES } from '../../../../../constants';
+import { GENDER_OPTIONS, GENDER_OPTIONSS_VALUES } from '../../../../../constants/constants';
 
 @InputType('CreateUserInput')
 export class UserInput {

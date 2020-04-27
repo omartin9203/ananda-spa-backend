@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { FACIALFORM_MODEL_NAME } from '../../../../constants';
+import { FACIALFORM_MODEL_NAME } from '../../../../constants/constants';
 import { FacialFormModel } from '../../models/models/form/facial-form.model';
 import { ResourceRepository } from '../../../core/repositories/resource.repository';
 import { QueryBuilderService } from '../../../core/services/query-builder.service';

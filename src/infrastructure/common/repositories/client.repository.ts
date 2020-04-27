@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { ClientModel } from '../models/models/client.model';
-import { CLIENT_MODEL_NAME } from '../../../constants';
+import { CLIENT_MODEL_NAME } from '../../../constants/constants';
 import { QueryBuilderService } from '../../core/services/query-builder.service';
 import { ResourceRepository } from '../../core/repositories/resource.repository';
 

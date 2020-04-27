@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { API_KEY } from '../../../../constants';
+import { API_KEY } from '../../../../constants/constants';
 import { AuthService } from '../../services/auth/auth.service';
 import { IPayloadAuth } from '../../dtos/dtos/auth/payload.dto';
 import { IUserAuhtenticated } from '../../../core/interfaces/auth/user-autenticated.interface';

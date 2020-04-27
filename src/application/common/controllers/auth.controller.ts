@@ -3,7 +3,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { LoginInput } from '../dtos/inputs/auth/login.input';
 import { AuthService } from '../services/auth/auth.service';
 import * as ls from 'local-storage';
-import { UI_URI_HELPER } from '../../../constants';
+import { UI_URI_HELPER } from '../../../constants/constants';
 
 @Controller('auth')
 export class AuthController {

@@ -6,14 +6,20 @@ import { MassageFormResolver } from './form/massage-form.resolver';
 import { DiagnosticResolver } from './diagnostic.resolver';
 import { VisitResolver } from './visit.resolver';
 import { AuthResolver } from './auth/auth.resolver';
+import { VisitRetentionResolver } from './visit/visitRetention.resolver';
+import { ReviewResolver } from './review/review.resolver';
+import { ReviewSettingResolver } from './settings/review-setting.resolver';
+import { AccreditedResolver } from './review/accredited.resolver';
 
 export const ResolversConfig = {
-  imports: [
-  ],
-  providers: [
-    ClientResolver, UserResolver, BaseFormResolver, FacialFormResolver, MassageFormResolver, DiagnosticResolver, VisitResolver, AuthResolver,
-  ],
-  exports: [
-    ClientResolver, UserResolver, BaseFormResolver, FacialFormResolver, MassageFormResolver, DiagnosticResolver, VisitResolver, AuthResolver,
-  ],
+    imports: [
+    ],
+    providers: [
+        ClientResolver, UserResolver, BaseFormResolver, FacialFormResolver, MassageFormResolver, DiagnosticResolver,
+        VisitResolver, AuthResolver, VisitRetentionResolver, ReviewResolver, ReviewSettingResolver, AccreditedResolver,
+    ],
+    exports: [
+        ClientResolver, UserResolver, BaseFormResolver, FacialFormResolver, MassageFormResolver, DiagnosticResolver,
+        VisitResolver, AuthResolver, VisitRetentionResolver, ReviewResolver, ReviewSettingResolver, AccreditedResolver,
+    ],
 };

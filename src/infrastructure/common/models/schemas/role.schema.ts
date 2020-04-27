@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose';
-import { ROLE_MODEL_NAME } from '../../../../constants';
+import { ROLE_MODEL_NAME } from '../../../../constants/constants';
 import * as materializedPlugin from 'mongoose-materialized';
 
 const Schema = mongoose.Schema;

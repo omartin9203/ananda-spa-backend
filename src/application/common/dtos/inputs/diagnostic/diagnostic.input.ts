@@ -4,15 +4,15 @@ import { RecommendedProductInput } from './recommended-product.input';
 
 @InputType('CreateDiagnosticInput')
 export class  CreateDiagnosticInputDto {
-  @Field()
-  @IsString()
-  clientId: string;
-  @Field()
-  @IsString()
-  performedById: string;
-  @Field({ nullable: true })
-  @IsDate()
-  date?: Date;
+  // @Field()
+  // @IsString()
+  // clientId: string;
+  // @Field()
+  // @IsString()
+  // performedById: string;
+  // @Field({ nullable: true })
+  // @IsDate()
+  // date?: Date;
   @Field()
   @IsString()
   typeOfKind: string;
@@ -25,9 +25,9 @@ export class  CreateDiagnosticInputDto {
   @Field()
   @IsString()
   texture: string;
-  @Field({ nullable: true })
-  @IsDate()
-  todaysDate?: Date;
+  // @Field({ nullable: true })
+  // @IsDate()
+  // todaysDate?: Date;
   @Field({ nullable: true })
   @IsString()
   typeOfTreatment?: string;

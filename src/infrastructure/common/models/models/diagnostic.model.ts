@@ -9,7 +9,7 @@ export class DiagnosticModel extends ResourceModel {
   readonly fitzpatrickClassification: string;
   readonly conditionsAndConcerns: string[];
   readonly texture: string;
-  readonly todaysDate: Date;
+  // readonly todaysDate: Date;
   readonly typeOfTreatment: string;
   readonly specificClientsConcerns: string;
   readonly notesOrRemarks: string;

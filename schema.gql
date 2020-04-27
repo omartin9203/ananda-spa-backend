@@ -49,14 +49,10 @@ input CreateClientInput {
 }
 
 input CreateDiagnosticInput {
-  clientId: String!
-  performedById: String!
-  date: DateTime
   typeOfKind: String!
   fitzpatrickClassification: String!
   conditionsAndConcerns: [String!]
   texture: String!
-  todaysDate: DateTime
   typeOfTreatment: String
   specificClientsConcerns: String
   notesOrRemarks: String
@@ -65,22 +61,6 @@ input CreateDiagnosticInput {
   steam: Boolean
   highFrecuency: Boolean
   todaysRecommendedProducts: RecommendedProductInput
-}
-
-input CreateDiagnosticInputType {
-  typeOfKind: String!
-  fitzpatrickClassification: String!
-  conditionsAndConcerns: [String!]
-  texture: String!
-  todaysDate: DateTime
-  typeOfTreatment: String
-  specificClientsConcerns: String
-  notesOrRemarks: String
-  productsUsedToday: [String!]
-  extractions: Boolean
-  steam: Boolean
-  highFrecuency: Boolean
-  todaysRecommendedProducts: RecommendedProductInputType
 }
 
 input CreateFacialFormInput {
@@ -257,8 +237,8 @@ input CreateVisit {
   performedById: String!
   date: DateTime
   photos: [String!]
-  observations: String
-  diagnostic: CreateDiagnosticInputType
+  notes: [NoteInput!]
+  diagnostic: CreateDiagnosticInput
   formId: String
 }
 
@@ -278,7 +258,6 @@ type DiagnosticDto implements IResourceDto {
   fitzpatrickClassification: String
   conditionsAndConcerns: [String!]
   texture: String
-  todaysDate: DateTime
   typeOfTreatment: String
   specificClientsConcerns: String
   notesOrRemarks: String
@@ -287,22 +266,6 @@ type DiagnosticDto implements IResourceDto {
   steam: Boolean
   highFrecuency: Boolean
   todaysRecommendedProducts: RecommendedProductType
-}
-
-type DiagnosticType {
-  typeOfKind: String
-  fitzpatrickClassification: String
-  conditionsAndConcerns: [String!]
-  texture: String
-  todaysDate: DateTime
-  typeOfTreatment: String
-  specificClientsConcerns: String
-  notesOrRemarks: String
-  productsUsedToday: [String!]
-  extractions: Boolean
-  steam: Boolean
-  highFrecuency: Boolean
-  todaysRecommendedProducts: RecommendedProductDto
 }
 
 type FacialFormType implements IBaseFormDto & IResourceDto {
@@ -495,9 +458,23 @@ type Mutation {
   updateDiagnostic(input: UpdateDiagnosticDto!, id: ID!): DiagnosticDto!
   deleteDiagnostic(id: ID!): DiagnosticDto!
   createVisit(input: CreateVisit!): VisitDto!
-  updateVisit(input: UpdateVisit!, id: ID!): VisitDto!
-  deleteVisit(id: ID!): VisitDto!
+  updateVisit(input: VisitRetentionUpdate!, id: ID!): VisitRetentionDto!
+  deleteVisit(id: ID!): VisitRetentionDto!
   signUp(input: CreateUserInput!): AuthDto!
+  createVisitRetention(input: VisitRetentionInput!): VisitRetentionDto!
+}
+
+input NoteInput {
+  text: String!
+  status: String!
+  performedById: String!
+}
+
+type NoteType {
+  id: String!
+  text: String!
+  status: String!
+  performedById: String!
 }
 
 type PaginatedClientResponse {
@@ -540,6 +517,12 @@ type PaginatedVisitResponse {
   hasMore: Boolean!
 }
 
+type PaginatedVisitRetentionResponse {
+  items: [VisitRetentionDto!]!
+  total: Int!
+  hasMore: Boolean!
+}
+
 input ParentConsentInput {
   firstname: String
   lastname: String
@@ -570,19 +553,11 @@ type Query {
   logIn(input: LoginInput!): AuthDto!
   userInfo: UserInfoDto!
   verifyToken: Boolean!
-}
-
-type RecommendedProductDto {
-  daytime: String
-  nightime: String
+  visitRetention(id: ID!): VisitRetentionDto!
+  visitRetentions(limit: Int, skip: Int): PaginatedVisitRetentionResponse!
 }
 
 input RecommendedProductInput {
-  daytime: String
-  nightime: String
-}
-
-input RecommendedProductInputType {
   daytime: String
   nightime: String
 }
@@ -627,22 +602,6 @@ input UpdateDiagnosticDto {
   steam: Boolean
   highFrecuency: Boolean
   todaysRecommendedProducts: RecommendedProductInput
-}
-
-input UpdateDiagnosticInputType {
-  typeOfKind: String
-  fitzpatrickClassification: String
-  conditionsAndConcerns: [String!]
-  texture: String
-  todaysDate: DateTime
-  typeOfTreatment: String
-  specificClientsConcerns: String
-  notesOrRemarks: String
-  productsUsedToday: [String!]
-  extractions: Boolean
-  steam: Boolean
-  highFrecuency: Boolean
-  todaysRecommendedProducts: RecommendedProductInputType
 }
 
 input UpdateFacialFormInput {
@@ -823,8 +782,7 @@ input UpdateUserInput {
 input UpdateVisit {
   date: DateTime
   photos: [String!]
-  observations: String
-  diagnostic: UpdateDiagnosticInputType
+  diagnosticId: String
   formId: String
 }
 
@@ -887,8 +845,29 @@ type VisitDto implements IResourceDto {
   performedBy: UserType
   date: DateTime
   photos: [String!]
-  observations: String
-  diagnostic: DiagnosticType
+  notes: [NoteType!]
+  diagnostic: DiagnosticDto
   facialForm: FacialFormType
   massageForm: MassageFormType
+}
+
+type VisitRetentionDto implements IResourceDto {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  user: UserType
+  clientPhone: String!
+  treatment: String!
+}
+
+input VisitRetentionInput {
+  user: String!
+  client: String!
+  treatment: String!
+}
+
+input VisitRetentionUpdate {
+  userId: String
+  clientPhone: String
+  treatment: String
 }

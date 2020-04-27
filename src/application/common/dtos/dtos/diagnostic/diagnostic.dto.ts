@@ -4,7 +4,7 @@ import { RecommendedProductType } from './recommended-product.dto';
 import { ClientDto } from '../client/client.dto';
 import { UserDto } from '../user/user.dto';
 
-@ObjectType('DiagnosticDto')
+@ObjectType()
 export class DiagnosticDto extends ResourceDto {
   @Field(type => ClientDto, {nullable: true})
   readonly client?: ClientDto;
@@ -20,8 +20,6 @@ export class DiagnosticDto extends ResourceDto {
   conditionsAndConcerns?: string[];
   @Field({nullable: true})
   texture?: string;
-  @Field({nullable: true})
-  todaysDate?: Date;
   @Field({nullable: true})
   typeOfTreatment?: string;
   @Field({nullable: true})

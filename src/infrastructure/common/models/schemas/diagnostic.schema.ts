@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose';
-import { DIAGNOSTIC_MODEL_NAME, DIAGNOSTIC_SETTINGS, CLIENT_MODEL_NAME, USER_MODEL_NAME } from '../../../../constants';
+import { DIAGNOSTIC_MODEL_NAME, DIAGNOSTIC_SETTINGS, CLIENT_MODEL_NAME, USER_MODEL_NAME } from '../../../../constants/constants';
 
 const Schema = mongoose.Schema;
 
@@ -43,7 +43,7 @@ export const DiagnosticSchema = new Schema({
   },
 //  endregion
   //region Services
-  todaysDate: Date,
+  // todaysDate: Date,
   typeOfTreatment: String,
   specificClientsConcerns: String,
   notesOrRemarks: String,

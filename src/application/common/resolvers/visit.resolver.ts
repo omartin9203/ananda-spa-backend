@@ -9,16 +9,15 @@ import { VisitService } from '../services/visit/visit.service';
 import { PaginatedVisitResponse } from '../dtos/dtos/visit/paginate.visit.dto';
 import { CreateVisit } from '../dtos/inputs/visit/visit.input';
 import { UpdateVisit } from '../dtos/inputs/visit/visit.update';
-import { UseGuards } from '@nestjs/common';
+import {Logger, UseGuards} from '@nestjs/common';
 import { GqlAuthGuard } from '../guard/auth/graphql.guard';
-import { Roles } from '../decorators/auth/roles.decorator';
-import { RolesGuard } from '../guard/auth/roles.guard';
-import { CurrentUser } from '../decorators/params/current-user.decorator';
-import { AuthGuard } from '@nestjs/passport';
 import { FacialFormDto } from '../dtos/dtos/form/facial/facial-form.dto';
 import { FacialFormService } from '../services/form/facial/facial-form.service';
 import { MassageFormService } from '../services/form/massage/massage-form.service';
 import { MassageFormDto } from '../dtos/dtos/form/massage/massage-form.dto';
+import { DiagnosticService } from '../services/diagnostic/diagnostic.service';
+import { DiagnosticDto } from '../dtos/dtos/diagnostic/diagnostic.dto';
+import { CreateDiagnosticInputDto } from '../dtos/inputs/diagnostic/diagnostic.input';
 
 @Resolver(of => VisitDto)
 export class VisitResolver {
@@ -28,6 +27,7 @@ export class VisitResolver {
     private readonly userService: UserService,
     private readonly facialService: FacialFormService,
     private readonly massageService: MassageFormService,
+    private readonly diagnosticService: DiagnosticService,
   ) {}
 
   @Query(() => VisitDto, { name: 'visit' })
@@ -37,7 +37,7 @@ export class VisitResolver {
 
   @Query(() => PaginatedVisitResponse, { name: 'visits' })
   // @UseGuards(GqlAuthGuard, RolesGuard)
-  // @Roles('ADMIN', 'Manager')
+  // @Roles('ADMIN', 'MANAGER')
   @UseGuards(GqlAuthGuard)
   async getVisits(
     @Args({ name: 'skip', type: () => Int, nullable: true }) skip: number,
@@ -48,7 +48,14 @@ export class VisitResolver {
 
   @Mutation(() => VisitDto)
   async createVisit(@Args('input') input: CreateVisit) {
-    return await this.service.createResource(input);
+    const diagnostic: DiagnosticDto = await this.diagnosticService.createResource({
+      ...input.diagnostic,
+      clientId: input.clientId,
+      performedById: input.performedById,
+        date: input.date,
+    } as CreateDiagnosticInputDto);
+    Logger.log(diagnostic, 'diagnostic');
+    return await this.service.createResource({ ...input, diagnosticId: diagnostic.id });
   }
   @Mutation(() => VisitDto)
   async updateVisit(
@@ -56,6 +63,7 @@ export class VisitResolver {
     @Args('input') input: UpdateVisit) {
     return await this.service.updateResource(id, input);
   }
+
   @Mutation(() => VisitDto)
   async deleteVisit( @Args({ name: 'id', type: () => ID }) id: string ) {
     return await this.service.deleteResource(id);
@@ -72,6 +80,19 @@ export class VisitResolver {
     }
     return client;
   }
+
+  @ResolveProperty(returns => DiagnosticDto)
+  async diagnostic(@Parent() visit) {
+    const { diagnosticId } = visit;
+    let diagnostic;
+    try {
+      diagnostic = await this.diagnosticService.findResource(diagnosticId);
+    } catch (e) {
+      return null;
+    }
+    return diagnostic;
+  }
+
   @ResolveProperty(returns => UserDto)
   async performedBy(@Parent() visit) {
     const { performedById } = visit;
@@ -83,6 +104,7 @@ export class VisitResolver {
     }
     return user;
   }
+
   @ResolveProperty(returns => FacialFormDto)
   async facialForm(@Parent() visit) {
     const { formId } = visit;
@@ -95,6 +117,7 @@ export class VisitResolver {
     }
     return facial;
   }
+
   @ResolveProperty(returns => MassageFormDto)
   async massageForm(@Parent() visit) {
     const { formId } = visit;

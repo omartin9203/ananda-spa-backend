@@ -1,7 +1,5 @@
 import { Field, InputType } from 'type-graphql';
-import { ResourceDto } from '../../../../core/dtos/resource.dto';
 import { IsArray, IsDate, IsString } from 'class-validator';
-import { UpdateDiagnosticInputType } from './diagnostic.update';
 
 @InputType()
 export class UpdateVisit {
@@ -12,11 +10,8 @@ export class UpdateVisit {
   @IsArray()
   readonly photos?: string[];
   @Field({nullable: true})
-  @IsString()
-  readonly observations?: string;
-  @Field({nullable: true})
-  diagnostic?: UpdateDiagnosticInputType;
+  diagnosticId?: string;
   @Field({nullable: true})
   @IsString()
-  readonly formId?: string;
+  formId?: string;
 }

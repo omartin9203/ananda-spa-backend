@@ -1,6 +1,6 @@
 import { BaseFormModel } from './base-form.model';
 import { IParentConsent } from '../../interfaces/generics/parent-consent.interface';
-import { MASSAGEFORM_MODEL_NAME } from '../../../../../constants';
+import { MASSAGEFORM_MODEL_NAME } from '../../../../../constants/constants';
 
 export class MassageFormModel extends BaseFormModel {
   occupation: string;
