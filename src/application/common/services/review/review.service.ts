@@ -1,11 +1,11 @@
-import {AccreditedType, ReviewDto} from "../../dtos/dtos/review/review.dto";
-import { Injectable, NotAcceptableException, Logger } from "@nestjs/common";
-import { ReviewRepository } from "../../../../infrastructure/common/repositories/review.repository";
-import { ResourceService } from "../../../core/services/resource.service";
-import { ReviewSettingService } from "../settings/review-settings.service";
-import { ReviewInput } from "../../dtos/inputs/review/review.input";
-import { AccreditedUpdate } from "../../dtos/inputs/review/accredited/accredited.update";
-import { AccreditedInputType } from "../../dtos/inputs/review/accredited/accredited.input";
+import {AccreditedType, ReviewDto} from '../../dtos/dtos/review/review.dto';
+import { Injectable, NotAcceptableException, Logger } from '@nestjs/common';
+import { ReviewRepository } from '../../../../infrastructure/common/repositories/review.repository';
+import { ResourceService } from '../../../core/services/resource.service';
+import { ReviewSettingService } from '../settings/review-settings.service';
+import { ReviewInput } from '../../dtos/inputs/review/review.input';
+import { AccreditedUpdate } from '../../dtos/inputs/review/accredited/accredited.update';
+import { AccreditedInputType } from '../../dtos/inputs/review/accredited/accredited.input';
 
 @Injectable()
 export class ReviewService extends ResourceService<ReviewDto> {
@@ -62,10 +62,19 @@ export class ReviewService extends ResourceService<ReviewDto> {
     }
 
     async getSetting(directoryId: string) {
-        var setting = await this.reviewSettingService.findOne(directoryId);
+        let setting = await this.reviewSettingService.findOne(directoryId);
         return {
             bonus: setting.bonus,
             payment: setting.payment,
+        };
+    }
+
+    async filterReview(filter: object, skip: number, limit: number) {
+        const total = await this.repository.count(filter);
+        return {
+            items: await this.repository.find(filter, skip, limit),
+            total,
+            hasMore: limit + skip < total,
         };
     }
 }

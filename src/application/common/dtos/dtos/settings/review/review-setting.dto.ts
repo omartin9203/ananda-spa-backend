@@ -1,8 +1,9 @@
 import { BaseSettingDto } from "../base/base-setting.dto";
 import { ObjectType, Field } from "type-graphql";
+import {ResourceDto} from "../../../../../core/dtos/resource.dto";
 
 @ObjectType()
-export class ReviewSettingDto extends BaseSettingDto {
+export class ReviewSettingDto extends ResourceDto {
     @Field()
     directoryName: string;
     @Field()

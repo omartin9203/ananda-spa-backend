@@ -3,6 +3,34 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
+input AccreditedInputType {
+  managerId: String
+  accreditedDate: DateTime!
+  accreditedToEmployee: Boolean!
+  employeeId: String
+  critical: Boolean
+  bonus: Float
+  payment: Float
+}
+
+type AccreditedType {
+  manager: UserInfoDto
+  accreditedDate: DateTime
+  accreditedToEmployee: Boolean
+  employee: UserInfoDto
+  critical: Boolean
+  bonus: Float
+  payment: Float
+}
+
+input AccreditedUpdate {
+  managerId: String
+  accreditedDate: DateTime
+  accreditedToEmployee: Boolean
+  employeeId: String
+  critical: Boolean
+}
+
 type AuthDto {
   success: Boolean!
   message: String!
@@ -458,10 +486,20 @@ type Mutation {
   updateDiagnostic(input: UpdateDiagnosticDto!, id: ID!): DiagnosticDto!
   deleteDiagnostic(id: ID!): DiagnosticDto!
   createVisit(input: CreateVisit!): VisitDto!
-  updateVisit(input: VisitRetentionUpdate!, id: ID!): VisitRetentionDto!
-  deleteVisit(id: ID!): VisitRetentionDto!
+  updateVisit(input: UpdateVisit!, id: ID!): VisitDto!
+  deleteVisit(id: ID!): VisitDto!
   signUp(input: CreateUserInput!): AuthDto!
   createVisitRetention(input: VisitRetentionInput!): VisitRetentionDto!
+  updateVisitRetention(input: VisitRetentionUpdate!, id: ID!): VisitRetentionDto!
+  deleteVisitRetention(id: ID!): VisitRetentionDto!
+  createReview(input: ReviewInput!): ReviewDto!
+  updateReview(input: ReviewUpdate!, id: ID!): ReviewDto!
+  deleteReview(id: ID!): ReviewDto!
+  accreditReview(input: AccreditedInputType!, id: ID!): ReviewDto!
+  updateAccreditedReview(input: AccreditedUpdate!, id: ID!): ReviewDto!
+  createReviewSetting(input: ReviewSettingInput!): ReviewSettingDto!
+  deleteReviewSetting(id: ID!): ReviewSettingDto!
+  updateReviewSetting(input: ReviewSettingUpdate!, id: ID!): ReviewSettingDto!
 }
 
 input NoteInput {
@@ -502,6 +540,18 @@ type PaginatedMassageFormResponse {
   total: Int!
   hasMore: Boolean!
   otherInfo: [String!]!
+}
+
+type PaginatedReviewResponse {
+  items: [ReviewDto!]!
+  total: Int!
+  hasMore: Boolean!
+}
+
+type PaginatedReviewSettingResponse {
+  items: [ReviewSettingDto!]!
+  total: Int!
+  hasMore: Boolean!
 }
 
 type PaginatedUserResponse {
@@ -555,6 +605,39 @@ type Query {
   verifyToken: Boolean!
   visitRetention(id: ID!): VisitRetentionDto!
   visitRetentions(limit: Int, skip: Int): PaginatedVisitRetentionResponse!
+  review(id: ID!): ReviewDto!
+  reviews(limit: Int, skip: Int): PaginatedReviewResponse!
+  filterReviews(filter: ReviewFilterInput, skip: Int = 0, limit: Int = 10): PaginatedReviewResponse!
+  getReviewSetting(id: ID!): ReviewSettingDto!
+  getReviewSettings(limit: Int, skip: Int): PaginatedReviewSettingResponse!
+}
+
+input QueryFilterBooleanDto {
+  eq: Boolean
+}
+
+input QueryFilterDateDto {
+  eq: DateTime
+  gt: DateTime
+  gte: DateTime
+  lt: DateTime
+  lte: DateTime
+  in: [DateTime!]
+}
+
+input QueryFilterNumberDto {
+  eq: Float
+  gt: Float
+  gte: Float
+  lt: Float
+  lte: Float
+  in: [Int!]
+}
+
+input QueryFilterStringDto {
+  eq: String
+  in: [String!]
+  regex: String
 }
 
 input RecommendedProductInput {
@@ -571,6 +654,89 @@ type ResourceDto implements IResourceDto {
   id: ID!
   createdAt: DateTime!
   updatedAt: DateTime!
+}
+
+type RetentionUserDto {
+  total: Float!
+  important: Float!
+}
+
+input RetentionUserInput {
+  total: Float
+  important: Float
+}
+
+type ReviewDto implements IResourceDto {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  client: String!
+  date: DateTime!
+  text: String!
+  stars: Float!
+  directory: ReviewSettingDto
+  accredited: AccreditedType
+}
+
+input ReviewFilterInput {
+  search: String
+  client: QueryFilterStringDto
+  assignedTo: QueryFilterStringDto
+  directoryId: QueryFilterStringDto
+  date: QueryFilterDateDto
+  critical: QueryFilterBooleanDto
+  stars: QueryFilterNumberDto
+}
+
+input ReviewInput {
+  client: String!
+  date: DateTime!
+  text: String!
+  stars: Float!
+  directoryId: String!
+  accredited: AccreditedInputType = null
+}
+
+type ReviewSettingDto implements IResourceDto {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  directoryName: String!
+  bonus: Float!
+  payment: Float!
+  percentage: Float!
+  minOverall: Float!
+  icon: String
+}
+
+input ReviewSettingInput {
+  directoryName: String!
+  bonus: Float
+  payment: Float
+  percentage: Float
+  minOverall: Float
+  icon: String
+}
+
+input ReviewSettingUpdate {
+  directoryName: String
+  bonus: Float
+  payment: Float
+  percentage: Float
+  minOverall: Float
+  icon: String
+}
+
+input ReviewUpdate {
+  client: String
+  date: DateTime
+  text: String
+  stars: Float
+  directoryId: String
+}
+
+input SearcheableFilterInput {
+  search: String
 }
 
 input UpdateClientInput {
@@ -777,6 +943,7 @@ input UpdateUserInput {
   gender: String
   status: String
   roles: [String!]
+  retention: RetentionUserInput
 }
 
 input UpdateVisit {
@@ -835,6 +1002,7 @@ type UserType implements IResourceDto {
   dateOfBirth: DateTime!
   gender: String!
   roles: [String!]!
+  retention: RetentionUserDto!
 }
 
 type VisitDto implements IResourceDto {
@@ -856,18 +1024,21 @@ type VisitRetentionDto implements IResourceDto {
   createdAt: DateTime!
   updatedAt: DateTime!
   user: UserType
-  clientPhone: String!
+  clientPhone: String
   treatment: String!
+  flag: String!
 }
 
 input VisitRetentionInput {
   user: String!
-  client: String!
+  client: String
   treatment: String!
+  flag: String
 }
 
 input VisitRetentionUpdate {
   userId: String
   clientPhone: String
   treatment: String
+  flag: String
 }
