@@ -10,7 +10,7 @@ import { MulterModule } from '@nestjs/platform-express';
 import { APP_GUARD, APP_PIPE } from '@nestjs/core';
 import { RolesGuard } from './application/common/guard/auth/roles.guard';
 
-const { URI, OPTIONS } = process.env.NODE_ENV === 'production' ? CONNECTION.ATLAS : CONNECTION.LOCAL;
+const { URI, OPTIONS } = process.env.NODE_ENV === 'production' ? CONNECTION.ATLAS : CONNECTION.ATLAS;
 
 @Module({
   imports: [

@@ -19,6 +19,6 @@ import { VisitsController } from './controllers/visit.controller';
     exports: [
         ...ServicesConfig.exports, ...GuardConfig.exports, ...ResolversConfig.exports,
     ],
-    controllers: [AuthController, VisitsController,],
+    controllers: [AuthController, VisitsController],
 })
 export class ApplicationCommonModule { }

@@ -56,6 +56,10 @@ export const ReviewSchema = new Schema({
     },
 });
 
+ReviewSchema.index(
+  {client: 'text', text: 'text'},
+);
+
 export const ReviewFeature = {
     name: REVIEW_MODEL_NAME,
     schema: ReviewSchema,

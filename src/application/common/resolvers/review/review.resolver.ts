@@ -12,6 +12,10 @@ import { ReviewSettingDto } from '../../dtos/dtos/settings/review/review-setting
 import { ReviewSettingService } from '../../services/settings/review-settings.service';
 import { AccreditedInputType } from '../../dtos/inputs/review/accredited/accredited.input';
 import { AccreditedUpdate } from '../../dtos/inputs/review/accredited/accredited.update';
+import {PaginatedClientResponse} from "../../dtos/dtos/client/paginate.client.dto";
+import {FilterClientsArgsInput} from "../../dtos/inputs/args/query.arg.input";
+import {FilterReviewArgsInput} from "../../dtos/inputs/review/review-filter-args.input";
+import {ReviewFilterInput} from "../../dtos/inputs/review/review-filter";
 
 @Resolver(of => ReviewDto)
 export class ReviewResolver {
@@ -35,7 +39,14 @@ export class ReviewResolver {
     ) {
         return await this.service.getAll(skip, limit);
     }
-
+    @Query(() => PaginatedReviewResponse)
+    async filterReviews(
+      @Args() { filter, limit, skip }: FilterReviewArgsInput,
+    ) {
+        return filter
+          ? await this.service.filterReview(ReviewFilterInput.getQuery(filter), skip, limit)
+          : await this.service.getAll(skip, limit);
+    }
     @Mutation(() => ReviewDto)
     async createReview(@Args('input') input: ReviewInput) {
         return await this.service.createResource(input);
