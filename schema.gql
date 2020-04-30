@@ -45,6 +45,12 @@ type BaseFormDto implements IBaseFormDto & IResourceDto {
   updatedAt: DateTime!
 }
 
+type BaseSettingDto implements IResourceDto {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
 type ClientType implements IResourceDto {
   id: ID!
   createdAt: DateTime!
