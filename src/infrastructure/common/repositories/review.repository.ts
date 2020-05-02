@@ -17,10 +17,10 @@ export class ReviewRepository extends ResourceRepository<ReviewModel> {
         super(model, querybuilderService);
     }
 
-    async getUserBalance(userId: string) {
-        return this.model.aggregate().match({
-            'accredited.employeeId': mongoose.Types.ObjectId(userId),
-        }).group({
+    async getBalance(userId?: string) {
+        const match = {};
+        if (userId) { match['accredited.employeeId'] = mongoose.Types.ObjectId(userId); }
+        return this.model.aggregate().match(match).group({
             _id: '$directoryId',
             achieved: {$sum: 1},
             overall: {$avg: '$stars'},

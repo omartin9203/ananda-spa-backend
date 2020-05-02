@@ -80,8 +80,8 @@ export class ReviewService extends ResourceService<ReviewDto> {
         };
     }
 
-    async getUserbalance(id: string): Promise<ReviewBalanceDto> {
-        const res = await this.repository.getUserBalance(id);
+    async getbalance(id?: string): Promise<ReviewBalanceDto> {
+        const res = await this.repository.getBalance(id);
         Logger.log(res, 'result');
         return res;
     }

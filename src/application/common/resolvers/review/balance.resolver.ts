@@ -1,9 +1,9 @@
-import { ReviewBalanceDto } from "../../dtos/dtos/review/review-balance.dto";
-import { ResolveProperty, Resolver, Parent, Args, Query } from "@nestjs/graphql";
-import { ReviewService } from "../../services/review/review.service";
-import { ReviewSettingService } from "../../services/settings/review-settings.service";
-import { ReviewSettingDto } from "../../dtos/dtos/settings/review/review-setting.dto";
-import { ID } from "type-graphql";
+import { ReviewBalanceDto } from '../../dtos/dtos/review/review-balance.dto';
+import { ResolveProperty, Resolver, Parent, Args, Query } from '@nestjs/graphql';
+import { ReviewService } from '../../services/review/review.service';
+import { ReviewSettingService } from '../../services/settings/review-settings.service';
+import { ReviewSettingDto } from '../../dtos/dtos/settings/review/review-setting.dto';
+import { ID } from 'type-graphql';
 
 @Resolver(of => ReviewBalanceDto)
 export class ReviewBalanceResolver {
@@ -13,8 +13,8 @@ export class ReviewBalanceResolver {
     ) { }
 
     @Query(() => [ReviewBalanceDto])
-    async getUserReviewBalance(@Args({ name: 'id', type: () => ID }) id: string) {
-        return await this.reviewService.getUserbalance(id);
+    async getReviewBalance(@Args({ name: 'id', type: () => ID, nullable: true }) id?: string) {
+        return await this.reviewService.getbalance(id);
     }
 
     @ResolveProperty(returns => ReviewSettingDto)
