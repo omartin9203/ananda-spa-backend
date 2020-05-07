@@ -71,10 +71,10 @@ export class ReviewService extends ResourceService<ReviewDto> {
         };
     }
 
-    async filterReview(filter: object, skip: number, limit: number) {
+    async filterReview(filter: object, skip: number, limit: number, sort?: string) {
         const total = await this.repository.count(filter);
         return {
-            items: await this.repository.find(filter, skip, limit),
+            items: await this.repository.find(filter, skip, limit, sort),
             total,
             hasMore: limit + skip < total,
         };
@@ -84,5 +84,9 @@ export class ReviewService extends ResourceService<ReviewDto> {
         const res = await this.repository.getBalance(id);
         Logger.log(res, 'result');
         return res;
+    }
+
+    async getReviewsPerDirectory(filter: any = {}, sort: any = {}, skip = 0, limit = 10) {
+        return await this.repository.getReviewsPerDirectory(filter, sort, skip, limit);
     }
 }

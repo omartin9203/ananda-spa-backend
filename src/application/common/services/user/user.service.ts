@@ -70,7 +70,7 @@ export class UserService extends ResourceService<UserDto> {
       const filter = Object.keys(userFilter).length ? this.queryBuilderService.buildQueryEq(userFilter, Operators.AND) : {};
       const total = await this.repository.count(filter, true);
       return {
-        items: await this.repository.find(filter, skip, limit, true),
+        items: await this.repository.find(filter, skip, limit),
         total,
         hasMore: limit + skip < total,
       };

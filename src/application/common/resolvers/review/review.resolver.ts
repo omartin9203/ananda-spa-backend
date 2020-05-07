@@ -16,6 +16,11 @@ import {PaginatedClientResponse} from "../../dtos/dtos/client/paginate.client.dt
 import {FilterClientsArgsInput} from "../../dtos/inputs/args/query.arg.input";
 import {FilterReviewArgsInput} from "../../dtos/inputs/review/review-filter-args.input";
 import {ReviewFilterInput} from "../../dtos/inputs/review/review-filter";
+import { CurrentUser } from '../../decorators/params/current-user.decorator';
+import { GqlAuthGuard } from '../../guard/auth/graphql.guard';
+import { QueryFilterStringDto } from '../../../core/dtos/filter/query-filter/query-filter-string.dto';
+import { ReviewQuerySortInput } from '../../dtos/inputs/review/review-query-sort.input';
+import { ReviewPerDirectoryDto } from '../../dtos/dtos/review/review-per-directory.dto';
 
 @Resolver(of => ReviewDto)
 export class ReviewResolver {
@@ -40,13 +45,35 @@ export class ReviewResolver {
         return await this.service.getAll(skip, limit);
     }
     @Query(() => PaginatedReviewResponse)
+    // @UseGuards(GqlAuthGuard)
     async filterReviews(
-      @Args() { filter, limit, skip }: FilterReviewArgsInput,
+      @Args() { filter, limit, skip, sort }: FilterReviewArgsInput,
+      // @CurrentUser() user,
     ) {
-        return filter
-          ? await this.service.filterReview(ReviewFilterInput.getQuery(filter), skip, limit)
-          : await this.service.getAll(skip, limit);
+        // if (!['MANAGER', 'ADMIN'].some(x => user.roles.includes(x))) {
+        //     filter.assignedTo = {
+        //         eq: user.id,
+        //     } as QueryFilterStringDto;
+        // }
+        return await this.service.filterReview(ReviewFilterInput.getQuery(filter), skip, limit, ReviewQuerySortInput.getStringSort(sort));
     }
+
+    @Query(() => [ReviewPerDirectoryDto])
+    // @UseGuards(GqlAuthGuard)
+    async filterReviewsPerDirectory(
+      @Args() { filter, limit, skip, sort }: FilterReviewArgsInput,
+      // @CurrentUser() user,
+    ) {
+        // if (!['MANAGER', 'ADMIN'].some(x => user.roles.includes(x))) {
+        //     filter.assignedTo = {
+        //         eq: user.id,
+        //     } as QueryFilterStringDto;
+        // }
+
+        const result: any = await this.service.getReviewsPerDirectory(ReviewFilterInput.getQuery(filter), { ...sort }, skip, limit);
+        return result.map(x => ({...x, skip, limit}));
+    }
+
     @Mutation(() => ReviewDto)
     async createReview(@Args('input') input: ReviewInput) {
         return await this.service.createResource(input);

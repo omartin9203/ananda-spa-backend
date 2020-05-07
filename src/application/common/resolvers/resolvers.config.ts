@@ -10,18 +10,19 @@ import { VisitRetentionResolver } from './visit/visitRetention.resolver';
 import { ReviewResolver } from './review/review.resolver';
 import { ReviewSettingResolver } from './settings/review-setting.resolver';
 import { AccreditedResolver } from './review/accredited.resolver';
-import {ReviewBalanceResolver} from "./review/balance.resolver";
+import {ReviewBalanceResolver} from './review/balance.resolver';
+import { ReviewPerDirectoryResolver } from './review/review-per-directory.resolver';
 
 export const ResolversConfig = {
     imports: [],
     providers: [
         ClientResolver, UserResolver, BaseFormResolver, FacialFormResolver, MassageFormResolver, DiagnosticResolver,
         VisitResolver, AuthResolver, VisitRetentionResolver, ReviewResolver, ReviewSettingResolver, AccreditedResolver,
-        ReviewBalanceResolver,
+        ReviewBalanceResolver, ReviewPerDirectoryResolver,
     ],
     exports: [
         ClientResolver, UserResolver, BaseFormResolver, FacialFormResolver, MassageFormResolver, DiagnosticResolver,
         VisitResolver, AuthResolver, VisitRetentionResolver, ReviewResolver, ReviewSettingResolver, AccreditedResolver,
-        ReviewBalanceResolver,
+        ReviewBalanceResolver, ReviewPerDirectoryResolver,
     ],
 };

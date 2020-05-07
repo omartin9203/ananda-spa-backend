@@ -26,7 +26,7 @@ export class ClientService extends ResourceService<ClientDto> {
         const filter = this.queryBuilderService.buildQueryContains(query, [ 'firstname', 'lastname', 'phone', 'email'], Operators.OR);
         const total = await this.repository.count(filter, true);
         return {
-            items: await this.repository.find(filter, skip, limit, true),
+            items: await this.repository.find(filter, skip, limit),
             total,
             hasMore: limit + skip < total,
         };

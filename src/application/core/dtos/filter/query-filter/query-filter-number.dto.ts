@@ -5,13 +5,13 @@ export class QueryFilterNumberDto {
   @Field({nullable: true})
   eq?: number;
   @Field({nullable: true})
-  gt: number;
+  gt?: number;
   @Field({nullable: true})
-  gte: number;
+  gte?: number;
   @Field({nullable: true})
-  lt: number;
+  lt?: number;
   @Field({nullable: true})
-  lte: number;
+  lte?: number;
   @Field(type => [Int], {nullable: true})
-  in: number[];
+  in?: number[];
 }
