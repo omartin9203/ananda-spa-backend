@@ -12,7 +12,7 @@ export const GuardConfig = {
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
       secret: API_KEY,
-      signOptions: { expiresIn: '1h' },
+      signOptions: { expiresIn: '730h' },
     }),
   ],
   providers: [

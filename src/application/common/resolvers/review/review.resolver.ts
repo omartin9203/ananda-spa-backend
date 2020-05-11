@@ -45,30 +45,30 @@ export class ReviewResolver {
         return await this.service.getAll(skip, limit);
     }
     @Query(() => PaginatedReviewResponse)
-    // @UseGuards(GqlAuthGuard)
+    @UseGuards(GqlAuthGuard)
     async filterReviews(
       @Args() { filter, limit, skip, sort }: FilterReviewArgsInput,
-      // @CurrentUser() user,
+      @CurrentUser() user,
     ) {
-        // if (!['MANAGER', 'ADMIN'].some(x => user.roles.includes(x))) {
-        //     filter.assignedTo = {
-        //         eq: user.id,
-        //     } as QueryFilterStringDto;
-        // }
+        if (!['MANAGER', 'ADMIN'].some(x => user.roles.includes(x))) {
+            filter.assignedTo = {
+                eq: user.id,
+            } as QueryFilterStringDto;
+        }
         return await this.service.filterReview(ReviewFilterInput.getQuery(filter), skip, limit, ReviewQuerySortInput.getStringSort(sort));
     }
 
     @Query(() => [ReviewPerDirectoryDto])
-    // @UseGuards(GqlAuthGuard)
+    @UseGuards(GqlAuthGuard)
     async filterReviewsPerDirectory(
       @Args() { filter, limit, skip, sort }: FilterReviewArgsInput,
-      // @CurrentUser() user,
+      @CurrentUser() user,
     ) {
-        // if (!['MANAGER', 'ADMIN'].some(x => user.roles.includes(x))) {
-        //     filter.assignedTo = {
-        //         eq: user.id,
-        //     } as QueryFilterStringDto;
-        // }
+        if (!['MANAGER', 'ADMIN'].some(x => user.roles.includes(x))) {
+            filter.assignedTo = {
+                eq: user.id,
+            } as QueryFilterStringDto;
+        }
 
         const result: any = await this.service.getReviewsPerDirectory(ReviewFilterInput.getQuery(filter), { ...sort }, skip, limit);
         return result.map(x => ({...x, skip, limit}));
