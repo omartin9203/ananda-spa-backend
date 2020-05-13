@@ -7,4 +7,6 @@ export class ReviewSettingModel extends BaseSettingModel {
     readonly percentage: number;
     readonly minOverall: number;
     readonly icon?: string;
+    readonly iconReview?: string;
+    readonly iconColored?: string;
 }

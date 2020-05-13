@@ -24,4 +24,10 @@ export const ReviewSettingSchema: Schema = new Schema({
     icon: {
         type: String,
     },
+    iconReview: {
+        type: String,
+    },
+    iconColored: {
+        type: String,
+    },
 }, { discriminatorKey: 'type' });

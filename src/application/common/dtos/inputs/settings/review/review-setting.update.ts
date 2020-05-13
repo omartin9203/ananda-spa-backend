@@ -14,4 +14,8 @@ export class ReviewSettingUpdate {
     minOverall?: number;
     @Field({ nullable: true })
     icon?: string;
+    @Field({ nullable: true })
+    iconReview?: string;
+    @Field({ nullable: true })
+    iconColored?: string;
 }
