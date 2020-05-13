@@ -1,4 +1,4 @@
-import {AccreditedType, ReviewDto} from '../../dtos/dtos/review/review.dto';
+import { AccreditedType, ReviewDto } from '../../dtos/dtos/review/review.dto';
 import { Injectable, NotAcceptableException, Logger } from '@nestjs/common';
 import { ReviewRepository } from '../../../../infrastructure/common/repositories/review.repository';
 import { ResourceService } from '../../../core/services/resource.service';
@@ -8,6 +8,7 @@ import { AccreditedUpdate } from '../../dtos/inputs/review/accredited/accredited
 import { AccreditedInputType } from '../../dtos/inputs/review/accredited/accredited.input';
 import { IReviewBlance } from '../../../../infrastructure/common/models/interfaces/generics/review-balance.interface';
 import { ReviewBalanceDto } from '../../dtos/dtos/review/review-balance.dto';
+import * as puppeteer from 'puppeteer';
 
 @Injectable()
 export class ReviewService extends ResourceService<ReviewDto> {
@@ -85,7 +86,6 @@ export class ReviewService extends ResourceService<ReviewDto> {
         Logger.log(res, 'result');
         return res;
     }
-
     async getReviewsPerDirectory(filter: any = {}, sort: any = {}, skip = 0, limit = 10) {
         return await this.repository.getReviewsPerDirectory(filter, sort, skip, limit);
     }
