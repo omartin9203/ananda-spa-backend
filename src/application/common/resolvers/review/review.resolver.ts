@@ -1,21 +1,17 @@
 import { Args, Mutation, Parent, Query, ResolveProperty, Resolver } from '@nestjs/graphql';
 import { ID, Int } from 'type-graphql';
-import { UseGuards } from "@nestjs/common";
-import { ReviewDto } from "../../dtos/dtos/review/review.dto";
+import { UseGuards } from '@nestjs/common';
+import { ReviewDto } from '../../dtos/dtos/review/review.dto';
 import { ReviewService } from '../../services/review/review.service';
-import { UserService } from '../../services/user/user.service';
 import { PaginatedReviewResponse } from '../../dtos/dtos/review/paginate.review.dto';
-import { UserDto } from '../../dtos/dtos/user/user.dto';
 import { ReviewInput } from '../../dtos/inputs/review/review.input';
 import { ReviewUpdate } from '../../dtos/inputs/review/review.update';
 import { ReviewSettingDto } from '../../dtos/dtos/settings/review/review-setting.dto';
 import { ReviewSettingService } from '../../services/settings/review-settings.service';
 import { AccreditedInputType } from '../../dtos/inputs/review/accredited/accredited.input';
 import { AccreditedUpdate } from '../../dtos/inputs/review/accredited/accredited.update';
-import {PaginatedClientResponse} from "../../dtos/dtos/client/paginate.client.dto";
-import {FilterClientsArgsInput} from "../../dtos/inputs/args/query.arg.input";
-import {FilterReviewArgsInput} from "../../dtos/inputs/review/review-filter-args.input";
-import {ReviewFilterInput} from "../../dtos/inputs/review/review-filter";
+import {FilterReviewArgsInput} from '../../dtos/inputs/review/review-filter-args.input';
+import {ReviewFilterInput} from '../../dtos/inputs/review/review-filter';
 import { CurrentUser } from '../../decorators/params/current-user.decorator';
 import { GqlAuthGuard } from '../../guard/auth/graphql.guard';
 import { QueryFilterStringDto } from '../../../core/dtos/filter/query-filter/query-filter-string.dto';
@@ -37,7 +33,7 @@ export class ReviewResolver {
     @Query(() => PaginatedReviewResponse, { name: 'reviews' })
     //// @UseGuards(GqlAuthGuard, RolesGuard)
     //// @Roles('ADMIN', 'MANAGER')
-    //@UseGuards(GqlAuthGuard)
+    // @UseGuards(GqlAuthGuard)
     async getReviews(
         @Args({ name: 'skip', type: () => Int, nullable: true }) skip: number,
         @Args({ name: 'limit', type: () => Int, nullable: true }) limit: number,

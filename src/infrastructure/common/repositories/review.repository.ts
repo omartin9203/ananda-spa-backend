@@ -30,6 +30,7 @@ export class ReviewRepository extends ResourceRepository<ReviewModel> {
     async getReviewsPerDirectory(filter: any = {}, sort: any = {}, skip = 0, limit = 10) {
         filter = ReviewRepository.fixFilterValues(filter);
         if (Object.keys(filter).includes('$text')) { sort.score = { $meta: 'textScore' }; }
+        // filter = {...filter, accredited: { $exists: true }};
         return await this.model.aggregate()
           .match(filter)
           .sort(sort)

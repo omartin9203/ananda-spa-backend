@@ -5,11 +5,12 @@ import {QueryFilterDateDto} from '../../../../core/dtos/filter/query-filter/quer
 import {QueryFilterBooleanDto} from '../../../../core/dtos/filter/query-filter/query-filter-boolean.dto';
 import {QueryFilterNumberDto} from '../../../../core/dtos/filter/query-filter/query-filter-number.dto';
 import {fixSelectors} from '../../../../core/dtos/filter/query-filter/fix-selector';
+import { QueryFilterExistsDto } from '../../../../core/dtos/filter/query-filter/query-filter-exists.dto';
 
 @InputType()
 export class ReviewFilterInput extends SearcheableFilterInput {
-  @Field(t => QueryFilterStringDto, {nullable: true})
-  client?: QueryFilterStringDto;
+  // @Field(t => QueryFilterStringDto, {nullable: true})
+  // client?: QueryFilterStringDto;
   @Field(type => QueryFilterStringDto, {nullable: true})
   assignedTo?: QueryFilterStringDto;
   @Field(type => QueryFilterStringDto, {nullable: true})
@@ -20,11 +21,13 @@ export class ReviewFilterInput extends SearcheableFilterInput {
   critical?: QueryFilterBooleanDto;
   @Field(type => QueryFilterNumberDto, {nullable: true})
   stars?: QueryFilterNumberDto;
+  @Field(type => QueryFilterExistsDto, {nullable: true})
+  accredited?: QueryFilterExistsDto;
   static getQuery(filter: ReviewFilterInput) {
-    let query = {};
-    if (filter.search) {
-      query = ReviewFilterInput.getSearchQuery(filter);
-    }
+    // let query = {};
+    // if (filter.search) {
+    const query = ReviewFilterInput.getSearchQuery(filter.search, ['client', 'text']);
+    // }
     Object.getOwnPropertyNames(filter)
       .filter(x => x !== 'search' && Object.getOwnPropertyDescriptor(filter, x).value)
       .forEach(x => query[`${ReviewFilterInput.fixField(x)}`] = fixSelectors(filter[x]));

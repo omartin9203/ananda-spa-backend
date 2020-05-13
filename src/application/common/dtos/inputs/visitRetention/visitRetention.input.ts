@@ -1,15 +1,15 @@
 ﻿import { InputType, Field } from "type-graphql";
-import { IsString } from "class-validator";
 import { FLAG_RETENTION } from "../../../../../constants/modules/enums";
+import { TREATMENT } from '../../../../../constants/constants';
 
 @InputType()
 export class VisitRetentionInput {
     @Field()
     user: string;
     @Field({ nullable: true })
-    client?: string
+    client?: string;
     @Field()
-    treatment: string;
+    treatment: TREATMENT;
     @Field({ nullable: true })
     flag?: FLAG_RETENTION;
 }

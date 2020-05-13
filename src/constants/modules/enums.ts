@@ -8,5 +8,5 @@
 export enum FLAG_RETENTION {
     PERSONAL = 'PERSONAL',
     REQUEST = 'REQUEST',
-    NORMAL = 'NORMAL'
+    NORMAL = 'NORMAL',
 }

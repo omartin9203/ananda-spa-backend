@@ -18,7 +18,7 @@ export class VisitsController {
         @Body() input: VisitRetentionInput,
         @Req() req: any,
     ) {
-        if (apiKey != API_KEY) throw new UnauthorizedException('Unauthorized')
+        if (apiKey !== API_KEY) throw new UnauthorizedException('Unauthorized')
         const { id }: UserDto = await this.userService.findOne({
             email: input.user,
         });
