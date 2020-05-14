@@ -40,19 +40,24 @@ export class ReviewRepository extends ResourceRepository<ReviewModel> {
                   $push: '$$ROOT',
               },
               total: { $sum: 1 },
-              overall: {
-                  $avg: {
-                      $multiply: [ '$stars', '$accredited.bonus' ],
-                  },
-              },
+              // overall: {
+              //     $avg: {
+              //         $multiply: [ '$stars', '$accredited.bonus' ],
+              //     },
+              // },
               sumStars: {
                   $sum: {
-                      $multiply: [ '$stars', '$accredited.bonus' ],
+                      $multiply: [
+                          '$stars',
+                          {
+                              $cond: ['$accredited.accreditedToEmployee', '$accredited.bonus', 1 ],
+                          },
+                      ],
                   },
               },
               totalStars: {
                   $sum: {
-                      $cond: ['$accredited.managerId', '$accredited.bonus', 1 ],
+                      $cond: ['$accredited.accreditedToEmployee', '$accredited.bonus', 1 ],
                   },
               },
               criticals: { $sum: { $cond: ['$accredited.critical', 1, 0] } },
@@ -60,7 +65,9 @@ export class ReviewRepository extends ResourceRepository<ReviewModel> {
           .project({
               _id: 1,
               total: 1,
-              overall: 1,
+              overall: {
+                  $divide: [ '$sumStars', '$totalStars' ],
+              },
               sumStars: 1,
               totalStars: 1,
               criticals: 1,
