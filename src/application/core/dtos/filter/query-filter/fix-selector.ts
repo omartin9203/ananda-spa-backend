@@ -8,6 +8,6 @@ export const fixSelectors = (obj: any, isId = false) => {
 };
 
 export const getRegexFromString = (x: string) => {
-  const fixedStr = x.replace('.', '\.').replace(' ', '|').replace('@', '\@');
+  const fixedStr = x.replace('.', '\.').replace(' ', '|');
   return RegExp(fixedStr, 'si');
 };

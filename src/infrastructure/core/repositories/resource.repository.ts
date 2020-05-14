@@ -69,7 +69,7 @@ export class ResourceRepository<TResource extends ResourceModel> implements IRes
     }
     return resource;
   }
-  async find(filter = {}, skip: number = 0, limit: number = 10, sort: string = null): Promise<TResource[]> {
+  async find(filter = {}, skip: number = 0, limit: number = 10, sort: any | string = null): Promise<TResource[]> {
     const resources = await this.resourceModel.find(filter).sort(sort).skip(skip).limit(limit).exec();
     return resources ? resources : [];
   }

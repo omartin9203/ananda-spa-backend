@@ -6,6 +6,7 @@ import { QueryBuilderService } from '../../core/services/query-builder.service';
 import { InjectModel } from '@nestjs/mongoose';
 import * as mongoose from 'mongoose';
 import { Model } from 'mongoose';
+import { fixIdValue } from '../../core/utils/query/fix-filter-value';
 
 @Injectable()
 export class ReviewRepository extends ResourceRepository<ReviewModel> {
@@ -75,13 +76,6 @@ export class ReviewRepository extends ResourceRepository<ReviewModel> {
           });
     }
     static fixFilterValues(filter: any) {
-        const fixIdValue = (value: any) => {
-            Object.keys(value).forEach(x => {
-                if (x === '$eq') { value[x] = mongoose.Types.ObjectId(value[x]); }
-                if (x === '$in') { value[x] = (value[x] as string[]).map(y => mongoose.Types.ObjectId(y)); }
-            });
-            return value;
-        };
         if (Object.keys(filter).includes('accredited.employeeId')) {
             filter['accredited.employeeId'] = fixIdValue(filter['accredited.employeeId']);
         }
