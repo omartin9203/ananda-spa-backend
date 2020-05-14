@@ -33,17 +33,13 @@ export class ReviewService extends ResourceService<ReviewDto> {
             Logger.log(accredited as AccreditedType, 'accredited');
             throw new NotAcceptableException('This review has already been accredited');
         }
-        let changes = input;
-        if (input.accreditedToEmployee) {
-            const { bonus, payment } = await this.getSetting(directoryId);
-            changes = {
-                ...input,
-                bonus,
-                payment,
-            };
-            // TODO: Update user field payment
-
-        }
+        const { bonus, payment } = await this.getSetting(directoryId);
+        const changes = {
+            ...input,
+            bonus: input.accreditedToEmployee ? bonus : 1,
+            payment: input.accreditedToEmployee ? payment : 0,
+        };
+        // TODO: Update user field payment
         return await this.repository.updateOne(id, { accredited: changes });
     }
 
@@ -51,14 +47,22 @@ export class ReviewService extends ResourceService<ReviewDto> {
         const review = await this.repository.getOne(id);
         let changes = {};
         Object.keys(input).forEach(x => changes[`accredited.${x}`] = input[x]);
-        if (input.accreditedToEmployee && (review.accredited && !review.accredited.accreditedToEmployee)) {
-            const { bonus, payment } = await this.getSetting(review.directoryId);
+        if (input.accreditedToEmployee ) {
+            if (review.accredited && !review.accredited.accreditedToEmployee) {
+                const { bonus, payment } = await this.getSetting(review.directoryId);
+                changes = {
+                    ...changes,
+                    'accredited.bonus': bonus,
+                    'accredited.payment': payment,
+                };
+            }
+            // TODO: Update user field payment
+        } else {
             changes = {
                 ...changes,
-                'accredited.bonus': bonus,
-                'accredited.payment': payment,
+                'accredited.bonus': 1,
+                'accredited.payment': 0,
             };
-            // TODO: Update user field payment
         }
         return await this.repository.updateOne(review.id, changes);
     }

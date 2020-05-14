@@ -13,5 +13,7 @@ export class ReviewPerDirectoryDto {
   @Field()
   sumStars: number;
   @Field()
+  totalStars: number;
+  @Field()
   criticals: number;
 }
