@@ -9,6 +9,7 @@ import { ClientDto } from '../../dtos/dtos/client/client.dto';
 import { Operators } from '../../../../infrastructure/core/utils/query/operators.enum';
 import { UserFilterInput } from '../../dtos/inputs/user/UserFilter';
 import { RetentionUserInput } from '../../dtos/inputs/user/retention.user.input';
+import { UserBalanceRetentionDto } from '../../dtos/dtos/user/balance/user-balance-retention.dto';
 
 @Injectable()
 export class UserService extends ResourceService<UserDto> {
@@ -63,11 +64,11 @@ export class UserService extends ResourceService<UserDto> {
     async getUserInfo(id: string) {
       return await this.repository.getUserInfo(id);
     }
-    async filter( userFilter: UserFilterInput, skip?: number, limit?: number ): Promise<IPaginatedResponseClass<UserDto>> {
+    async filter( filter: any, skip?: number, limit?: number ): Promise<IPaginatedResponseClass<UserDto>> {
       // const buildFilter = {
       //   :userFilter.userName
       // };
-      const filter = Object.keys(userFilter).length ? this.queryBuilderService.buildQueryEq(userFilter, Operators.AND) : {};
+      // const filter = Object.keys(userFilter).length ? this.queryBuilderService.buildQueryEq(userFilter, Operators.AND) : {};
       const total = await this.repository.count(filter, true);
       return {
         items: await this.repository.find(filter, skip, limit),
@@ -77,5 +78,8 @@ export class UserService extends ResourceService<UserDto> {
     }
     async updateRetention(id: string, update: RetentionUserInput) {
         await this.repository.updateRetention(id, update.total, update.important);
+    }
+    async getBalanceRetention(filter: any): Promise<UserBalanceRetentionDto> {
+      return await this.repository.getBalanceRetention(filter);
     }
 }

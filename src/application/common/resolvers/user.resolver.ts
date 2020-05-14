@@ -12,6 +12,10 @@ import { UserFilterInput } from '../dtos/inputs/user/UserFilter';
 import { GqlAuthGuard } from '../guard/auth/graphql.guard';
 import { RolesGuard } from '../guard/auth/roles.guard';
 import { Roles } from '../decorators/auth/roles.decorator';
+import { CurrentUser } from '../decorators/params/current-user.decorator';
+import { QueryFilterStringDto } from '../../core/dtos/filter/query-filter/query-filter-string.dto';
+import { QueryFilterIdDto } from '../../core/dtos/filter/query-filter/query-filter-id.dto';
+import { UserBalanceRetentionDto } from '../dtos/dtos/user/balance/user-balance-retention.dto';
 
 @Resolver(of => UserDto)
 export class UserResolver {
@@ -49,17 +53,38 @@ export class UserResolver {
     return await this.usersService.deleteResource(id);
   }
   @Query(() => PaginatedUserResponse)
-  @UseGuards(GqlAuthGuard, RolesGuard)
-  @Roles('ADMIN', 'MANAGER')
+  // @UseGuards(GqlAuthGuard, RolesGuard)
+  // @Roles('ADMIN', 'MANAGER')
+  @UseGuards(GqlAuthGuard)
   async filterUsers(
     @Args({ name: 'filter', type: () => UserFilterInput, nullable: true }) input: UserFilterInput,
     // @Args() { query, limit, skip }: FilterClientsArgsInput,
     @Args({ name: 'skip', type: () => Int, nullable: true }) skip: number,
     @Args({name: 'limit', type: () => Int, nullable: true }) limit: number,
+    @CurrentUser() user,
   ) {
+    if (!['MANAGER', 'ADMIN'].some(x => user.roles.includes(x))) {
+      input.id = {
+        eq: user.id,
+      } as QueryFilterIdDto;
+    }
     const result = (input !== null || Object.keys(input).length)
-      ? await this.usersService.filter(input, skip, limit)
+      ? await this.usersService.filter(UserFilterInput.getQuery(input), skip, limit)
       : await this.usersService.getAll(skip, limit);
+    return result;
+  }
+  @Query(() => UserBalanceRetentionDto)
+  @UseGuards(GqlAuthGuard)
+  async getUserBalanceRetention(
+    @Args({ name: 'filter', type: () => UserFilterInput, nullable: true }) input: UserFilterInput,
+    @CurrentUser() user,
+  ) {
+    if (!['MANAGER', 'ADMIN'].some(x => user.roles.includes(x))) {
+      input.id = {
+        eq: user.id,
+      } as QueryFilterIdDto;
+    }
+    const result = await this.usersService.getBalanceRetention(UserFilterInput.getQuery(input));
     return result;
   }
 }

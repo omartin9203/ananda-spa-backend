@@ -10,6 +10,7 @@ import { Query } from 'mongoose';
 import { Field } from 'type-graphql';
 import { strict } from 'assert';
 import { tryCatch } from 'rxjs/internal-compatibility';
+import { fixIdValue } from '../../core/utils/query/fix-filter-value';
 
 @Injectable()
 export class UserRepository extends ResourceRepository<UserModel> {
@@ -185,8 +186,44 @@ export class UserRepository extends ResourceRepository<UserModel> {
             $inc: {
                 'retention.total': total || 0,
                 'retention.important': important || 0,
-            }
-        }
+            },
+        };
         await this.userModel.findByIdAndUpdate(id, update).exec();
+    }
+    async getBalanceRetention(filter: any = {}) {
+        if (Object.keys(filter).includes('_id')) {
+            filter._id = fixIdValue(filter._id);
+        }
+        const filterResult: Array<{ important: number, total: number }> = await this.userModel.aggregate()
+          .match(filter)
+          // .sort(sort)
+          .project({
+              // percentageRetention: {
+              //     $min: [
+              //         {
+              //             $multiply: [
+              //                 {
+              //                     $divide: [ '$retention.important', '$retention.total' ],
+              //                 },
+              //                 100,
+              //             ],
+              //         },
+              //         100,
+              //     ],
+              // },
+              important: '$retention.important',
+              total: '$retention.total',
+        });
+        const { total, important } = filterResult.reduce(
+          (a, b) => ({
+              total: a.total + b.total,
+              important: a.important + b.important,
+          }),
+          { total: 0, important: 0});
+        return {
+            total,
+            important,
+            percentageRetention: !total ? 0 : Math.trunc(Math.min((important / total * 100), 100)),
+        };
     }
 }
