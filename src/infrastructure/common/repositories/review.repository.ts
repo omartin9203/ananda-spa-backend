@@ -84,4 +84,170 @@ export class ReviewRepository extends ResourceRepository<ReviewModel> {
         }
         return filter;
     }
+    async getUsersBalance(filter: any = {}, sort: any = {}, skip = 0, limit = 10) {
+        const match = {
+          ...filter,
+          'accredited.accreditedToEmployee': true,
+        };
+        return this.model.aggregate([
+          {
+            $match: match,
+          },
+          {
+            $group: {
+              _id: {
+                user: '$accredited.employeeId',
+                directory: '$directoryId',
+              },
+              achieved: { $sum: 1 },
+              totalStars: {
+                $sum: {
+                  $cond: ['$accredited.accreditedToEmployee', '$accredited.bonus', 1],
+                },
+              },
+              sumStars: {
+                $sum: {
+                  $multiply: [ '$stars', '$accredited.bonus' ],
+                },
+              },
+              critics: { $sum: { $cond: ['$accredited.critical', 1, 0] } },
+            },
+          },
+          {
+            $lookup: {
+              from: 'settings',
+              let: { directoryId: '$_id.directory' },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: {
+                      $eq: [ '$_id',  '$$directoryId' ],
+                    },
+                  },
+                },
+                {
+                  $project: {
+                    _id: 0,
+                    percentage: 1,
+                  },
+                },
+              ],
+              as: 'directories',
+            },
+          },
+          {
+            $lookup: {
+              from: 'users',
+              let: { userId: '$_id.user' },
+              pipeline: [
+                {
+                  $match: // {
+                  // '$_id': '$$directoryId',
+                    {
+                      $expr: {
+                        $eq: [ '$_id',  '$$userId' ],
+                      },
+                    },
+                },
+                {
+                  $project: {
+                    _id: 0,
+                    retention: 1,
+                  },
+                },
+              ],
+              as: 'retentions',
+            },
+          },
+          {
+            $replaceRoot: {
+              newRoot: {
+                $mergeObjects: [
+                  {
+                    $arrayElemAt: [ '$directories', 0 ],
+                  },
+                  { $arrayElemAt: [ '$retentions', 0 ] },
+                  '$$ROOT',
+                ],
+              },
+            },
+          },
+          {
+            $project: {
+              retentions: 0,
+              directories: 0,
+            },
+          },
+          {
+            $group: {
+              _id: '$_id.user',
+              sumStars: {
+                $sum: '$sumStars',
+              },
+              totalStars: {
+                $sum: '$totalStars',
+              },
+              retention: {
+                $first: {
+                  $multiply: [
+                    100,
+                    {
+                      $divide: [ '$retention.important', '$retention.total' ],
+                    },
+                  ],
+                },
+              },
+              expectedReviews: {
+                $avg: {
+                  $multiply: [
+                    100,
+                    {
+                      $divide: [
+                        '$achieved',
+                        {
+                          $divide: [
+                            {
+                              $multiply: ['$percentage', '$retention.total'],
+                            },
+                            100,
+                          ],
+                        },
+                      ],
+                    },
+                  ],
+                },
+              },
+              critics: {
+                $sum: '$critics',
+              },
+            },
+          },
+          {
+            $project: {
+              _id: 0,
+              userId: '$_id',
+              retention: {
+                $trunc: [ '$retention', 0 ],
+              },
+              expectedReviews: {
+                $trunc: [ '$expectedReviews', 0 ],
+              },
+              overall: {
+                $trunc: [
+                  {
+                    $divide: [ '$sumStars', '$totalStars'],
+                  },
+                  1,
+                ],
+              },
+              critics: 1,
+            },
+          },
+          {
+            $sort: {
+              overall: -1,
+            },
+          },
+        ]);
+    }
 }
