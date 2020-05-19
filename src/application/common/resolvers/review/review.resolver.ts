@@ -17,6 +17,9 @@ import { GqlAuthGuard } from '../../guard/auth/graphql.guard';
 import { QueryFilterStringDto } from '../../../core/dtos/filter/query-filter/query-filter-string.dto';
 import { ReviewQuerySortInput } from '../../dtos/inputs/review/review-query-sort.input';
 import { ReviewPerDirectoryDto } from '../../dtos/dtos/review/review-per-directory.dto';
+import { ReviewUserBalance } from '../../dtos/dtos/review/ReviewUserBalance';
+import { RolesGuard } from '../../guard/auth/roles.guard';
+import { Roles } from '../../decorators/auth/roles.decorator';
 
 @Resolver(of => ReviewDto)
 export class ReviewResolver {
@@ -52,6 +55,16 @@ export class ReviewResolver {
             } as QueryFilterStringDto;
         }
         return await this.service.filterReview(ReviewFilterInput.getQuery(filter), skip, limit, ReviewQuerySortInput.getStringSort(sort));
+    }
+
+    @Query(() => [ReviewUserBalance])
+    @UseGuards(GqlAuthGuard, RolesGuard)
+    @Roles('ADMIN', 'MANAGER')
+    async getReviewUsersBalance(
+      // @Args() { filter, limit, skip, sort }: FilterReviewArgsInput,
+    ) {
+        const newVar = await this.service.getReviewUsersBalance({}/*ReviewFilterInput.getQuery(filter)*/);
+        return newVar;
     }
 
     @Query(() => [ReviewPerDirectoryDto])

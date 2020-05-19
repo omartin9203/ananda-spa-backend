@@ -93,4 +93,7 @@ export class ReviewService extends ResourceService<ReviewDto> {
     async getReviewsPerDirectory(filter: any = {}, sort: any = {}, skip = 0, limit = 10) {
         return await this.repository.getReviewsPerDirectory(filter, sort, skip, limit);
     }
+    async getReviewUsersBalance(filter: any) {
+        return await this.repository.getUsersBalance(filter);
+    }
 }
