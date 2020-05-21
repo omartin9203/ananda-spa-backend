@@ -67,7 +67,7 @@ export class ReviewRepository extends ResourceRepository<ReviewModel> {
               _id: 1,
               total: 1,
               overall: {
-                  $divide: [ '$sumStars', '$totalStars' ],
+                $cond: ['$totalStars', {$divide: [ '$sumStars', '$totalStars' ]}, 0],
               },
               sumStars: 1,
               totalStars: 1,
@@ -192,7 +192,7 @@ export class ReviewRepository extends ResourceRepository<ReviewModel> {
                   $multiply: [
                     100,
                     {
-                      $divide: [ '$retention.important', '$retention.total' ],
+                     $cond: ['$retention.total', { $divide: [ '$retention.important', '$retention.total' ] }, 0],
                     },
                   ],
                 },
@@ -202,16 +202,21 @@ export class ReviewRepository extends ResourceRepository<ReviewModel> {
                   $multiply: [
                     100,
                     {
-                      $divide: [
-                        '$achieved',
+                      $cond: ['$retention.total',
                         {
                           $divide: [
+                            '$achieved',
                             {
-                              $multiply: ['$percentage', '$retention.total'],
+                              $divide: [
+                                {
+                                  $multiply: ['$percentage', '$retention.total'],
+                                },
+                                100,
+                              ],
                             },
-                            100,
                           ],
                         },
+                        0,
                       ],
                     },
                   ],

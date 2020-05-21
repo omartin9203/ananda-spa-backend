@@ -45,12 +45,6 @@ type BaseFormDto implements IBaseFormDto & IResourceDto {
   updatedAt: DateTime!
 }
 
-type BaseSettingDto implements IResourceDto {
-  id: ID!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-}
-
 type ClientType implements IResourceDto {
   id: ID!
   createdAt: DateTime!
@@ -598,6 +592,7 @@ type Query {
   user(id: ID!): UserType!
   users(limit: Int, skip: Int): PaginatedUserResponse!
   filterUsers(limit: Int, skip: Int, filter: UserFilterInput): PaginatedUserResponse!
+  getUserBalanceRetention(filter: UserFilterInput): UserBalanceRetentionDto!
   facial(id: ID!): FacialFormType!
   facials(limit: Int, skip: Int): PaginatedFacialFormResponse!
   massage(id: ID!): MassageFormType!
@@ -613,9 +608,12 @@ type Query {
   visitRetentions(limit: Int, skip: Int): PaginatedVisitRetentionResponse!
   review(id: ID!): ReviewDto!
   reviews(limit: Int, skip: Int): PaginatedReviewResponse!
-  filterReviews(filter: ReviewFilterInput, skip: Int = 0, limit: Int = 10): PaginatedReviewResponse!
+  filterReviews(filter: ReviewFilterInput, skip: Int = 0, limit: Int = 10, sort: ReviewQuerySortInput): PaginatedReviewResponse!
+  getReviewUsersBalance: [ReviewUserBalance!]!
+  filterReviewsPerDirectory(filter: ReviewFilterInput, skip: Int = 0, limit: Int = 10, sort: ReviewQuerySortInput): [ReviewPerDirectoryDto!]!
   getReviewSetting(id: ID!): ReviewSettingDto!
   getReviewSettings(limit: Int, skip: Int): PaginatedReviewSettingResponse!
+  getReviewBalance(id: ID): [ReviewBalanceDto!]!
 }
 
 input QueryFilterBooleanDto {
@@ -629,6 +627,15 @@ input QueryFilterDateDto {
   lt: DateTime
   lte: DateTime
   in: [DateTime!]
+}
+
+input QueryFilterExistsDto {
+  exists: Boolean
+}
+
+input QueryFilterIdDto {
+  eq: String
+  in: [String!]
 }
 
 input QueryFilterNumberDto {
@@ -672,6 +679,14 @@ input RetentionUserInput {
   important: Float
 }
 
+type ReviewBalanceDto {
+  directory: ReviewSettingDto!
+  achieved: Float!
+  overall: Float!
+  sumStars: Float!
+  criticals: Float!
+}
+
 type ReviewDto implements IResourceDto {
   id: ID!
   createdAt: DateTime!
@@ -686,12 +701,12 @@ type ReviewDto implements IResourceDto {
 
 input ReviewFilterInput {
   search: String
-  client: QueryFilterStringDto
   assignedTo: QueryFilterStringDto
   directoryId: QueryFilterStringDto
   date: QueryFilterDateDto
   critical: QueryFilterBooleanDto
   stars: QueryFilterNumberDto
+  accredited: QueryFilterExistsDto
 }
 
 input ReviewInput {
@@ -701,6 +716,20 @@ input ReviewInput {
   stars: Float!
   directoryId: String!
   accredited: AccreditedInputType = null
+}
+
+type ReviewPerDirectoryDto {
+  directoryId: String!
+  paginate: PaginatedReviewResponse!
+  overall: Float!
+  sumStars: Float!
+  totalStars: Float!
+  criticals: Float!
+}
+
+input ReviewQuerySortInput {
+  date: Int
+  stars: Int
 }
 
 type ReviewSettingDto implements IResourceDto {
@@ -713,6 +742,8 @@ type ReviewSettingDto implements IResourceDto {
   percentage: Float!
   minOverall: Float!
   icon: String
+  iconReview: String
+  iconColored: String
 }
 
 input ReviewSettingInput {
@@ -722,6 +753,8 @@ input ReviewSettingInput {
   percentage: Float
   minOverall: Float
   icon: String
+  iconReview: String
+  iconColored: String
 }
 
 input ReviewSettingUpdate {
@@ -731,6 +764,8 @@ input ReviewSettingUpdate {
   percentage: Float
   minOverall: Float
   icon: String
+  iconReview: String
+  iconColored: String
 }
 
 input ReviewUpdate {
@@ -739,6 +774,14 @@ input ReviewUpdate {
   text: String
   stars: Float
   directoryId: String
+}
+
+type ReviewUserBalance {
+  userId: String!
+  overall: Float!
+  retention: Float!
+  expectedReviews: Float!
+  critics: Float!
 }
 
 input SearcheableFilterInput {
@@ -959,20 +1002,28 @@ input UpdateVisit {
   formId: String
 }
 
+type UserBalanceRetentionDto {
+  total: Float!
+  important: Float!
+  percentageRetention: Float!
+}
+
 input UserFilterInput {
-  email: String
-  userName: String
-  firstName: String
-  lastName: String
-  phone: String
-  streetAddress: String
-  address2: String
-  city: String
-  state: String
-  zipCode: String
-  dateOfBirth: DateTime
-  gender: String
-  status: String
+  search: String
+  email: QueryFilterStringDto
+  userName: QueryFilterStringDto
+  firstName: QueryFilterStringDto
+  lastName: QueryFilterStringDto
+  phone: QueryFilterStringDto
+  streetAddress: QueryFilterStringDto
+  address2: QueryFilterStringDto
+  city: QueryFilterStringDto
+  state: QueryFilterStringDto
+  zipCode: QueryFilterStringDto
+  dateOfBirth: QueryFilterStringDto
+  gender: QueryFilterStringDto
+  status: QueryFilterStringDto
+  id: QueryFilterIdDto
 }
 
 type UserInfoDto implements IResourceDto {
