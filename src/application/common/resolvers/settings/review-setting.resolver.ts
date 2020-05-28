@@ -1,4 +1,3 @@
-import { BaseSettingResolver } from "./base-setting.resolver";
 import { ReviewSettingService } from "../../services/settings/review-settings.service";
 import { Resolver, Query, Args, Mutation } from '@nestjs/graphql';
 import { ReviewSettingDto } from "../../dtos/dtos/settings/review/review-setting.dto";
@@ -7,7 +6,6 @@ import { ID, Int } from "type-graphql";
 import { ReviewSettingInput } from "../../dtos/inputs/settings/review/review-setting.input";
 import { REVIEW_SETTING_MODEL_NAME } from "../../../../constants/modules/models_names";
 import { PaginatedReviewSettingResponse } from "../../dtos/dtos/settings/review/review-setting.paginate.dto";
-
 
 @Resolver(of => ReviewSettingDto)
 export class ReviewSettingResolver {

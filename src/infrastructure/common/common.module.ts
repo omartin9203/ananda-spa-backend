@@ -25,6 +25,8 @@ import { ReviewRepository } from './repositories/review.repository';
 import { BaseSettingFeature } from './models/schemas/settings/base-setting.schema';
 import { ReviewSettingProviders } from './providers/settings/review-setting.provider';
 import { ReviewSettingRepository } from './repositories/settings/review-setting.repository';
+import { ServiceSettingProviders } from './providers/settings/service-setting.provider';
+import { ServiceSettingRepository } from './repositories/settings/service-setting.repository';
 
 @Module({
     imports: [
@@ -35,11 +37,15 @@ import { ReviewSettingRepository } from './repositories/settings/review-setting.
         InfrastructureCoreModule,
     ],
     providers: [
-        FacialFormRepository, MassageFormRepository, ClientRepository, ResourceRepository, QueryBuilderService, VisitRetentionRepository, ReviewRepository, ReviewSettingRepository,
-        UserRepository, DiagnosticRepository, VisitRepository, ...FacialFormProviders, ...MassageFormProviders, ...ReviewSettingProviders],
+        FacialFormRepository, MassageFormRepository, ClientRepository, ResourceRepository, QueryBuilderService, VisitRetentionRepository,
+        ReviewRepository, ReviewSettingRepository, ServiceSettingRepository, UserRepository, DiagnosticRepository, VisitRepository,
+        ...FacialFormProviders, ...MassageFormProviders, ...ReviewSettingProviders, ...ServiceSettingProviders,
+    ],
     exports: [
         MongooseModule.forFeature([BaseFormFeature, ClientFeature, UserFeature, RoleFeature, DepartmentFeature]),
-        FacialFormRepository, MassageFormRepository, ClientRepository, VisitRepository, VisitRetentionRepository, ReviewRepository, ReviewSettingRepository,
-        UserRepository, DiagnosticRepository, ...FacialFormProviders, ...MassageFormProviders, ...ReviewSettingProviders],
+        FacialFormRepository, MassageFormRepository, ClientRepository, VisitRepository, VisitRetentionRepository, ReviewRepository,
+        ReviewSettingRepository, ServiceSettingRepository, UserRepository, DiagnosticRepository,
+        ...FacialFormProviders, ...MassageFormProviders, ...ReviewSettingProviders, ...ServiceSettingProviders,
+    ],
   })
 export class InfrastructureCommonModule { }

@@ -11,7 +11,6 @@ export class ResourceRepository<TResource extends ResourceModel> implements IRes
   ) {
   }
   async getAll(skip: number = 0, limit: number = 10): Promise<TResource[]> {
-    Logger.log(limit, 'Repository');
     // let resources = await this.resourceModel.find({}, null, { skip, limit }).exec();
     let resources = await this.resourceModel.find().skip(skip).limit(limit).exec();
     resources = resources ? resources : [];

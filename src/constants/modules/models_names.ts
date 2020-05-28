@@ -13,3 +13,4 @@ export const VISIT_RETENTION_MODEL_NAME = 'Retention';
 export const REVIEW_MODEL_NAME = 'Review';
 export const BASE_SETTING_MODEL_NAME = 'Setting';
 export const REVIEW_SETTING_MODEL_NAME = 'ReviewSetting';
+export const SERVICE_SETTING_MODEL_NAME = 'ServiceSetting';

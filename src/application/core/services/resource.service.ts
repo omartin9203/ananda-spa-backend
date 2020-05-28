@@ -7,10 +7,9 @@ export class ResourceService<TResource extends ResourceDto>  {
     constructor(private resourceRepository: ResourceRepository<TResource>) {
     }
     async getAll(skip?: number, limit?: number, filter?: object): Promise<IPaginatedResponseClass<TResource>> {
-        Logger.log(limit, 'Service');
         const total = await this.resourceRepository.count(filter);
         return {
-            items: await this.resourceRepository.getAll(skip, limit),
+            items: await this.resourceRepository.find(filter, skip, limit),
             total,
             hasMore: limit + skip < total,
         };
