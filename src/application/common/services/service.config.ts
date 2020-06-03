@@ -10,16 +10,17 @@ import { VisitRetentionService } from './visit/visitRetention.service';
 import { ReviewService } from './review/review.service';
 import { ReviewSettingService } from './settings/review-settings.service';
 import { ServiceSettingService } from './settings/service-setting.service';
+import { RetentionSettingsService } from './settings/retention-settings.service';
 
 export const ServicesConfig = {
     imports: [
     ],
     providers: [
         ClientService, UserService, FacialFormService, MassageFormService, DiagnosticService, VisitService, FilesService,
-        AuthService, VisitRetentionService, ReviewService, ReviewSettingService, ServiceSettingService,
+        AuthService, VisitRetentionService, ReviewService, ReviewSettingService, ServiceSettingService, RetentionSettingsService,
     ],
     exports: [
         ClientService, UserService, FacialFormService, MassageFormService, DiagnosticService, VisitService, FilesService,
-        AuthService, VisitRetentionService, ReviewService, ReviewSettingService, ServiceSettingService,
+        AuthService, VisitRetentionService, ReviewService, ReviewSettingService, ServiceSettingService, RetentionSettingsService,
     ],
 };

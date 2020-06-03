@@ -27,6 +27,8 @@ import { ReviewSettingProviders } from './providers/settings/review-setting.prov
 import { ReviewSettingRepository } from './repositories/settings/review-setting.repository';
 import { ServiceSettingProviders } from './providers/settings/service-setting.provider';
 import { ServiceSettingRepository } from './repositories/settings/service-setting.repository';
+import { RetentionSettingProviders } from './providers/settings/retention-setting.provider';
+import { RetentionSettingRepository } from './repositories/settings/retention-setting.repository';
 
 @Module({
     imports: [
@@ -39,13 +41,14 @@ import { ServiceSettingRepository } from './repositories/settings/service-settin
     providers: [
         FacialFormRepository, MassageFormRepository, ClientRepository, ResourceRepository, QueryBuilderService, VisitRetentionRepository,
         ReviewRepository, ReviewSettingRepository, ServiceSettingRepository, UserRepository, DiagnosticRepository, VisitRepository,
-        ...FacialFormProviders, ...MassageFormProviders, ...ReviewSettingProviders, ...ServiceSettingProviders,
+        RetentionSettingRepository,
+        ...FacialFormProviders, ...MassageFormProviders, ...ReviewSettingProviders, ...ServiceSettingProviders, ...RetentionSettingProviders,
     ],
     exports: [
         MongooseModule.forFeature([BaseFormFeature, ClientFeature, UserFeature, RoleFeature, DepartmentFeature]),
         FacialFormRepository, MassageFormRepository, ClientRepository, VisitRepository, VisitRetentionRepository, ReviewRepository,
-        ReviewSettingRepository, ServiceSettingRepository, UserRepository, DiagnosticRepository,
-        ...FacialFormProviders, ...MassageFormProviders, ...ReviewSettingProviders, ...ServiceSettingProviders,
+        ReviewSettingRepository, ServiceSettingRepository, UserRepository, DiagnosticRepository, RetentionSettingRepository,
+        ...FacialFormProviders, ...MassageFormProviders, ...ReviewSettingProviders, ...ServiceSettingProviders, ...RetentionSettingProviders,
     ],
   })
 export class InfrastructureCommonModule { }

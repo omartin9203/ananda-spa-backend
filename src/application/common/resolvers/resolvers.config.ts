@@ -13,17 +13,18 @@ import { AccreditedResolver } from './review/accredited.resolver';
 import {ReviewBalanceResolver} from './review/balance.resolver';
 import { ReviewPerDirectoryResolver } from './review/review-per-directory.resolver';
 import { ServiceSettingResolver } from './settings/service-setting.resolver';
+import { RetentionSettingResolver } from './settings/retention-setting.resolver';
 
 export const ResolversConfig = {
     imports: [],
     providers: [
         ClientResolver, UserResolver, BaseFormResolver, FacialFormResolver, MassageFormResolver, DiagnosticResolver,
         VisitResolver, AuthResolver, VisitRetentionResolver, ReviewResolver, ReviewSettingResolver, AccreditedResolver,
-        ReviewBalanceResolver, ReviewPerDirectoryResolver, ServiceSettingResolver,
+        ReviewBalanceResolver, ReviewPerDirectoryResolver, ServiceSettingResolver, RetentionSettingResolver,
     ],
     exports: [
         ClientResolver, UserResolver, BaseFormResolver, FacialFormResolver, MassageFormResolver, DiagnosticResolver,
         VisitResolver, AuthResolver, VisitRetentionResolver, ReviewResolver, ReviewSettingResolver, AccreditedResolver,
-        ReviewBalanceResolver, ReviewPerDirectoryResolver, ServiceSettingResolver,
+        ReviewBalanceResolver, ReviewPerDirectoryResolver, ServiceSettingResolver, RetentionSettingResolver,
     ],
 };
