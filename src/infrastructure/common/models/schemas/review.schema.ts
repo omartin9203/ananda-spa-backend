@@ -13,6 +13,10 @@ export const ReviewSchema = new Schema({
         type: String,
         required: true,
     },
+    reviewId: {
+        type: String,
+        required: true,
+    },
     date: {
         type: Date,
         required: true,
@@ -28,6 +32,9 @@ export const ReviewSchema = new Schema({
     directoryId: {
         type: Schema.Types.ObjectId,
         required: true,
+    },
+    embedHTML: {
+        type: String,
     },
     accredited: {
         managerId: {

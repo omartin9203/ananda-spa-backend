@@ -13,6 +13,8 @@ export interface IAccredited {
 
 export class ReviewModel extends ResourceModel {
     readonly client: string;
+    readonly reviewId: string;
+    readonly embedHTML?: string;
     readonly date: Date;
     readonly text: string;
     readonly stars: number;
