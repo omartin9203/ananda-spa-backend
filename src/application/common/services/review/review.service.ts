@@ -1,5 +1,5 @@
 import {AccreditedType, ReviewDto} from '../../dtos/dtos/review/review.dto';
-import { Injectable, NotAcceptableException, Logger } from '@nestjs/common';
+import { Injectable, NotAcceptableException, Logger, HttpService } from '@nestjs/common';
 import { ReviewRepository } from '../../../../infrastructure/common/repositories/review.repository';
 import { ResourceService } from '../../../core/services/resource.service';
 import { ReviewSettingService } from '../settings/review-settings.service';
@@ -12,7 +12,7 @@ import * as puppeteer from 'puppeteer';
 
 @Injectable()
 export class ReviewService extends ResourceService<ReviewDto> {
-    constructor(readonly repository: ReviewRepository, readonly reviewSettingService: ReviewSettingService) {
+    constructor(readonly repository: ReviewRepository, readonly reviewSettingService: ReviewSettingService, private httpService: HttpService) {
         super(repository);
     }
     async createReview(input: ReviewInput) {
@@ -131,6 +131,11 @@ export class ReviewService extends ResourceService<ReviewDto> {
             Logger.log('ERROR: ' + err, 'google scrape');
         }
     }
+    async grouponScrape() {
+        const response = await this.httpService.get('https://us-central1-scrapegrouponfunction.cloudfunctions.net/scrapeGroupon').toPromise();
+        return response.data;
+    }
+
     async getReviewUsersBalance(filter: any) {
         return await this.repository.getUsersBalance(filter);
     }
