@@ -1,16 +1,28 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, NestSchedule, Interval } from 'nest-schedule';
+import { ReviewService } from '../review/review.service';
 
 @Injectable()
 export class TasksService extends NestSchedule {
-  private readonly logger = new Logger(TasksService.name);
-
-  @Cron('5 * * * * *')
-  handleCron() {
-    this.logger.debug('Called cron when the current second is 5');
+  constructor(readonly reviewService: ReviewService) {
+    super();
   }
-  // @Interval(5000)
-  // handleInterval() {
-  //   this.logger.debug('Called Interval when the current second is 5');
-  // }
+  private readonly logger = new Logger(TasksService.name);
+  @Cron('0 18 1 * * *')
+  handleGrouponCron() {
+    this.logger.debug('Running grouponScrape cron job...');
+    this.reviewService.grouponScrape();
+  }
+
+  @Cron('0 21 1 * * *')
+  handleYelpCron() {
+    this.logger.debug('Running yelpScrape cron job...');
+    this.reviewService.yelpScrape();
+  }
+
+  @Cron('0 23 1 * * *')
+  handleGoogleCron() {
+    this.logger.debug('Running googleScrape cron job...');
+    this.reviewService.googleScrape();
+  }
 }
