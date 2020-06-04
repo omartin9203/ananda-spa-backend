@@ -9,12 +9,15 @@ import { InfrastructureModule } from './infrastructure/infrastructure.module';
 import { MulterModule } from '@nestjs/platform-express';
 import { APP_GUARD, APP_PIPE } from '@nestjs/core';
 import { RolesGuard } from './application/common/guard/auth/roles.guard';
+import { ReviewService } from './application/common/services/review/review.service';
+import { ScheduleModule } from '@nestjs/schedule';
 
-const { URI, OPTIONS } = process.env.NODE_ENV === 'production' ? CONNECTION.ATLAS : CONNECTION.ATLAS;
+const { URI, OPTIONS } = process.env.NODE_ENV === 'production' ? CONNECTION.LOCAL : CONNECTION.LOCAL;
 
 @Module({
   imports: [
     MongooseModule.forRoot(URI, OPTIONS),
+    ScheduleModule.forRoot(),
     MulterModule.register({
       dest: './images',
     }),

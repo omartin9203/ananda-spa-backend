@@ -8,17 +8,19 @@ import { FilesService } from './images/FilesServices';
 import { AuthService } from './auth/auth.service';
 import { VisitRetentionService } from './visit/visitRetention.service';
 import { ReviewService } from './review/review.service';
+import { TasksService } from './Tasks/tasks.service';
 import { ReviewSettingService } from './settings/review-settings.service';
+
 
 export const ServicesConfig = {
     imports: [
     ],
     providers: [
         ClientService, UserService, FacialFormService, MassageFormService, DiagnosticService, VisitService, FilesService,
-        AuthService, VisitRetentionService, ReviewService, ReviewSettingService,
+        AuthService, VisitRetentionService, ReviewService, TasksService, ReviewSettingService,
     ],
     exports: [
         ClientService, UserService, FacialFormService, MassageFormService, DiagnosticService, VisitService, FilesService,
-        AuthService, VisitRetentionService, ReviewService, ReviewSettingService,
+        AuthService, VisitRetentionService, ReviewService, TasksService, ReviewSettingService,
     ],
 };
