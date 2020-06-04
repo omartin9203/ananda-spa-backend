@@ -11,16 +11,15 @@ import { ReviewService } from './review/review.service';
 import { TasksService } from './Tasks/tasks.service';
 import { ReviewSettingService } from './settings/review-settings.service';
 
-
 export const ServicesConfig = {
     imports: [
     ],
     providers: [
         ClientService, UserService, FacialFormService, MassageFormService, DiagnosticService, VisitService, FilesService,
-        AuthService, VisitRetentionService, ReviewService, TasksService, ReviewSettingService,
+        AuthService, VisitRetentionService, ReviewService, ReviewSettingService, TasksService,
     ],
     exports: [
         ClientService, UserService, FacialFormService, MassageFormService, DiagnosticService, VisitService, FilesService,
-        AuthService, VisitRetentionService, ReviewService, TasksService, ReviewSettingService,
+        AuthService, VisitRetentionService, ReviewService, ReviewSettingService, TasksService,
     ],
 };
