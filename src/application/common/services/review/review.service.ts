@@ -158,6 +158,30 @@ export class ReviewService extends ResourceService<ReviewDto> {
         }
     }
 
+    async yelpScrape(): Promise<boolean> {
+        try {
+            const directoryId = (await this.reviewSettingService.getAll(0, 10)).items.find(x => x.directoryName.toLowerCase()
+              .startsWith('yelp')).id;
+            const { data }: AxiosResponse<Array<Partial<ReviewInput>>> =
+              await this.httpService.get('https://api.anandaspa.us/webscraper/yelp').toPromise();
+
+            const filter = {
+                externalId: {
+                    $in: data.map(x => x.externalId),
+                },
+                directoryId,
+            };
+            const paginated: PaginatedReviewResponse = await this.filterReview(filter, 0, data.length);
+            for (const review of data.filter(x => !paginated.items.some(y => y.externalId === x.externalId))) {
+                await this.createReview({ ...review, directoryId } as ReviewInput);
+            }
+            return true;
+        } catch (e) {
+            Logger.log(e, 'error');
+            return false;
+        }
+    }
+
     async getReviewUsersBalance(filter: any) {
         return await this.repository.getUsersBalance(filter);
     }
