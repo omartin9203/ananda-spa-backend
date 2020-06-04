@@ -13,10 +13,6 @@ export const ReviewSchema = new Schema({
         type: String,
         required: true,
     },
-    reviewId: {
-        type: String,
-        required: true,
-    },
     date: {
         type: Date,
         required: true,
@@ -34,6 +30,9 @@ export const ReviewSchema = new Schema({
         required: true,
     },
     embedHTML: {
+        type: String,
+    },
+    externalId: {
         type: String,
     },
     accredited: {

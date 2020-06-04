@@ -6,9 +6,9 @@ import { AccreditedInputType } from "./accredited/accredited.input";
 export class ReviewInput {
     @Field()
     client: string;
-    @Field()
-    reviewId: string;
-    @Field()
+    @Field({nullable: true})
+    externalId?: string;
+    @Field({nullable: true})
     embedHTML?: string;
     @Field()
     date: Date;

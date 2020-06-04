@@ -9,6 +9,9 @@ import { AccreditedInputType } from '../../dtos/inputs/review/accredited/accredi
 import { IReviewBlance } from '../../../../infrastructure/common/models/interfaces/generics/review-balance.interface';
 import { ReviewBalanceDto } from '../../dtos/dtos/review/review-balance.dto';
 import * as puppeteer from 'puppeteer';
+import { QueryFilterIdDto } from '../../../core/dtos/filter/query-filter/query-filter-id.dto';
+import { PaginatedReviewResponse } from '../../dtos/dtos/review/paginate.review.dto';
+import { AxiosResponse } from 'axios';
 
 @Injectable()
 export class ReviewService extends ResourceService<ReviewDto> {
@@ -114,7 +117,7 @@ export class ReviewService extends ResourceService<ReviewDto> {
                         date: new Date().toISOString().slice(0, 10),
                         stars: parseInt(divs[i].querySelector('.section-review-stars').getAttribute('aria-label').split(' ')[1], undefined),
                         text: divs[i].querySelector('.section-review-text').innerHTML,
-                        reviewId: divs[i].querySelector('[data-review-id]').getAttribute('data-review-id')
+                        externalId: divs[i].querySelector('[data-review-id]').getAttribute('data-review-id'),
                     };
                     result.push(reviewObj);
                 }
@@ -125,15 +128,34 @@ export class ReviewService extends ResourceService<ReviewDto> {
                 // Logger.log(reviews[i]);
                 await this.createReview(reviews[i]);
             }
-            browser.close(); // Close the Browser...
+            await browser.close(); // Close the Browser...
             Logger.log('finished: OK', 'google scrape');
         } catch (err) {
             Logger.log('ERROR: ' + err, 'google scrape');
         }
     }
-    async grouponScrape() {
-        const response = await this.httpService.get('https://us-central1-scrapegrouponfunction.cloudfunctions.net/scrapeGroupon').toPromise();
-        return response.data;
+    async grouponScrape(): Promise<boolean> {
+        try {
+            const directoryId = (await this.reviewSettingService.getAll(0, 10)).items.find(x => x.directoryName.toLowerCase()
+              .startsWith('groupon')).id;
+            const { data }: AxiosResponse<Array<Partial<ReviewInput>>> =
+              await this.httpService.get('https://us-central1-scrapegrouponfunction.cloudfunctions.net/scrapeGroupon').toPromise();
+
+            const filter = {
+                externalId: {
+                    $in: data.map(x => x.externalId),
+                },
+                directoryId,
+            };
+            const paginated: PaginatedReviewResponse = await this.filterReview(filter, 0, data.length);
+            for (const review of data.filter(x => !paginated.items.some(y => y.externalId === x.externalId))) {
+                await this.createReview({ ...review, directoryId } as ReviewInput);
+            }
+            return true;
+        } catch (e) {
+            Logger.log(e, 'error');
+            return false;
+        }
     }
 
     async getReviewUsersBalance(filter: any) {
