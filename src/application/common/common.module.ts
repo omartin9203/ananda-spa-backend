@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { HttpModule, Module } from '@nestjs/common';
 import { ApplicationCoreModule } from '../core/core.module';
 
 import { InfrastructureModule } from '../../infrastructure/infrastructure.module';
@@ -10,7 +10,7 @@ import { VisitsController } from './controllers/visit.controller';
 
 @Module({
     imports: [
-        ApplicationCoreModule, InfrastructureModule,
+        ApplicationCoreModule, InfrastructureModule, HttpModule,
         ...GuardConfig.imports, ...ServicesConfig.imports, ...ResolversConfig.imports,
     ],
     providers: [

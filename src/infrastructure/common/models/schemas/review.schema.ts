@@ -29,6 +29,12 @@ export const ReviewSchema = new Schema({
         type: Schema.Types.ObjectId,
         required: true,
     },
+    embedHTML: {
+        type: String,
+    },
+    externalId: {
+        type: String,
+    },
     accredited: {
         managerId: {
             type: Schema.Types.ObjectId,

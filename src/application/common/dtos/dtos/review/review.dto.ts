@@ -28,6 +28,10 @@ export class AccreditedType {
 export class ReviewDto extends ResourceDto {
     @Field()
     client: string;
+    @Field({nullable: true})
+    externalId?: string;
+    @Field({nullable: true})
+    embedHTML?: string;
     @Field()
     date: Date;
     @Field()

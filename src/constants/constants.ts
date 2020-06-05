@@ -42,7 +42,7 @@ export const CONNECTION = {
   },
   LOCAL: {
     URI: 'mongodb://localhost:27017/nest',
-    //URI: 'mongodb+srv://socraticus:Tra21ai*@anandaspa-cluster0-iap7t.gcp.mongodb.net/AnandaSpa_apiNest_DB',
+    // URI: 'mongodb+srv://socraticus:Tra21ai*@anandaspa-cluster0-iap7t.gcp.mongodb.net/AnandaSpa_apiNest_DB',
     OPTIONS: { useNewUrlParser: true, useUnifiedTopology: true },
   },
 };
