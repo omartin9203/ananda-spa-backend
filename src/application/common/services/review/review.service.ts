@@ -108,7 +108,7 @@ export class ReviewService extends ResourceService<ReviewDto> {
               '8m2!3d25.7679659!4d-80.3644209!9m1!1b1?hl=es&authuser=0'); // Define the Maps URL to Scrape...
             // Create request for the new page to obtain...
             await page.waitFor(1000); // In case Server has JS needed to be loaded...
-            const result = await page.evaluate(() => {
+            const result: Array<Partial<ReviewInput>> = await page.evaluate(() => {
                 const result = [];
                 const divs = document.querySelectorAll('.section-review-content');
                 for (let i = 0; i < divs.length; ++i) {
@@ -123,10 +123,16 @@ export class ReviewService extends ResourceService<ReviewDto> {
                 }
                 return result;
             });
-            const reviews = result.map(x => ({ ...x, directoryId } as ReviewInput));
-            for (const i in reviews) {
-                // Logger.log(reviews[i]);
-                await this.createReview(reviews[i]);
+            // const reviews = result.map(x => ({ ...x, directoryId } as ReviewInput));
+            const filter = {
+                externalId: {
+                    $in: result.map(x => x.externalId),
+                },
+                directoryId,
+            };
+            const paginated: PaginatedReviewResponse = await this.filterReview(filter, 0, result.length);
+            for (const review of result.filter(x => !paginated.items.some(y => y.externalId === x.externalId))) {
+                await this.createReview({ ...review, directoryId } as ReviewInput);
             }
             await browser.close(); // Close the Browser...
             Logger.log('finished: OK', 'google scrape');
