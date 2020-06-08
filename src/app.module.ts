@@ -10,7 +10,7 @@ import { MulterModule } from '@nestjs/platform-express';
 import { APP_GUARD, APP_PIPE } from '@nestjs/core';
 import { ScheduleModule } from 'nest-schedule';
 
-const { URI, OPTIONS } = process.env.NODE_ENV === 'production' ? CONNECTION.LOCAL : CONNECTION.LOCAL;
+const { URI, OPTIONS } = process.env.NODE_ENV === 'production' ? CONNECTION.ATLAS : CONNECTION.LOCAL;
 
 @Module({
   imports: [
