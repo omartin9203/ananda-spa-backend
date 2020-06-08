@@ -692,6 +692,8 @@ type ReviewDto implements IResourceDto {
   createdAt: DateTime!
   updatedAt: DateTime!
   client: String!
+  externalId: String
+  embedHTML: String
   date: DateTime!
   text: String!
   stars: Float!
@@ -711,6 +713,8 @@ input ReviewFilterInput {
 
 input ReviewInput {
   client: String!
+  externalId: String
+  embedHTML: String
   date: DateTime!
   text: String!
   stars: Float!

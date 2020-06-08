@@ -8,6 +8,7 @@ import { FilesService } from './images/FilesServices';
 import { AuthService } from './auth/auth.service';
 import { VisitRetentionService } from './visit/visitRetention.service';
 import { ReviewService } from './review/review.service';
+import { TasksService } from './Tasks/tasks.service';
 import { ReviewSettingService } from './settings/review-settings.service';
 import { ServiceSettingService } from './settings/service-setting.service';
 import { RetentionSettingsService } from './settings/retention-settings.service';
@@ -17,10 +18,10 @@ export const ServicesConfig = {
     ],
     providers: [
         ClientService, UserService, FacialFormService, MassageFormService, DiagnosticService, VisitService, FilesService,
-        AuthService, VisitRetentionService, ReviewService, ReviewSettingService, ServiceSettingService, RetentionSettingsService,
+        AuthService, VisitRetentionService, ReviewService, ReviewSettingService, TasksService, ServiceSettingService, RetentionSettingsService,
     ],
     exports: [
         ClientService, UserService, FacialFormService, MassageFormService, DiagnosticService, VisitService, FilesService,
-        AuthService, VisitRetentionService, ReviewService, ReviewSettingService, ServiceSettingService, RetentionSettingsService,
+        AuthService, VisitRetentionService, ReviewService, ReviewSettingService, TasksService, ServiceSettingService, RetentionSettingsService,
     ],
 };
