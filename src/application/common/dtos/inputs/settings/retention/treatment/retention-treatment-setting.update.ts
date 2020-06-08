@@ -25,13 +25,20 @@ export class RetentionTreatmentSettingUpdate {
   @Field(t => RetentionAmountSettingUpdate, {nullable: true})
   tip?: RetentionAmountSettingUpdate;
 
+  @Field(t => [String], {nullable: true})
+  otherInfo?: string[];
+
   static getUnzip(input: RetentionTreatmentSettingUpdate) {
     const result: any = {};
     Object.keys(input).forEach(x => {
-      const unzip = input[x];
-      Object.keys(unzip).forEach(field => {
-        result[`${x}.${field}`] = unzip[field];
-      });
+      if (x === 'otherInfo') {
+        result[x] = input[x];
+      } else {
+        const unzip = input[x];
+        Object.keys(unzip).forEach(field => {
+          result[`${x}.${field}`] = unzip[field];
+        });
+      }
     });
     return result;
   }

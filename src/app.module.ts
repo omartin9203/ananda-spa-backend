@@ -27,17 +27,17 @@ const { URI, OPTIONS } = process.env.NODE_ENV === 'production' ? CONNECTION.ATLA
       introspection: true,
       playground: true,
       cors: false,
-      formatError(err: any) {
-        if (!err.originalError) {
-          return err;
-        }
-        // const data = err.originalError.data;
-        const msg = err.message || 'An error occurred.';
-        const code = 500;
-        // const res = Object(err.originalError.message) as { error: string, statusCode: number };
-        // return { message: err.originalError.response.error, status: err.originalError.response.statusCode };
-        return err.message;
-      },
+      // formatError(err: any) {
+      //   if (!err.originalError) {
+      //     return err;
+      //   }
+      //   // const data = err.originalError.data;
+      //   const msg = err.message || 'An error occurred.';
+      //   const code = 500;
+      //   // const res = Object(err.originalError.message) as { error: string, statusCode: number };
+      //   // return { message: err.originalError.response.error, status: err.originalError.response.statusCode };
+      //   return err.message;
+      // },
     }),
     // RoleModule,
     ApplicationModule, InfrastructureModule,

@@ -20,4 +20,7 @@ export class RetentionTreatmentSettingInput {
 
   @Field(t => RetentionAmountSettingInput)
   tip: RetentionAmountSettingInput;
+
+  @Field(t => [String])
+  otherInfo: string[];
 }

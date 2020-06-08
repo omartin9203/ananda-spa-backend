@@ -16,4 +16,6 @@ export class RetentionTreatmentSettingDto {
   readonly directory: RetentionDirectorySettingDto;
   @Field(t => RetentionAmountSettingDto)
   readonly tip: RetentionAmountSettingDto;
+  @Field(t => [String], {defaultValue: []})
+  readonly otherInfo: string[];
 }

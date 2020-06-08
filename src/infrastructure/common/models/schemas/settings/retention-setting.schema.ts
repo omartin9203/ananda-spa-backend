@@ -100,5 +100,9 @@ export const RetentionSettingSchema: Schema = new Schema({
       }],
       default: Object,
     },
+    otherInfo: [{
+      type: String,
+      required: true,
+    }],
   },
 }, { discriminatorKey: 'type' });

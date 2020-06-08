@@ -1,12 +1,10 @@
-﻿import { Controller, Post, Res, Headers, Body, Logger, Req, UnauthorizedException } from "@nestjs/common";
-import { VisitRetentionService } from "../services/visit/visitRetention.service";
-import { VisitRetentionInput } from "../dtos/inputs/visitRetention/visitRetention.input";
-import { VisitRetentionDto } from "../dtos/dtos/visitRetention/visitRetention.dto";
-import { UserService } from "../services/user/user.service";
-import { UserDto } from "../dtos/dtos/user/user.dto";
-import { Request } from 'express';
-import { API_KEY } from "../../../constants/constants";
-import { FLAG_RETENTION } from "../../../constants/modules/enums";
+﻿import { Body, Controller, Get, Headers, NotImplementedException, Param, Post, Query, Req, UnauthorizedException } from '@nestjs/common';
+import { VisitRetentionService } from '../services/visit/visitRetention.service';
+import { VisitRetentionInput } from '../dtos/inputs/visitRetention/visitRetention.input';
+import { UserService } from '../services/user/user.service';
+import { UserDto } from '../dtos/dtos/user/user.dto';
+import { API_KEY } from '../../../constants/constants';
+import { FLAG_RETENTION } from '../../../constants/modules/enums';
 
 @Controller('visit')
 export class VisitsController {
@@ -29,5 +27,12 @@ export class VisitsController {
             clientPhone: input.client,
             flag: input.flag,
         });
+    }
+
+    @Get('retention/parser')
+    async parser(@Query('text') text: string) {
+        const result = await this.visitRetentionService.parser(text);
+        if (!result) { return new NotImplementedException('No exist setting'); }
+        return result;
     }
 }

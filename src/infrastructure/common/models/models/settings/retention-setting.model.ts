@@ -38,6 +38,7 @@ interface ITreatment {
   readonly amount: IAmountRetention;
   readonly directory: IDirectoryRetention;
   readonly tip: IAmountRetention;
+  readonly otherInfo: string[];
 }
 
 interface IAvailability {

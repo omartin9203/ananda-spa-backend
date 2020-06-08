@@ -46,6 +46,8 @@
     "passport-google-oauth20": "^2.0.0",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
+    "phone": "^2.4.11",
+    "phone-number-formats": "^2.2.1",
     "puppeteer": "^3.0.4",
     "reflect-metadata": "^0.1.12",
     "rimraf": "^2.6.2",
@@ -71,7 +73,7 @@
     "tsc-watch": "2.2.1",
     "tsconfig-paths": "3.8.0",
     "tslint": "5.16.0",
-    "typescript": "3.4.3"
+    "typescript": "^3.9.5"
   },
   "jest": {
     "moduleFileExtensions": [
