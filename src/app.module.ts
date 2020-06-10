@@ -9,6 +9,7 @@ import { InfrastructureModule } from './infrastructure/infrastructure.module';
 import { MulterModule } from '@nestjs/platform-express';
 import { APP_GUARD, APP_PIPE } from '@nestjs/core';
 import { ScheduleModule } from 'nest-schedule';
+import { FacialFormService } from './application/common/services/form/facial/facial-form.service';
 
 const { URI, OPTIONS } = process.env.NODE_ENV === 'production' ? CONNECTION.LOCAL : CONNECTION.LOCAL;
 
@@ -56,4 +57,8 @@ const { URI, OPTIONS } = process.env.NODE_ENV === 'production' ? CONNECTION.LOCA
     // },
   ],
 })
-export class AppModule { }
+export class AppModule {
+  constructor(readonly service: FacialFormService) {
+    this.service.loadOldForms();
+  }
+}
