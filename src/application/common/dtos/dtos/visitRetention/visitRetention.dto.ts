@@ -1,16 +1,35 @@
-﻿import { ResourceDto } from "../../../../core/dtos/resource.dto";
-import { ObjectType, Field } from "type-graphql";
-import { UserDto } from "../user/user.dto";
-import { FLAG_RETENTION } from "../../../../../constants/modules/enums";
+﻿import { ResourceDto } from '../../../../core/dtos/resource.dto';
+import { ObjectType, Field } from 'type-graphql';
+import { FLAG_RETENTION } from '../../../../../constants/modules/enums';
+import { UserInfoDto } from '../user/user.Info.dto';
+import { ReviewSettingDto } from '../settings/review/review-setting.dto';
+import { ServiceSettingDto } from '../settings/service/service-setting.dto';
+import { ClientRetentionDto } from './client-retention.dto';
 
 @ObjectType()
 export class VisitRetentionDto extends ResourceDto {
-    @Field(type => UserDto, { nullable: true })
-    readonly user?: UserDto;
-    @Field({ nullable: true })
-    readonly clientPhone?: string;
     @Field()
-    readonly treatment: string;
+    readonly userId: string;
+    @Field(type => UserInfoDto, {nullable: true})
+    readonly user?: UserInfoDto;
+    @Field()
+    readonly date: Date;
     @Field()
     readonly flag: FLAG_RETENTION;
+    @Field()
+    readonly directoryId: string;
+    @Field(t => ReviewSettingDto, {nullable: true})
+    readonly directory?: ReviewSettingDto;
+    @Field({nullable: true})
+    readonly serviceId?: string;
+    @Field(t => ServiceSettingDto, {nullable: true})
+    readonly service?: ServiceSettingDto;
+    @Field(t => ClientRetentionDto)
+    readonly client: ClientRetentionDto;
+    @Field({nullable: true})
+    readonly amount?: string;
+    @Field({nullable: true})
+    readonly tip?: string;
+    @Field({nullable: true})
+    readonly calendarId?: string;
 }

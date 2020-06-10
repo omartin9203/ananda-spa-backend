@@ -106,16 +106,16 @@ export class VisitRetentionService extends ResourceService<VisitRetentionDto> {
             return result;
         };
         const extractRequest = () => {
-            let result = '';
+            let result = FLAG_RETENTION.NORMAL;
             let replaced = text.replace(this.buildRegex(setting.treatment.request.personalMatch), '');
             if (replaced !== text) {
-                result = 'personal';
+                result = FLAG_RETENTION.PERSONAL;
                 text = replaced.trim().replace(/( )+/, ' ');
                 return result;
             }
             replaced = text.replace(this.buildRegex(setting.treatment.request.requestMatch), '');
             if (replaced !== text) {
-                result = 'request';
+                result = FLAG_RETENTION.REQUEST;
                 text = replaced.trim().replace(/( )+/, ' ');
                 return result;
             }

@@ -1,6 +1,5 @@
 ﻿import * as mongoose from 'mongoose';
-import { USER_MODEL_NAME, VISIT_RETENTION_MODEL_NAME } from '../../../../constants/modules/models_names';
-import { TREATMENT_VALUES } from '../../../../constants/constants';
+import { BASE_SETTING_MODEL_NAME, USER_MODEL_NAME, VISIT_RETENTION_MODEL_NAME } from '../../../../constants/modules/models_names';
 import { FLAG_RETENTION } from '../../../../constants/modules/enums';
 import { FLAG_RETENTION_VALUES } from '../../../../constants/modules/options';
 
@@ -14,19 +13,35 @@ export const VisitRetentionSchema = new Schema({
         required: true,
         ref: USER_MODEL_NAME,
     },
-    clientPhone: {
-        type: String,
-    },
-    treatment: {
-        type: String,
+    date: {
+        type: Date,
         required: true,
-        enum: TREATMENT_VALUES
+    },
+    directoryId: {
+        type: Schema.Types.ObjectId,
+        required: true,
+        ref: BASE_SETTING_MODEL_NAME,
+    },
+    serviceId: {
+        type: Schema.Types.ObjectId,
+        ref: BASE_SETTING_MODEL_NAME,
+    },
+    client: {
+        name: {
+            type: String,
+            required: true,
+        },
+        phone: String,
     },
     flag: {
         type: String,
         default: FLAG_RETENTION.NORMAL,
         enum: FLAG_RETENTION_VALUES,
-    }
+    },
+    amount: String,
+    tip: String,
+    calendarId: String,
+
 }, { timestamp: true });
 
 export const VisitRetentionFeature = {

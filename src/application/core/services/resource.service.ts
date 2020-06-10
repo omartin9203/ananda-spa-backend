@@ -6,10 +6,10 @@ import { IPaginatedResponseClass } from '../../../infrastructure/core/models/int
 export class ResourceService<TResource extends ResourceDto>  {
     constructor(private resourceRepository: ResourceRepository<TResource>) {
     }
-    async getAll(skip?: number, limit?: number, filter?: object): Promise<IPaginatedResponseClass<TResource>> {
+    async getAll(skip?: number, limit?: number, filter?: object, sort?: any | string): Promise<IPaginatedResponseClass<TResource>> {
         const total = await this.resourceRepository.count(filter);
         return {
-            items: await this.resourceRepository.find(filter, skip, limit),
+            items: await this.resourceRepository.find(filter, skip, limit, sort),
             total,
             hasMore: limit + skip < total,
         };

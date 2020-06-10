@@ -16,17 +16,17 @@ export class VisitsController {
         @Body() input: VisitRetentionInput,
         @Req() req: any,
     ) {
-        if (apiKey !== API_KEY) throw new UnauthorizedException('Unauthorized')
-        const { id }: UserDto = await this.userService.findOne({
-            email: input.user,
-        });
-        await this.userService.updateRetention(id, { total: 1, important: input.flag && input.flag != FLAG_RETENTION.NORMAL ? 1 : 0 })
-        return await this.visitRetentionService.createResource({
-            userId: id,
-            treatment: input.treatment,
-            clientPhone: input.client,
-            flag: input.flag,
-        });
+        // if (apiKey !== API_KEY) throw new UnauthorizedException('Unauthorized')
+        // const { id }: UserDto = await this.userService.findOne({
+        //     email: input.user,
+        // });
+        // await this.userService.updateRetention(id, { total: 1, important: input.flag && input.flag != FLAG_RETENTION.NORMAL ? 1 : 0 })
+        // return await this.visitRetentionService.createResource({
+        //     userId: id,
+        //     treatment: input.treatment,
+        //     clientPhone: input.client,
+        //     flag: input.flag,
+        // });
     }
 
     @Get('retention/parser')
