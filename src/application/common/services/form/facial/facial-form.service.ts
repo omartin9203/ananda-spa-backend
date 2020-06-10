@@ -9,7 +9,7 @@ import { ParentConsentType } from '../../../dtos/dtos/form/parent-consent/parent
 @Injectable()
 export class FacialFormService extends ResourceService<FacialFormDto> {
     constructor(repository: FacialFormRepository, private httpService: HttpService,
-                private clientService: ClientService, private  parentConsent: ParentConsentType) {
+                private clientService: ClientService) {
         super(repository);
     }
     async loadOldForms() {
@@ -83,13 +83,38 @@ export class FacialFormService extends ResourceService<FacialFormDto> {
             phone: form.phone, streetaddress: address, city, state, zipcode: zip, email,
             datebirth: form.datebirth, imgSrc: null, gender: null});
 
-          // tslint:disable-next-line:no-console
-          console.log(client.id);
+          const parentName = form.parentname.split(' ');
+          let pname = ' ';
+          let lname = ' ';
 
-          await this.createResource({client, recommendation: form.recommendation,
-            groupon: form.groupon, business: form.business, businessYelp: form.businessYelp,
-            businessGoogle: form.businessGoogle, businessGroupon: form.businessGroupon,
-            businessRecommendation: form.businessRecommendation, wearcontact: form.wearcontact,
+          if (parentName.length === 1) {
+            pname = parentName[0];
+          }
+          if (parentName.length === 2) {
+            pname = parentName[0];
+            if (parentName[1] !== '') {
+              lname = parentName[1];
+            }
+          }
+          if (parentName.length === 3) {
+            pname = parentName[0];
+            lname = parentName[1] + ' ' + parentName[2];
+          }
+          if (parentName.length === 4) {
+            pname = parentName[0] + ' ' + parentName[1];
+            lname = parentName[2] + ' ' + parentName[3];
+          }
+
+         /* this.parentConsent.firstname = pname;
+          this.parentConsent.lastname = lastname;
+          this.parentConsent.signature = form.parentsignature;*/
+
+          // const json = {parentsConsent: { firstname: pname, lastname: lname, signature: form.parentsignature }};
+
+          const savedform = await this.createResource({clientId: client.id, recommendation: form.recommendation,
+            groupon: form.groupon, business: form.business, businessYelp: form.business_yelp,
+            businessGoogle: form.business_google, businessGroupon: form.business_groupon, businessClasspass: form.business_classpass,
+            businessFacebook: form.business_facebook, businessRecommendation: form.business_recommendation, wearcontact: form.wearcontact,
             surgery: form.surgery, surgerydescribe: form.surgerydescribe, skincancer: form.skincancer,
             dermatitis: form.dermatitis, keloidscarring: form.keloidscarring, acne: form.acne,
             rosacea: form.rosacea, broken: form.broken, treatment: form.treatment, hypo: form.hypo,
@@ -108,7 +133,11 @@ export class FacialFormService extends ResourceService<FacialFormDto> {
             moisturizer: form.moisturizer, spf: form.spf, vitamin: form.vitamin, scrubs: form.scrubs,
             speciality: form.speciality, mask: form.mask, supplements: form.supplements,
             exercise: form.exercise, scar: form.scar, skinsensitive: form.skinsensitive,
-            pictures: form.pictures, signature: form.signature});
+            pictures: form.pictures, consent: form.consent, signature: form.signature,
+            parentsConsent: { firstname: pname, lastname: lname, signature: form.parentsignature} });
+
+          // tslint:disable-next-line:no-console
+          console.log(savedform.id);
 
         }
     }

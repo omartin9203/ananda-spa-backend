@@ -7,6 +7,8 @@ export const FacialFormSchema: Schema = new Schema({
     business_yelp: { type: Boolean, required: false },
     business_google: { type: Boolean, required: false },
     business_groupon: { type: Boolean, required: false },
+      business_classpass: { type: Boolean, required: false },
+      business_facebook: { type: Boolean, required: false },
     business_recommendation: { type: Boolean, required: false },
     wearcontact: { type: Boolean, required: false },
     surgery: { type: Boolean, required: false },
@@ -64,6 +66,7 @@ export const FacialFormSchema: Schema = new Schema({
     scar: { type: Boolean, required: false },
     skinsensitive: { type: Boolean, required: false },
     pictures: { type: Boolean, required: false },
+    consent: {type: Number, required: false},
     signature: { type: String, required: false },
     parentsConsent: {
       firstname: { type: String, required: true },
