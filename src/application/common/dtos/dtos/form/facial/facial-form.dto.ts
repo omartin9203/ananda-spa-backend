@@ -138,6 +138,6 @@ export class FacialFormDto extends BaseFormDto {
   consent?: number;
   @Field({ nullable: true })
   signature?: string;
-  @Field({ nullable: true })
+  @Field(t => ParentConsentType, { nullable: true })
   parentsConsent?: ParentConsentType;
 }

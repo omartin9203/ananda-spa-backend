@@ -69,9 +69,9 @@ export const FacialFormSchema: Schema = new Schema({
     consent: {type: Number, required: false},
     signature: { type: String, required: false },
     parentsConsent: {
-      firstname: { type: String, required: true },
-      lastname: { type: String, required: true },
-      signature: { type: String, required: true },
+      firstname: String,
+      lastname: String,
+      signature: String,
     },
   },
   { discriminatorKey: 'type' },

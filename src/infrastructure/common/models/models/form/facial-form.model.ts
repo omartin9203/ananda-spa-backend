@@ -71,6 +71,6 @@ export class FacialFormModel extends BaseFormModel {
   pictures: boolean;
   consent: number;
   signature: string;
-  parentsConsent: IParentConsent;
+  parentsConsent?: Partial<IParentConsent>;
   static ModelName = FACIALFORM_MODEL_NAME;
 }

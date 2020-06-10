@@ -137,6 +137,6 @@ export class UpdateFacialFormInput {
   consent?: number;
   @Field({ nullable: true })
   signature?: string;
-  @Field({ nullable: true })
+  @Field(t => UpdateParentConsentInput, { nullable: true })
   parentsConsent?: UpdateParentConsentInput;
 }

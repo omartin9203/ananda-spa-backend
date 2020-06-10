@@ -5,6 +5,8 @@ import { FacialFormRepository } from '../../../../../infrastructure/common/repos
 import { ClientService } from '../../client/client.service';
 import { catchError } from 'rxjs/operators';
 import { ParentConsentType } from '../../../dtos/dtos/form/parent-consent/parent-consent.dto';
+import { FacialFormInput } from '../../../dtos/inputs/form/facial/facial-form.input';
+import { CreateClientInputDto } from '../../../dtos/inputs/client/create-client.input';
 
 @Injectable()
 export class FacialFormService extends ResourceService<FacialFormDto> {
@@ -20,98 +22,25 @@ export class FacialFormService extends ResourceService<FacialFormDto> {
           const form = result.data;
 
           // fixing before save
-          const fullname = form.fullname.split(' ');
-          let name = ' ';
-          let lastname = ' ';
-          let address = ' ';
-          const stateV1 = form.citystate.split('/');
-          const stateV2 = form.citystate.split(' ');
-          let state = ' ';
-          let city = ' ';
-          let zip = ' ';
-          let email = ' ';
+          const fullname = form.fullname.trim().replace(/( )+/, ' ').split(' ');
+          const parentName = form.parentname.trim().replace(/( )+/, ' ').split(' ');
+          const [city, state, zipcode] = form.citystate.replace(new RegExp(/(\/)|( )/, 'g'), ' ').split(' ');
 
-          if (fullname.length === 1) {
-            name = fullname[0];
-          }
-          if (fullname.length === 2) {
-            name = fullname[0];
-            if (fullname[1] !== '') {
-            lastname = fullname[1];
-            }
-          }
-          if (fullname.length === 3) {
-            name = fullname[0];
-            lastname = fullname[1] + ' ' + fullname[2];
-          }
-          if (fullname.length === 4) {
-            name = fullname[0] + ' ' + fullname[1];
-            lastname = fullname[2] + ' ' + fullname[3];
-          }
-
-          if (stateV1.length === 3) {
-            if (stateV1[0]) {
-              city = stateV1[0];
-            }
-            if (stateV1[1]) {
-              state = stateV1[1];
-            }
-            if (stateV1[2]) {
-              zip = stateV1[2];
-            }
-
-          } else if (stateV2.length === 3) {
-            if (stateV2[0]) {
-              city = stateV2[0];
-            }
-            if (stateV2[1]) {
-              state = stateV2[1];
-            }
-            if (stateV2[2]) {
-              zip = stateV2[2];
-            }
-          }
-
-          if (form.email) {
-            email = form.email;
-          }
-          if (form.address) {
-            address = form.address;
-          }
-
-          const client = await this.clientService.createResource({firstname: name, lastname,
-            phone: form.phone, streetaddress: address, city, state, zipcode: zip, email,
-            datebirth: form.datebirth, imgSrc: null, gender: null});
-
-          const parentName = form.parentname.split(' ');
-          let pname = ' ';
-          let lname = ' ';
-
-          if (parentName.length === 1) {
-            pname = parentName[0];
-          }
-          if (parentName.length === 2) {
-            pname = parentName[0];
-            if (parentName[1] !== '') {
-              lname = parentName[1];
-            }
-          }
-          if (parentName.length === 3) {
-            pname = parentName[0];
-            lname = parentName[1] + ' ' + parentName[2];
-          }
-          if (parentName.length === 4) {
-            pname = parentName[0] + ' ' + parentName[1];
-            lname = parentName[2] + ' ' + parentName[3];
-          }
-
-         /* this.parentConsent.firstname = pname;
-          this.parentConsent.lastname = lastname;
-          this.parentConsent.signature = form.parentsignature;*/
-
-          // const json = {parentsConsent: { firstname: pname, lastname: lname, signature: form.parentsignature }};
-
-          const savedform = await this.createResource({clientId: client.id, recommendation: form.recommendation,
+          const client = await this.clientService.createResource({
+            firstname: fullname.slice(0, 1).join('') || '',
+            lastname: fullname.slice(1).join(' ') || '',
+            phone: form.phone,
+            streetaddress: form.address || '',
+            city: city || '',
+            state: state || '',
+            zipcode: zipcode || '',
+            email: form.email || '',
+            datebirth: form.datebirth,
+            imgSrc: null,
+            gender: null,
+          } as CreateClientInputDto);
+          const input: FacialFormInput = {
+            clientId: client.id, recommendation: form.recommendation,
             groupon: form.groupon, business: form.business, businessYelp: form.business_yelp,
             businessGoogle: form.business_google, businessGroupon: form.business_groupon, businessClasspass: form.business_classpass,
             businessFacebook: form.business_facebook, businessRecommendation: form.business_recommendation, wearcontact: form.wearcontact,
@@ -134,8 +63,13 @@ export class FacialFormService extends ResourceService<FacialFormDto> {
             speciality: form.speciality, mask: form.mask, supplements: form.supplements,
             exercise: form.exercise, scar: form.scar, skinsensitive: form.skinsensitive,
             pictures: form.pictures, consent: form.consent, signature: form.signature,
-            parentsConsent: { firstname: pname, lastname: lname, signature: form.parentsignature} });
-
+            parentsConsent: {
+              firstname: parentName.slice(0, 1).join('') || '',
+              lastname: parentName.slice(1).join(' ') || '',
+              signature: form.parentsignature,
+            },
+          };
+          const savedform: FacialFormDto = await this.createResource(input);
           // tslint:disable-next-line:no-console
           console.log(savedform.id);
 

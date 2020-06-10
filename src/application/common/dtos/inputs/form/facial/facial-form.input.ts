@@ -139,6 +139,6 @@ export class FacialFormInput {
   consent?: number;
   @Field({ nullable: true })
   signature?: string;
-  @Field({ nullable: true })
+  @Field(t => ParentConsentInput, { nullable: true })
   parentsConsent?: ParentConsentInput;
 }
