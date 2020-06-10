@@ -12,8 +12,8 @@ export class ClientModel extends ResourceModel {
   readonly zipcode: string;
   // };
   readonly email: string;
-  readonly datebirth: Date;
+  readonly datebirth?: Date;
   readonly imgSrc?: string;
-  readonly gender: string;
+  readonly gender?: string;
   static ModelName = CLIENT_MODEL_NAME;
 }

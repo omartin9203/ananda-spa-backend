@@ -57,7 +57,7 @@ type ClientType implements IResourceDto {
   state: String!
   zipcode: String!
   email: String!
-  datebirth: DateTime!
+  datebirth: DateTime
   imgSrc: String
   gender: String
 }
@@ -71,9 +71,9 @@ input CreateClientInput {
   state: String!
   zipcode: String!
   email: String!
-  datebirth: DateTime!
+  datebirth: DateTime
   imgSrc: String
-  gender: String!
+  gender: String
 }
 
 input CreateDiagnosticInput {
