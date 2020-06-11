@@ -586,9 +586,9 @@ input ParentConsentInput {
 }
 
 type ParentConsentType {
-  firstname: String!
-  lastname: String!
-  signature: String!
+  firstname: String
+  lastname: String
+  signature: String
 }
 
 type Query {

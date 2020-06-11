@@ -27,14 +27,14 @@ export class FacialFormService extends ResourceService<FacialFormDto> {
           const [city, state, zipcode] = form.citystate.replace(new RegExp(/(\/)|( )/, 'g'), ' ').split(' ');
 
           const client = await this.clientService.createResource({
-            firstname: fullname.slice(0, 1).join('') || '',
-            lastname: fullname.slice(1).join(' ') || '',
+            firstname: fullname.slice(0, 1).join('') || ' ',
+            lastname: fullname.slice(1).join(' ') || ' ',
             phone: form.phone,
-            streetaddress: form.address || '',
-            city: city || '',
-            state: state || '',
-            zipcode: zipcode || '',
-            email: form.email || '',
+            streetaddress: form.address || ' ',
+            city: city || ' ',
+            state: state || ' ',
+            zipcode: zipcode || ' ',
+            email: form.email || ' ',
             datebirth: form.datebirth,
             imgSrc: null,
             gender: null,
@@ -64,8 +64,8 @@ export class FacialFormService extends ResourceService<FacialFormDto> {
             exercise: form.exercise, scar: form.scar, skinsensitive: form.skinsensitive,
             pictures: form.pictures, consent: form.consent, signature: form.signature,
             parentsConsent: {
-              firstname: parentName.slice(0, 1).join('') || '',
-              lastname: parentName.slice(1).join(' ') || '',
+              firstname: parentName.slice(0, 1).join('') || ' ',
+              lastname: parentName.slice(1).join(' ') || ' ',
               signature: form.parentsignature,
             },
           };

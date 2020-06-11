@@ -57,8 +57,4 @@ const { URI, OPTIONS } = process.env.NODE_ENV === 'production' ? CONNECTION.LOCA
     // },
   ],
 })
-export class AppModule {
-  constructor(readonly service: FacialFormService) {
-    this.service.loadOldForms();
-  }
-}
+export class AppModule { }
