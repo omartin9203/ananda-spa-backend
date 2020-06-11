@@ -21,6 +21,7 @@ export const UI_URI_HELPER = {
 // Models Names
 
 export const CLIENT_MODEL_NAME = 'Client';
+export const CALENDAR_EVENT_MODEL_NAME = 'CalendarEvent';
 export const ADVERTISEMENT_MODEL_NAME = 'Advertisement';
 export const USER_MODEL_NAME = 'User';
 export const FACIALFORM_MODEL_NAME = 'FacialForm';
