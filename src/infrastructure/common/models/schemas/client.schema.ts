@@ -17,9 +17,9 @@ export const ClientSchema = new Schema({
   // },
 
   email: { type: String, required: true },
-  datebirth: { type: Date, required: true },
+  datebirth: { type: Date, required: false },
   imgSrc: {type: String, required: false },
-  gender: { type: String, required: true },
+  gender: { type: String, required: false },
 
 }, { timestamp: true });
 

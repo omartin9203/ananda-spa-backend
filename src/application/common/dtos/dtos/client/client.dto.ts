@@ -23,12 +23,12 @@ export class ClientDto extends ResourceDto {
   // };
   @Field()
   readonly email: string;
-  @Field()
-  readonly datebirth: Date;
+  @Field({nullable: true})
+  readonly datebirth?: Date;
   @Field({nullable: true})
   readonly imgSrc?: string;
   @Field({nullable: true})
-  readonly gender: string;
+  readonly gender?: string;
 
   // @Field()
   // readonly createdAt: Date;

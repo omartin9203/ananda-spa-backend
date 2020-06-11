@@ -10,6 +10,8 @@ export class FacialFormModel extends BaseFormModel {
   businessYelp: boolean;
   businessGoogle: boolean;
   businessGroupon: boolean;
+  businessClasspass: boolean;
+  businessFacebook: boolean;
   businessRecommendation: boolean;
   wearcontact: boolean;
   surgery: boolean;
@@ -67,7 +69,8 @@ export class FacialFormModel extends BaseFormModel {
   scar: boolean;
   skinsensitive: boolean;
   pictures: boolean;
+  consent: number;
   signature: string;
-  parentsConsent: IParentConsent;
+  parentsConsent?: Partial<IParentConsent>;
   static ModelName = FACIALFORM_MODEL_NAME;
 }

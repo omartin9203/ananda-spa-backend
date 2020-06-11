@@ -16,6 +16,10 @@ export class UpdateFacialFormInput {
   @Field({ nullable: true })
   businessGroupon?: boolean;
   @Field({ nullable: true })
+  businessClasspass?: boolean;
+  @Field({ nullable: true })
+  businessFacebook?: boolean;
+  @Field({ nullable: true })
   businessRecommendation?: boolean;
   @Field({ nullable: true })
   wearcontact?: boolean;
@@ -130,7 +134,9 @@ export class UpdateFacialFormInput {
   @Field({ nullable: true })
   pictures?: boolean;
   @Field({ nullable: true })
-  signature?: string;
+  consent?: number;
   @Field({ nullable: true })
+  signature?: string;
+  @Field(t => UpdateParentConsentInput, { nullable: true })
   parentsConsent?: UpdateParentConsentInput;
 }
