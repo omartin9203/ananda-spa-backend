@@ -70,8 +70,6 @@ export class FacialFormService extends ResourceService<FacialFormDto> {
             },
           };
           const savedform: FacialFormDto = await this.createResource(input);
-          // tslint:disable-next-line:no-console
-          console.log(savedform.id);
 
         }
     }
