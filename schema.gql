@@ -45,6 +45,21 @@ type BaseFormDto implements IBaseFormDto & IResourceDto {
   updatedAt: DateTime!
 }
 
+type ClientRetentionDto {
+  name: String!
+  phone: String
+}
+
+input ClientRetentionInput {
+  name: String!
+  phone: String
+}
+
+input ClientRetentionUpdate {
+  name: String
+  phone: String
+}
+
 type ClientType implements IResourceDto {
   id: ID!
   createdAt: DateTime!
@@ -495,9 +510,9 @@ type Mutation {
   updateVisit(input: UpdateVisit!, id: ID!): VisitDto!
   deleteVisit(id: ID!): VisitDto!
   signUp(input: CreateUserInput!): AuthDto!
-  createVisitRetention(input: VisitRetentionInput!): VisitRetentionDto!
-  updateVisitRetention(input: VisitRetentionUpdate!, id: ID!): VisitRetentionDto!
-  deleteVisitRetention(id: ID!): VisitRetentionDto!
+  createRetention(input: VisitRetentionInput!): VisitRetentionDto!
+  updateRetention(input: VisitRetentionUpdate!, id: ID!): VisitRetentionDto!
+  deleteRetention(id: ID!): VisitRetentionDto!
   createReview(input: ReviewInput!): ReviewDto!
   updateReview(input: ReviewUpdate!, id: ID!): ReviewDto!
   deleteReview(id: ID!): ReviewDto!
@@ -506,6 +521,12 @@ type Mutation {
   createReviewSetting(input: ReviewSettingInput!): ReviewSettingDto!
   deleteReviewSetting(id: ID!): ReviewSettingDto!
   updateReviewSetting(input: ReviewSettingUpdate!, id: ID!): ReviewSettingDto!
+  createServiceSetting(input: ServiceSettingInput!): ServiceSettingDto!
+  deleteServiceSetting(id: ID!): ServiceSettingDto!
+  updateServiceSetting(input: ServiceSettingUpdate!, id: ID!): ServiceSettingDto!
+  createRetentionSetting(input: RetentionSettingInput!): RetentionSettingDto!
+  deleteRetentionSetting(id: ID!): RetentionSettingDto!
+  updateRetentionSetting(input: RetentionSettingUpdate!, id: ID!): RetentionSettingDto!
 }
 
 input NoteInput {
@@ -548,6 +569,12 @@ type PaginatedMassageFormResponse {
   otherInfo: [String!]!
 }
 
+type PaginatedRetentionSettingResponse {
+  items: [RetentionSettingDto!]!
+  total: Int!
+  hasMore: Boolean!
+}
+
 type PaginatedReviewResponse {
   items: [ReviewDto!]!
   total: Int!
@@ -556,6 +583,12 @@ type PaginatedReviewResponse {
 
 type PaginatedReviewSettingResponse {
   items: [ReviewSettingDto!]!
+  total: Int!
+  hasMore: Boolean!
+}
+
+type PaginatedServiceSettingResponse {
+  items: [ServiceSettingDto!]!
   total: Int!
   hasMore: Boolean!
 }
@@ -610,8 +643,9 @@ type Query {
   logIn(input: LoginInput!): AuthDto!
   userInfo: UserInfoDto!
   verifyToken: Boolean!
-  visitRetention(id: ID!): VisitRetentionDto!
-  visitRetentions(limit: Int, skip: Int): PaginatedVisitRetentionResponse!
+  getRetention(id: ID!): VisitRetentionDto!
+  getRetentions(limit: Int, skip: Int): PaginatedVisitRetentionResponse!
+  filterRetentions(filter: RetentionFilterInput, skip: Int = 0, limit: Int = 10): PaginatedVisitRetentionResponse!
   review(id: ID!): ReviewDto!
   reviews(limit: Int, skip: Int): PaginatedReviewResponse!
   filterReviews(filter: ReviewFilterInput, skip: Int = 0, limit: Int = 10, sort: ReviewQuerySortInput): PaginatedReviewResponse!
@@ -620,6 +654,10 @@ type Query {
   getReviewSetting(id: ID!): ReviewSettingDto!
   getReviewSettings(limit: Int, skip: Int): PaginatedReviewSettingResponse!
   getReviewBalance(id: ID): [ReviewBalanceDto!]!
+  getServiceSetting(id: ID!): ServiceSettingDto!
+  getServiceSettings(limit: Int, skip: Int): PaginatedServiceSettingResponse!
+  getRetentionSetting(id: ID!): RetentionSettingDto!
+  getRetentionSettings(limit: Int, skip: Int): PaginatedRetentionSettingResponse!
 }
 
 input QueryFilterBooleanDto {
@@ -673,6 +711,198 @@ type ResourceDto implements IResourceDto {
   id: ID!
   createdAt: DateTime!
   updatedAt: DateTime!
+}
+
+type RetentionAmountOptionSettingDto {
+  match: [String!]!
+  type: String!
+  display: String
+}
+
+input RetentionAmountOptionSettingInput {
+  match: [String!]!
+  type: String!
+  display: String
+}
+
+input RetentionAmountOptionSettingUpdate {
+  match: [String!]
+  type: String
+  display: String
+}
+
+type RetentionAmountSettingDto {
+  default: String
+  setting: [RetentionAmountOptionSettingDto!]!
+}
+
+input RetentionAmountSettingInput {
+  default: String
+  setting: [RetentionAmountOptionSettingInput!]!
+}
+
+input RetentionAmountSettingUpdate {
+  default: String
+  setting: [RetentionAmountOptionSettingUpdate!]
+}
+
+type RetentionAvailabilityOptionSettingDto {
+  match: [String!]!
+}
+
+input RetentionAvailabilityOptionSettingInput {
+  match: [String!]!
+}
+
+input RetentionAvailabilityOptionSettingUpdate {
+  match: [String!]
+}
+
+type RetentionAvailabilitySettingDto {
+  available: RetentionAvailabilityOptionSettingDto!
+  unavailable: RetentionAvailabilityOptionSettingDto!
+}
+
+input RetentionAvailabilitySettingInput {
+  available: RetentionAvailabilityOptionSettingInput!
+  unavailable: RetentionAvailabilityOptionSettingInput!
+}
+
+input RetentionAvailabilitySettingUpdate {
+  available: RetentionAvailabilityOptionSettingUpdate
+  unavailable: RetentionAvailabilityOptionSettingUpdate
+}
+
+type RetentionDirectoryOptionSettingDto {
+  directoryId: String!
+  match: [String!]!
+}
+
+input RetentionDirectoryOptionSettingInput {
+  directoryId: String!
+  match: [String!]!
+}
+
+input RetentionDirectoryOptionSettingUpdate {
+  directoryId: String
+  match: [String!]
+}
+
+type RetentionDirectorySettingDto {
+  default: String!
+  setting: [RetentionDirectoryOptionSettingDto!]!
+}
+
+input RetentionDirectorySettingInput {
+  default: String!
+  setting: [RetentionDirectoryOptionSettingInput!]!
+}
+
+input RetentionDirectorySettingUpdate {
+  default: String
+  setting: [RetentionDirectoryOptionSettingUpdate!]
+}
+
+input RetentionFilterInput {
+  search: String
+  userId: QueryFilterIdDto
+  directoryId: QueryFilterIdDto
+  serviceId: QueryFilterIdDto
+  date: QueryFilterDateDto
+  flag: QueryFilterStringDto
+}
+
+type RetentionRequestSettingDto {
+  default: Boolean!
+  personalMatch: [String!]!
+  requestMatch: [String!]!
+}
+
+input RetentionRequestSettingInput {
+  default: Boolean!
+  personalMatch: [String!]!
+  requestMatch: [String!]!
+}
+
+input RetentionRequestSettingUpdate {
+  default: Boolean
+  personalMatch: [String!]
+  requestMatch: [String!]
+}
+
+type RetentionServiceMatchSetting {
+  serviceId: String!
+  match: [String!]!
+}
+
+input RetentionServiceMatchSettingInput {
+  serviceId: String!
+  match: [String!]!
+}
+
+input RetentionServiceMatchSettingUpdate {
+  serviceId: String
+  match: [String!]
+}
+
+type RetentionServiceSettingDto {
+  setting: [RetentionServiceMatchSetting!]!
+  default: String
+}
+
+input RetentionServiceSettingInput {
+  setting: [RetentionServiceMatchSettingInput!]!
+  default: String
+}
+
+input RetentionServiceSettingUpdate {
+  setting: [RetentionServiceMatchSettingUpdate!]
+  default: String
+}
+
+type RetentionSettingDto implements IResourceDto {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  treatment: RetentionTreatmentSettingDto!
+  availability: RetentionAvailabilitySettingDto!
+}
+
+input RetentionSettingInput {
+  treatment: RetentionTreatmentSettingInput!
+  availability: RetentionAvailabilitySettingInput!
+}
+
+input RetentionSettingUpdate {
+  treatment: RetentionTreatmentSettingUpdate
+  availability: RetentionAvailabilitySettingUpdate
+}
+
+type RetentionTreatmentSettingDto {
+  services: RetentionServiceSettingDto!
+  request: RetentionRequestSettingDto!
+  amount: RetentionAmountSettingDto!
+  directory: RetentionDirectorySettingDto!
+  tip: RetentionAmountSettingDto!
+  otherInfo: [String!]
+}
+
+input RetentionTreatmentSettingInput {
+  services: RetentionServiceSettingInput!
+  request: RetentionRequestSettingInput!
+  amount: RetentionAmountSettingInput!
+  directory: RetentionDirectorySettingInput!
+  tip: RetentionAmountSettingInput!
+  otherInfo: [String!]!
+}
+
+input RetentionTreatmentSettingUpdate {
+  services: RetentionServiceSettingUpdate
+  request: RetentionRequestSettingUpdate
+  amount: RetentionAmountSettingUpdate
+  directory: RetentionDirectorySettingUpdate
+  tip: RetentionAmountSettingUpdate
+  otherInfo: [String!]
 }
 
 type RetentionUserDto {
@@ -796,6 +1026,24 @@ type ReviewUserBalance {
 
 input SearcheableFilterInput {
   search: String
+}
+
+type ServiceSettingDto implements IResourceDto {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  name: String!
+  roles: [String!]!
+}
+
+input ServiceSettingInput {
+  name: String!
+  roles: [String!]
+}
+
+input ServiceSettingUpdate {
+  name: String
+  roles: [String!]
 }
 
 input UpdateClientInput {
@@ -1093,22 +1341,39 @@ type VisitRetentionDto implements IResourceDto {
   id: ID!
   createdAt: DateTime!
   updatedAt: DateTime!
-  user: UserType
-  clientPhone: String
-  treatment: String!
+  userId: String!
+  user: UserInfoDto
+  date: DateTime!
   flag: String!
+  directoryId: String!
+  directory: ReviewSettingDto
+  serviceId: String
+  service: ServiceSettingDto
+  client: ClientRetentionDto!
+  amount: String
+  tip: String
+  calendarId: String
 }
 
 input VisitRetentionInput {
-  user: String!
-  client: String
-  treatment: String!
-  flag: String
+  userId: String!
+  date: DateTime!
+  flag: String!
+  directoryId: String!
+  serviceId: String
+  client: ClientRetentionInput!
+  amount: String
+  tip: String
+  calendarId: String
 }
 
 input VisitRetentionUpdate {
   userId: String
-  clientPhone: String
-  treatment: String
+  date: DateTime
   flag: String
+  directoryId: String
+  serviceId: String
+  client: ClientRetentionUpdate
+  amount: String
+  tip: String
 }
