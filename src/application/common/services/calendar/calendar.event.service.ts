@@ -16,6 +16,43 @@ export class CalendarEventService extends ResourceService<CalendarEventDto> {
   ) {
     super(repository);
   }
+  async authorize() {
+    const { client_secret, client_id, redirect_uris } = GOOGLE_CALENDAR_CREDENTIALS.installed;
+    const oAuth2Client = new google.auth.OAuth2(
+      client_id,
+      client_secret,
+      redirect_uris[0],
+    );
+    oAuth2Client.setCredentials(GOOGLE_CALENDAR_TOKEN);
+    return oAuth2Client;
+  }
+  async getEvents(start: Date, end: Date): Promise<CalendarEventDto[]> {
+    const auth = await this.authorize();
+    const calendar = await google.calendar({
+      version: 'v3',
+      auth,
+    });
+    const res = await calendar.events.list({
+        calendarId: GOOGLE_CALENDAR_ID,
+        timeMin: start.toISOString(),
+        timeMax: end.toISOString(),
+        // maxResults: 300,
+        singleEvents: true,
+        orderBy: 'startTime',
+      });
+    const events = res.data.items.map(x => ({
+      id: x.id,
+      colorId: x.colorId,
+      createdAt: new Date(x.created),
+      updatedAt: new Date(x.updated),
+      description: x.description,
+      summary: x.summary,
+      end: x.end.dateTime,
+      start: x.start.dateTime,
+      status: x.status,
+    } as CalendarEventDto));
+    return events;
+  }
   async getGoogleCalendarEvents(start, end) {
     return new Promise((resolve, reject) => {
       // If modifying these scopes, delete token.json.
@@ -32,7 +69,7 @@ export class CalendarEventService extends ResourceService<CalendarEventDto> {
         // Authorize a client with credentials, then call the Google Calendar API.
         authorize(JSON.parse(content), listEvents);
       });*/
-      authorize(JSON.parse(GOOGLE_CALENDAR_CREDENTIALS), listEvents);
+      authorize(GOOGLE_CALENDAR_CREDENTIALS, listEvents);
 
       /**
        * Create an OAuth2 client with the given credentials, and then execute the
@@ -54,44 +91,8 @@ export class CalendarEventService extends ResourceService<CalendarEventDto> {
           oAuth2Client.setCredentials(JSON.parse(token));
           callback(oAuth2Client);
         });*/
-        oAuth2Client.setCredentials(JSON.parse(GOOGLE_CALENDAR_TOKEN));
+        oAuth2Client.setCredentials(GOOGLE_CALENDAR_TOKEN);
         callback(oAuth2Client);
-      }
-
-      /**
-       * Get and store new token after prompting for user authorization, and then
-       * execute the given callback with the authorized OAuth2 client.
-       * @param {google.auth.OAuth2} oAuth2Client The OAuth2 client to get token for.
-       * @param {getEventsCallback} callback The callback for the authorized client.
-       */
-      function getAccessToken(oAuth2Client, callback) {
-        const authUrl = oAuth2Client.generateAuthUrl({
-          access_type: 'offline',
-          scope: SCOPES,
-        });
-        // tslint:disable-next-line:no-console
-        console.log('Authorize this app by visiting this url:', authUrl);
-        const rl = readline.createInterface({
-          input: process.stdin,
-          output: process.stdout
-        });
-        rl.question('Enter the code from that page here: ', code => {
-          rl.close();
-          oAuth2Client.getToken(code, (err, token) => {
-            // tslint:disable-next-line:no-console
-            if (err) { return console.error('Error retrieving access token', err); }
-            oAuth2Client.setCredentials(token);
-            // Store the token to disk for later program executions
-            // tslint:disable-next-line:no-shadowed-variable
-            fs.writeFile(TOKEN_PATH, JSON.stringify(token), err => {
-              // tslint:disable-next-line:no-console
-              if (err) { return console.error(err); }
-              // tslint:disable-next-line:no-console
-              console.log('Token stored to', TOKEN_PATH);
-            });
-            callback(oAuth2Client);
-          });
-        });
       }
 
       /**

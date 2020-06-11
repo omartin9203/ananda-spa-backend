@@ -1,10 +1,13 @@
 import { ResourceModel } from '../../../core/models/models/resource.model';
 import { CALENDAR_EVENT_MODEL_NAME } from '../../../../constants/constants';
+import { Field } from 'type-graphql';
 
 export class CalendarEventModel extends ResourceModel {
-  readonly ID: number;
   readonly summary: string;
+  readonly description?: string;
   readonly colorId: string;
-  readonly createdate: Date;
-  static ModelName = CALENDAR_EVENT_MODEL_NAME;
+  readonly start: string;
+  readonly end: string;
+  readonly status: 'confirmed' | 'tentative' | 'cancelled';
+
 }

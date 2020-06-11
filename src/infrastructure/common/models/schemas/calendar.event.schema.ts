@@ -6,9 +6,7 @@ const Schema = mongoose.Schema;
 export const CalendarEventSchema = new Schema({
   createdAt: { type: Date, default: Date.now() },
   updatedAt: { type: Date, default: Date.now() },
-  firstname: { type: String, required: true },
-  lastname: { type: String, required: true },
-  createdate: { type: Date, required: true },
+  summary: {type: String, required: true},
 }, { timestamp: true });
 
 export const CalendarEventFeature = {
