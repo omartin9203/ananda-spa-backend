@@ -118,12 +118,12 @@ export const GOOGLE_CALENDAR_CREDENTIALS = {
 };
 
 export const GOOGLE_CALENDAR_TOKEN = {
-  access_token: 'ya29.Il-9B-pOfZbeKMrohh_RmuEYloHGd6InaF3ObyZvmIM-gzkj2zHx6KrJXBMNVoefx8iK9fbulAXKt' +
-    'pvqjJPnNBlNNR73grPZVAJpFoEHqwdoXgx6J767tIRnJOTJ1_lGDg',
-  refresh_token: '1//05006gVMFsrtICgYIARAAGAUSNwF-L9IrQ7KWBs3RC4AI4RuckjCdVzN3UpbEAFE9nppsTNzwN6Uk1xzIfgsxBLFnuBJyD391uMs',
-  scope: 'https://www.googleapis.com/auth/calendar.readonly',
+  access_token: 'ya29.a0AfH6SMAoIk1A282q0BGT6_kL3Gse62YwCtLNlWXuNy76kkZKITKGsWs1VSCBnAUVD7ZrYv7U1B6mFrX' +
+    'DkVNqf8H3Wb63A7m65QOKEzoB68Mka4FCRGaACHoJabWqx6_9LNk0cXI713V3U4ucWb6FWGGsFydM3D3B8PE',
+  refresh_token: '1//05t9m3u7N85MhCgYIARAAGAUSNwF-L9IrffRtMDkV80LTIuNG6VPGpRWJKoCK5yfg65aFeb2HlJTaZeBoUqQrRc57HwMfkGhV5nU',
+  scope: 'https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/calendar',
   token_type: 'Bearer',
-  expiry_date: 1581973739084,
+  expiry_date: 1591995297211,
 };
 
 export const GOOGLE_CALENDAR_ID = 'ph60s613mi84rsmkcgq397v38s@group.calendar.google.com';
