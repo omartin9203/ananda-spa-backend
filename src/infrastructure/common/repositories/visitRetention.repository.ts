@@ -5,6 +5,7 @@ import { QueryBuilderService } from "../../core/services/query-builder.service";
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from 'mongoose';
+import { FLAG_RETENTION } from '../../../constants/modules/enums';
 
 @Injectable()
 export class VisitRetentionRepository extends ResourceRepository<VisitRetentionModel> {
@@ -14,24 +15,67 @@ export class VisitRetentionRepository extends ResourceRepository<VisitRetentionM
     ) {
         super(model, querybuilderService);
     }
-    async getRetention(user: string, treatment?: string, initialDate?: Date, endDate?: Date) {
-        const match = { "userId": user };
-        if (treatment) {
-            match['treatment'] = treatment;
-        }
-        if (initialDate || endDate) {
-            match['createdAt'] = {};
-            if (initialDate) match['createdAt']["$gte"] = initialDate;
-            if (endDate) match['createdAt']["$lt"] = endDate;
-        }
-        await this.model.aggregate([
-            { "$match": match },
-            {
-                "$group": {
-                    _id: "clientPhone",
-                    count: { $sum: 1 },
-                }
-            },
-        ]);
+    async getRetention(filter: any = {}, sort: string = '-date', skip = 0, limit = 10) {
+        return await this.model.aggregate()
+          .match(filter)
+          .sort(sort)
+          .group({
+              id: null,
+              total: {
+                  $sum: 1,
+              },
+              items: {
+                  $push: '$$ROOT',
+              },
+              personal: {
+                  $sum: {
+                      $cond: [
+                          {
+                              $eq: ['$flag', FLAG_RETENTION.PERSONAL],
+                          }, 1, 0,
+                      ],
+                  },
+              },
+              request: {
+                  $sum: {
+                      $cond: [
+                          {
+                              $eq: ['$flag', FLAG_RETENTION.REQUEST],
+                          }, 1, 0,
+                      ],
+                  },
+              },
+          })
+          .project({
+              paginate: {
+                  total: '$total',
+                  items: { $slice: ['$items', skip, limit] },
+                  hasMore: {
+                      $lt: [ skip + limit, '$total'],
+                  },
+              },
+              personal: 1,
+              request: 1,
+              performance: {
+                  $multiply: [
+                      100,
+                      {
+                          $cond: [
+                              '$total',
+                              {
+                                  $divide: [
+                                      {
+                                          $sum: ['$personal', '$request'],
+                                      },
+                                      '$total',
+                                  ],
+                              },
+                              0,
+                          ],
+                      },
+                  ],
+              },
+              _id: 0,
+          });
     }
 }
