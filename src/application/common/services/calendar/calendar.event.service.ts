@@ -25,6 +25,19 @@ export class CalendarEventService extends ResourceService<CalendarEventDto> {
     oAuth2Client.setCredentials(GOOGLE_CALENDAR_TOKEN);
     return oAuth2Client;
   }
+  unzipEvent(event: any): CalendarEventDto {
+    return {
+      id : event.id,
+      colorId: event.colorId,
+      createdAt: new Date(event.created),
+      updatedAt: new Date(event.updated),
+      description: event.description,
+      summary: event.summary,
+      end: event.end.dateTime,
+      start: event.start.dateTime,
+      status: event.status,
+    };
+  }
   async getEvents(start: Date, end: Date): Promise<CalendarEventDto[]> {
     const auth = await this.authorize();
     const calendar = await google.calendar({
@@ -39,18 +52,7 @@ export class CalendarEventService extends ResourceService<CalendarEventDto> {
         singleEvents: true,
         orderBy: 'startTime',
       });
-    const events = res.data.items.map(x => ({
-      id: x.id,
-      colorId: x.colorId,
-      createdAt: new Date(x.created),
-      updatedAt: new Date(x.updated),
-      description: x.description,
-      summary: x.summary,
-      end: x.end.dateTime,
-      start: x.start.dateTime,
-      status: x.status,
-    } as CalendarEventDto));
-    return events;
+    return res.data.items.map(this.unzipEvent);
   }
 
   async getEvent(Id): Promise<CalendarEventDto> {
@@ -59,23 +61,11 @@ export class CalendarEventService extends ResourceService<CalendarEventDto> {
       version: 'v3',
       auth,
     });
-    const res = await calendar.events.get({
+    const { data } = await calendar.events.get({
       calendarId: GOOGLE_CALENDAR_ID,
       eventId: Id,
     });
-    const event = {
-      id : res.data.id,
-      colorId: res.data.colorId,
-      createdAt: new Date(res.data.created),
-      updatedAt: new Date(res.data.updated),
-      description: res.data.description,
-      summary: res.data.summary,
-      end: res.data.end.dateTime,
-      start: res.data.start.dateTime,
-      status: res.data.status,
-    } as CalendarEventDto;
-
-    return event;
+    return this.unzipEvent(data);
   }
   async updateEvent(Id, eventupdate: CalendarEventUpdateDto): Promise<CalendarEventDto> {
     const auth = await this.authorize();
@@ -88,26 +78,12 @@ export class CalendarEventService extends ResourceService<CalendarEventDto> {
       eventId: Id,
     });
     const event = res.data;
-    event.summary = eventupdate.summary;
-    event.colorId = eventupdate.colorId;
-
-    const resupdate = await calendar.events.update({
+    Object.keys(eventupdate).filter(x => eventupdate[x]).forEach(x => event[x] = eventupdate[x]);
+    const { data } = await calendar.events.update({
       calendarId: GOOGLE_CALENDAR_ID,
       eventId: Id,
       requestBody: event,
     });
-    const eventupdated = {
-      id : resupdate.data.id,
-      colorId: resupdate.data.colorId,
-      createdAt: new Date(resupdate.data.created),
-      updatedAt: new Date(resupdate.data.updated),
-      description: resupdate.data.description,
-      summary: resupdate.data.summary,
-      end: resupdate.data.end.dateTime,
-      start: resupdate.data.start.dateTime,
-      status: resupdate.data.status,
-    } as CalendarEventDto;
-
-    return eventupdated;
+    return this.unzipEvent(data);
   }
 }
