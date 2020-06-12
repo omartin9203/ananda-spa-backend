@@ -7,14 +7,14 @@ export const URI_HELPER = {
   },
 };
 
-export const UI_URI_BASE = process.env.NODE_ENV === 'production' ? 'https://staff.anandaspa.us/' : 'http://localhost:8080/'
+export const UI_URI_BASE = process.env.NODE_ENV === 'production' ? 'https://staff.anandaspa.us/' : 'http://localhost:8080/';
 export const UI_URI_HELPER = {
   AUTH: {
     login: {
       handler: UI_URI_BASE + 'login/handler',
     },
   },
-}
+};
 
 // Models Names
 
@@ -103,5 +103,29 @@ export const API_KEY = '95wTvKBBjxP0fbyn40qJwIWS3aIaDPI7' +
   'Xvy7kUzlN8OIR7/NFKTh2gZydktfQMw3Mtm4cR3S5r3CHlTbzlhhvmvnuGXeGbd2Vo+lmytdg' +
   'FulZJAg/VaE//VWNEpFlCzMpqy5fEVDEs8Ay/gZlG4XgEZcEPtpZ+CZgNnUFF2Fa2dgblr/GZ8' +
   'v0QqSr7dFLJL6YMbsDUzvzMOZ76CPaLcqW/1C/3Axo+sutp2ZW3QPQpoFkdlpOs9CyJRmj5UYq0UfqVbyPbvBPuQ==';
+
+// Google Calendar
+export const GOOGLE_CALENDAR_CREDENTIALS = {
+    installed: {
+      client_id: '807432464392-4k90ct4qa9flj4klcjcq7u69ap089mo4.apps.googleusercontent.com',
+      project_id: 'quickstart-1564686105986',
+      auth_uri: 'https://accounts.google.com/o/oauth2/auth',
+      token_uri: 'https://oauth2.googleapis.com/token',
+      auth_provider_x509_cert_url: 'https://www.googleapis.com/oauth2/v1/certs',
+      client_secret: 'Y7cxcOS49Ycvz73A5Nmmhbuv',
+      redirect_uris: ['urn:ietf:wg:oauth:2.0:oob', 'http://localhost'],
+  },
+};
+
+export const GOOGLE_CALENDAR_TOKEN = {
+  access_token: 'ya29.Il-9B-pOfZbeKMrohh_RmuEYloHGd6InaF3ObyZvmIM-gzkj2zHx6KrJXBMNVoefx8iK9fbulAXKt' +
+    'pvqjJPnNBlNNR73grPZVAJpFoEHqwdoXgx6J767tIRnJOTJ1_lGDg',
+  refresh_token: '1//05006gVMFsrtICgYIARAAGAUSNwF-L9IrQ7KWBs3RC4AI4RuckjCdVzN3UpbEAFE9nppsTNzwN6Uk1xzIfgsxBLFnuBJyD391uMs',
+  scope: 'https://www.googleapis.com/auth/calendar.readonly',
+  token_type: 'Bearer',
+  expiry_date: 1581973739084,
+};
+
+export const GOOGLE_CALENDAR_ID = 'ph60s613mi84rsmkcgq397v38s@group.calendar.google.com';
 
 //endregion
