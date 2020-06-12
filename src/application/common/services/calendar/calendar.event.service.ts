@@ -51,4 +51,29 @@ export class CalendarEventService extends ResourceService<CalendarEventDto> {
     } as CalendarEventDto));
     return events;
   }
+
+  async getEvent(Id): Promise<CalendarEventDto> {
+    const auth = await this.authorize();
+    const calendar = await google.calendar({
+      version: 'v3',
+      auth,
+    });
+    const res = await calendar.events.get({
+      calendarId: GOOGLE_CALENDAR_ID,
+      eventId: Id,
+    });
+    const event = {
+      id : res.data.id,
+      colorId: res.data.colorId,
+      createdAt: new Date(res.data.created),
+      updatedAt: new Date(res.data.updated),
+      description: res.data.description,
+      summary: res.data.summary,
+      end: res.data.end.dateTime,
+      start: res.data.start.dateTime,
+      status: res.data.status,
+    } as CalendarEventDto;
+
+    return event;
+  }
 }
