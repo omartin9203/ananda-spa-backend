@@ -5,6 +5,7 @@ import { CalendarEventRepository } from '../../../../infrastructure/common/repos
 import { QueryBuilderService } from '../../../../infrastructure/core/services/query-builder.service';
 import {google} from 'googleapis';
 import { GOOGLE_CALENDAR_CREDENTIALS, GOOGLE_CALENDAR_ID, GOOGLE_CALENDAR_TOKEN } from '../../../../constants';
+import { CalendarEventUpdateDto } from '../../dtos/dtos/calendar/calendar.event.update.dto';
 
 @Injectable()
 export class CalendarEventService extends ResourceService<CalendarEventDto> {
@@ -75,5 +76,38 @@ export class CalendarEventService extends ResourceService<CalendarEventDto> {
     } as CalendarEventDto;
 
     return event;
+  }
+  async updateEvent(Id, eventupdate: CalendarEventUpdateDto): Promise<CalendarEventDto> {
+    const auth = await this.authorize();
+    const calendar = await google.calendar({
+      version: 'v3',
+      auth,
+    });
+    const res = await calendar.events.get({
+      calendarId: GOOGLE_CALENDAR_ID,
+      eventId: Id,
+    });
+    const event = res.data;
+    event.summary = eventupdate.summary;
+    event.colorId = eventupdate.colorId;
+
+    const resupdate = await calendar.events.update({
+      calendarId: GOOGLE_CALENDAR_ID,
+      eventId: Id,
+      requestBody: event,
+    });
+    const eventupdated = {
+      id : resupdate.data.id,
+      colorId: resupdate.data.colorId,
+      createdAt: new Date(resupdate.data.created),
+      updatedAt: new Date(resupdate.data.updated),
+      description: resupdate.data.description,
+      summary: resupdate.data.summary,
+      end: resupdate.data.end.dateTime,
+      start: resupdate.data.start.dateTime,
+      status: resupdate.data.status,
+    } as CalendarEventDto;
+
+    return eventupdated;
   }
 }
