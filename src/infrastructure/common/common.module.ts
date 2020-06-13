@@ -29,24 +29,28 @@ import { ServiceSettingProviders } from './providers/settings/service-setting.pr
 import { ServiceSettingRepository } from './repositories/settings/service-setting.repository';
 import { RetentionSettingProviders } from './providers/settings/retention-setting.provider';
 import { RetentionSettingRepository } from './repositories/settings/retention-setting.repository';
+import { CalendarEventFeature } from './models/schemas/calendar.event.schema';
+import { CalendarEventRepository } from './repositories/calendar.event.repository';
 
 @Module({
     imports: [
         MongooseModule.forFeature([
-            BaseFormFeature, ClientFeature, UserFeature, RoleFeature, DepartmentFeature,
+            BaseFormFeature, ClientFeature, CalendarEventFeature, UserFeature, RoleFeature, DepartmentFeature,
             DiagnosticFeature, VisitFeature, VisitRetentionFeature, ReviewFeature, BaseSettingFeature,
         ]),
         InfrastructureCoreModule,
     ],
     providers: [
-        FacialFormRepository, MassageFormRepository, ClientRepository, ResourceRepository, QueryBuilderService, VisitRetentionRepository,
-        ReviewRepository, ReviewSettingRepository, ServiceSettingRepository, UserRepository, DiagnosticRepository, VisitRepository,
-        RetentionSettingRepository,
+        FacialFormRepository, MassageFormRepository, ClientRepository, CalendarEventRepository,
+        ResourceRepository, QueryBuilderService, VisitRetentionRepository,
+        ReviewRepository, ReviewSettingRepository, ServiceSettingRepository, UserRepository, DiagnosticRepository,
+        VisitRepository, RetentionSettingRepository,
         ...FacialFormProviders, ...MassageFormProviders, ...ReviewSettingProviders, ...ServiceSettingProviders, ...RetentionSettingProviders,
     ],
     exports: [
-        MongooseModule.forFeature([BaseFormFeature, ClientFeature, UserFeature, RoleFeature, DepartmentFeature]),
-        FacialFormRepository, MassageFormRepository, ClientRepository, VisitRepository, VisitRetentionRepository, ReviewRepository,
+        MongooseModule.forFeature([BaseFormFeature, ClientFeature, CalendarEventFeature, UserFeature, RoleFeature, DepartmentFeature]),
+        FacialFormRepository, MassageFormRepository, ClientRepository, CalendarEventRepository,
+        VisitRepository, VisitRetentionRepository, ReviewRepository,
         ReviewSettingRepository, ServiceSettingRepository, UserRepository, DiagnosticRepository, RetentionSettingRepository,
         ...FacialFormProviders, ...MassageFormProviders, ...ReviewSettingProviders, ...ServiceSettingProviders, ...RetentionSettingProviders,
     ],

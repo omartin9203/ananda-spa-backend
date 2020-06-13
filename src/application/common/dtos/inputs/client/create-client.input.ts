@@ -27,12 +27,12 @@ export class  CreateClientInputDto {
   @Field()
   @IsString()
   email: string;
-  @Field()
+  @Field({nullable: true})
   @IsDate()
-  datebirth: Date;
+  datebirth?: Date;
   @Field({nullable: true})
   readonly imgSrc?: string;
-  @Field()
-  readonly gender: string;
+  @Field({nullable: true})
+  readonly gender?: string;
 
 }

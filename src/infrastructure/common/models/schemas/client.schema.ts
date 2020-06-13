@@ -6,20 +6,19 @@ const Schema = mongoose.Schema;
 export const ClientSchema = new Schema({
   createdAt: { type: Date, default: Date.now() },
   updatedAt: { type: Date, default: Date.now() },
-  firstname: { type: String, required: true },
-  lastname: { type: String, required: true },
-  phone: { type: String, required: true },
-  // address: {
+  ID: { type: Number, required: true },
+  summary: { type: String, required: true },
+  colorId: { type: String, required: true },
   streetaddress: { type: String, required: true },
   city: { type: String, required: true },
   state: { type: String, required: true },
   zipcode: { type: String, required: true },
-  // },
+
 
   email: { type: String, required: true },
-  datebirth: { type: Date, required: true },
+  datebirth: { type: Date, required: false },
   imgSrc: {type: String, required: false },
-  gender: { type: String, required: true },
+  gender: { type: String, required: false },
 
 }, { timestamp: true });
 
