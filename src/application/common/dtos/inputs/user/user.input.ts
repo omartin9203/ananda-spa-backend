@@ -7,9 +7,9 @@ export class UserInput {
   @Field()
   @IsEmail()
   email: string;
-  @Field()
-  @IsAlphanumeric()
-  userName: string;
+  // @Field()
+  // @IsAlphanumeric()
+  // userName: string;
   @Field()
   @IsAlpha()
   firstName: string;
@@ -28,9 +28,9 @@ export class UserInput {
   @Field()
   @IsString()
   streetAddress: string;
-  @Field({nullable: true})
-  // @IsString()
-  address2?: string;
+  // @Field({nullable: true})
+  // // @IsString()
+  // address2?: string;
   @Field()
   @IsString()
   city: string;

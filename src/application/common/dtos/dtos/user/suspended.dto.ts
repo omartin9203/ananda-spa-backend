@@ -4,6 +4,6 @@ import { Field, ObjectType, GraphQLISODateTime } from 'type-graphql';
 export class SuspendedDto {
   @Field({ defaultValue: false })
   isSuspended: boolean;
-  @Field(type => GraphQLISODateTime, { nullable: true })
+  @Field({ nullable: true })
   endDate?: Date;
 }

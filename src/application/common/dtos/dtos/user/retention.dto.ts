@@ -2,8 +2,8 @@ import { ObjectType, Field } from "type-graphql";
 
 @ObjectType()
 export class RetentionUserDto {
-    @Field()
+    @Field({defaultValue: 0})
     total: number;
-    @Field()
+    @Field({defaultValue: 0})
     important: number;
 }

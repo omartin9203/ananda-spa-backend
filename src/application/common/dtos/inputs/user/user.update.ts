@@ -10,8 +10,8 @@ export class UpdateUserInput {
     // @IsEmail()
     email?: string;
     // @IsAlphanumeric()
-    @Field({ nullable: true })
-    userName?: string;
+    // @Field({ nullable: true })
+    // userName?: string;
     // @IsAlpha()
     @Field({ nullable: true })
     firstName?: string;
@@ -30,9 +30,9 @@ export class UpdateUserInput {
     @Field({ nullable: true })
     // @IsString()
     streetAddress?: string;
-    @Field({ nullable: true })
-    // @IsString()
-    address2?: string;
+    // @Field({ nullable: true })
+    // // @IsString()
+    // address2?: string;
     @Field({ nullable: true })
     // @IsString()
     city?: string;

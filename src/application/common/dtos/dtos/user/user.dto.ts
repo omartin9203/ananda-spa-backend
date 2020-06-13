@@ -8,8 +8,8 @@ import { RetentionUserDto } from './retention.dto';
 export class UserDto extends ResourceDto {
     @Field()
     readonly email: string;
-    @Field()
-    readonly userName: string;
+    // @Field()
+    // readonly userName: string;
     @Field()
     readonly firstName: string;
     @Field()
@@ -22,8 +22,8 @@ export class UserDto extends ResourceDto {
     readonly imgSrc: string;
     @Field()
     readonly streetAddress: string;
-    @Field({ nullable: true })
-    readonly address2?: string;
+    // @Field({ nullable: true })
+    // readonly address2?: string;
     @Field()
     city: string;
     @Field()
