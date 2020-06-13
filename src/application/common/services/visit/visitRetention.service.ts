@@ -2,18 +2,15 @@
 import { ResourceService } from '../../../core/services/resource.service';
 import { VisitRetentionRepository } from '../../../../infrastructure/common/repositories/visitRetention.repository';
 import { VisitRetentionDto } from '../../dtos/dtos/visitRetention/visitRetention.dto';
-import { VisitRetentionUpdate } from '../../dtos/inputs/visitRetention/visitRetention.update';
 import { FLAG_RETENTION } from '../../../../constants/modules/enums';
 import { UserService } from '../user/user.service';
 import { RetentionSettingsService } from '../settings/retention-settings.service';
-import { Field } from 'type-graphql';
-import { RetentionServiceSettingDto } from '../../dtos/dtos/settings/retention/treatment/service/retention-service-setting.dto';
-import { RetentionRequestSettingDto } from '../../dtos/dtos/settings/retention/treatment/request/retention-request-setting.dto';
-import { RetentionAmountSettingDto } from '../../dtos/dtos/settings/retention/treatment/amount/retention-amount-setting.dto';
-import { RetentionDirectorySettingDto } from '../../dtos/dtos/settings/retention/treatment/directory/retention-directory-setting.dto';
 import { RetentionSettingDto } from '../../dtos/dtos/settings/retention/retention-setting.dto';
 import { regexFormatNumber, regexPhone } from '../../../../constants/modules/rules';
 import { formatCurrency, formatPhoneNumber } from '../../../../constants/utils';
+import { RetentionPerformanceDto } from '../../dtos/dtos/visitRetention/retention-performance.dto';
+import { VisitRetentionInput } from '../../dtos/inputs/visitRetention/visitRetention.input';
+import { VisitRetentionUpdate } from '../../dtos/inputs/visitRetention/visitRetention.update';
 
 export interface IParserResponse {
     classification: 'availability' | 'treatment';
@@ -45,6 +42,27 @@ export class VisitRetentionService extends ResourceService<VisitRetentionDto> {
     ) {
         super(repository);
     }
+    async createResource(input: VisitRetentionInput): Promise<VisitRetentionDto> {
+        await this.userService.updateRetention(input.userId, {
+            important: Number(input.flag !== FLAG_RETENTION.NORMAL),
+            total: 1,
+        });
+        return await this.repository.create(input);
+    }
+    async deleteResource(id: string): Promise<VisitRetentionDto> {
+        const item = await this.repository.getOne(id) as { flag: FLAG_RETENTION, userId: string };
+        await this.userService.updateRetention(item.userId, {
+            important: -Number(item.flag !== FLAG_RETENTION.NORMAL),
+            total: -1,
+        });
+        return await this.repository.deleteOne(id);
+    }
+    async updateResource(id: string, input: VisitRetentionUpdate) {
+        if (input.flag) {
+            await this.updateFlag(id, input.flag);
+        }
+        return await this.repository.updateOne(id, input);
+    }
     async updateFlag(id: string, flag: FLAG_RETENTION) {
         const prev = await this.repository.getOne(id) as { flag: FLAG_RETENTION, userId: string };
         if (prev.flag !== flag) {
@@ -52,6 +70,7 @@ export class VisitRetentionService extends ResourceService<VisitRetentionDto> {
               { important: prev.flag === FLAG_RETENTION.NORMAL ? 1 : flag === FLAG_RETENTION.NORMAL ? -1 : 0 });
         }
     }
+
     async parser(text: string): Promise<IParserResponse> {
         const processedText = text.trim().replace(/( )+/, ' ');
         if (!processedText) { return null; }
@@ -211,5 +230,10 @@ export class VisitRetentionService extends ResourceService<VisitRetentionDto> {
     }
     private buildRegex(matches: string[]) {
         return new RegExp(matches.sort((a, b) => Number(a.length < b.length)).join('|'), 'i');
+    }
+
+    async getPerformanceRetention(filter: any = {}, sort: string = '-date', skip = 0, limit = 10, withItems = true)
+      : Promise<RetentionPerformanceDto> {
+        return await this.repository.getPerformanceRetention(filter, sort, skip, limit, withItems);
     }
 }

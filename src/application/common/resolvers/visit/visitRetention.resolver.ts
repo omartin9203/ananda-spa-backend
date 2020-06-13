@@ -21,6 +21,7 @@ import { RetentionFilterArgsInput } from '../../dtos/inputs/visitRetention/reten
 import { QueryFilterIdDto } from '../../../core/dtos/filter/query-filter/query-filter-id.dto';
 import { ClientRetentionDto } from '../../dtos/dtos/visitRetention/client-retention.dto';
 import { formatPhoneNumber } from '../../../../constants/utils';
+import { RetentionPerformanceDto } from '../../dtos/dtos/visitRetention/retention-performance.dto';
 
 @Resolver(of => VisitRetentionDto)
 export class VisitRetentionResolver {
@@ -61,11 +62,25 @@ export class VisitRetentionResolver {
         return await this.services.getAll(skip, limit, RetentionFilterInput.getQuery(filter), '-date');
     }
 
+    @Query(() => RetentionPerformanceDto)
+    @UseGuards(GqlAuthGuard)
+    async getPerformanceRetention(
+      @Args() { filter, limit, skip, withItems }: RetentionFilterArgsInput,
+      @CurrentUser() user,
+    ) {
+        if (!['MANAGER', 'ADMIN'].some(x => user.roles.includes(x))) {
+            filter.userId = {
+                eq: user.id,
+            } as QueryFilterIdDto;
+        }
+        return await this.services.getPerformanceRetention(RetentionFilterInput.getQuery(filter), '-date', skip, limit, withItems);
+    }
+
     @Mutation(() => VisitRetentionDto)
     async createRetention(@Args('input') input: VisitRetentionInput) {
         try {
-            const user: UserDto = await this.userService.getUserInfo(input.userId);
-            await this.userService.updateRetention(user.id, { total: 1, important: input.flag && input.flag !== FLAG_RETENTION.NORMAL ? 1 : 0 });
+            // const user: UserDto = await this.userService.getUserInfo(input.userId);
+            // await this.userService.updateRetention(user.id, { total: 1, important: input.flag && input.flag !== FLAG_RETENTION.NORMAL ? 1 : 0 });
             return await this.services.createResource(input);
         } catch (e) {
             Logger.debug(e, 'error');
@@ -76,9 +91,9 @@ export class VisitRetentionResolver {
     async updateRetention(
         @Args({ name: 'id', type: () => ID }) id: string,
         @Args('input') input: VisitRetentionUpdate) {
-        if (input.flag) {
-            await this.services.updateFlag(id, input.flag);
-        }
+        // if (input.flag) {
+        //     await this.services.updateFlag(id, input.flag);
+        // }
         return await this.services.updateResource(id, input);
     }
 
