@@ -31,6 +31,8 @@ import { RetentionSettingProviders } from './providers/settings/retention-settin
 import { RetentionSettingRepository } from './repositories/settings/retention-setting.repository';
 import { CalendarEventFeature } from './models/schemas/calendar.event.schema';
 import { CalendarEventRepository } from './repositories/calendar.event.repository';
+import { ColorSettingRepository } from './repositories/settings/color-setting.repository';
+import { ColorSettingProvider } from './providers/settings/color-setting.provider';
 
 @Module({
     imports: [
@@ -43,9 +45,10 @@ import { CalendarEventRepository } from './repositories/calendar.event.repositor
     providers: [
         FacialFormRepository, MassageFormRepository, ClientRepository, CalendarEventRepository,
         ResourceRepository, QueryBuilderService, VisitRetentionRepository,
-        ReviewRepository, ReviewSettingRepository, ServiceSettingRepository, UserRepository, DiagnosticRepository,
+        ReviewRepository, ColorSettingRepository, ReviewSettingRepository, ServiceSettingRepository, UserRepository, DiagnosticRepository,
         VisitRepository, RetentionSettingRepository,
-        ...FacialFormProviders, ...MassageFormProviders, ...ReviewSettingProviders, ...ServiceSettingProviders, ...RetentionSettingProviders,
+        ...FacialFormProviders, ...MassageFormProviders, ...ReviewSettingProviders, ...ColorSettingProvider,
+        ...ServiceSettingProviders, ...RetentionSettingProviders,
     ],
     exports: [
         MongooseModule.forFeature([BaseFormFeature, ClientFeature, CalendarEventFeature, UserFeature, RoleFeature, DepartmentFeature]),
