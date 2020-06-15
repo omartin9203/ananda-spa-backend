@@ -21,9 +21,9 @@ import { RetentionFilterArgsInput } from '../../dtos/inputs/visitRetention/reten
 import { QueryFilterIdDto } from '../../../core/dtos/filter/query-filter/query-filter-id.dto';
 import { ClientRetentionDto } from '../../dtos/dtos/visitRetention/client-retention.dto';
 import { formatPhoneNumber } from '../../../../constants/utils';
-import { RetentionPerformanceDto } from '../../dtos/dtos/visitRetention/retention-performance.dto';
 import { RolesGuard } from '../../guard/auth/roles.guard';
 import { Roles } from '../../decorators/auth/roles.decorator';
+import { RetentionPerformanceDto } from '../../dtos/dtos/visitRetention/retention-performance.dto';
 
 @Resolver(of => VisitRetentionDto)
 export class VisitRetentionResolver {

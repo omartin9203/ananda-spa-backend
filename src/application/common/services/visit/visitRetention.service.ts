@@ -4,13 +4,13 @@ import { VisitRetentionRepository } from '../../../../infrastructure/common/repo
 import { VisitRetentionDto } from '../../dtos/dtos/visitRetention/visitRetention.dto';
 import { FLAG_RETENTION } from '../../../../constants/modules/enums';
 import { UserService } from '../user/user.service';
-import { RetentionPerformanceDto } from '../../dtos/dtos/visitRetention/retention-performance.dto';
 import { VisitRetentionInput } from '../../dtos/inputs/visitRetention/visitRetention.input';
 import { VisitRetentionUpdate } from '../../dtos/inputs/visitRetention/visitRetention.update';
 import { CalendarEventUpdateDto } from '../../dtos/dtos/calendar/calendar.event.update.dto';
 import { CalendarEventService } from '../calendar/calendar.event.service';
 import { IParserTreatmentResponse, RetentionParserService } from './retention-parser.service';
 import { CalendarEventDto } from '../../dtos/dtos/calendar/calendar.event.dto';
+import { RetentionPerformanceDto } from '../../dtos/dtos/visitRetention/retention-performance.dto';
 
 @Injectable()
 export class VisitRetentionService extends ResourceService<VisitRetentionDto> {
