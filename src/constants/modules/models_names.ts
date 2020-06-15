@@ -15,3 +15,4 @@ export const BASE_SETTING_MODEL_NAME = 'Setting';
 export const REVIEW_SETTING_MODEL_NAME = 'ReviewSetting';
 export const SERVICE_SETTING_MODEL_NAME = 'ServiceSetting';
 export const RETENTION_SETTING_MODEL_NAME = 'RetentionSetting';
+export const COLOR_SETTING_MODEL_NAME = 'ColorSetting';
