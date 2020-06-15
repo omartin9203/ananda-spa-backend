@@ -189,34 +189,44 @@ export class ReviewRepository extends ResourceRepository<ReviewModel> {
               },
               retention: {
                 $first: {
-                  $multiply: [
-                    100,
+                  $min: [
                     {
-                     $cond: ['$retention.total', { $divide: [ '$retention.important', '$retention.total' ] }, 0],
+                      $multiply: [
+                        100,
+                        {
+                          $cond: ['$retention.total', { $divide: [ '$retention.important', '$retention.total' ] }, 0],
+                        },
+                      ],
                     },
+                    100,
                   ],
                 },
               },
               expectedReviews: {
                 $avg: {
-                  $multiply: [
+                  $min: [
                     100,
                     {
-                      $cond: ['$retention.total',
+                      $multiply: [
+                        100,
                         {
-                          $divide: [
-                            '$achieved',
+                          $cond: ['$retention.total',
                             {
                               $divide: [
+                                '$achieved',
                                 {
-                                  $multiply: ['$percentage', '$retention.total'],
+                                  $divide: [
+                                    {
+                                      $multiply: ['$percentage', '$retention.total'],
+                                    },
+                                    100,
+                                  ],
                                 },
-                                100,
                               ],
                             },
+                            0,
                           ],
                         },
-                        0,
                       ],
                     },
                   ],

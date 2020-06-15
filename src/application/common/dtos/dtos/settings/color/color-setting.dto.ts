@@ -4,7 +4,7 @@ import { Field, ObjectType } from 'type-graphql';
 @ObjectType()
 export class ColorSettingDto extends ResourceDto {
   @Field()
-  colorId: number;
+  colorId: string;
   @Field()
   name: string;
   @Field()

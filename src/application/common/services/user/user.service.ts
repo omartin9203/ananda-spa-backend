@@ -62,4 +62,7 @@ export class UserService extends ResourceService<UserDto> {
     async getBalanceRetention(filter: any): Promise<UserBalanceRetentionDto> {
       return await this.repository.getBalanceRetention(filter);
     }
+    async getUserByColor(colorId: string) {
+      return await this.repository.getUserByColor(colorId);
+    }
 }

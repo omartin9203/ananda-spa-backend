@@ -11,6 +11,7 @@ import { CalendarEventService } from '../calendar/calendar.event.service';
 import { IParserTreatmentResponse, RetentionParserService } from './retention-parser.service';
 import { CalendarEventDto } from '../../dtos/dtos/calendar/calendar.event.dto';
 import { RetentionPerformanceDto } from '../../dtos/dtos/visitRetention/retention-performance.dto';
+import { ColorSettingService } from '../settings/color-setting.service';
 
 @Injectable()
 export class VisitRetentionService extends ResourceService<VisitRetentionDto> {
@@ -19,9 +20,12 @@ export class VisitRetentionService extends ResourceService<VisitRetentionDto> {
       readonly userService: UserService,
       readonly parserService: RetentionParserService,
       readonly calendarService: CalendarEventService,
+      readonly colorSettingService: ColorSettingService,
     ) {
         super(repository);
     }
+
+    //region OVERRIDE METHODS
     async createResource(input: VisitRetentionInput): Promise<VisitRetentionDto> {
         await this.userService.updateRetention(input.userId, {
             important: Number(input.flag !== FLAG_RETENTION.NORMAL),
@@ -29,6 +33,7 @@ export class VisitRetentionService extends ResourceService<VisitRetentionDto> {
         });
         return await this.repository.create(input);
     }
+
     async deleteResource(id: string): Promise<VisitRetentionDto> {
         const item = await this.repository.getOne(id) as { flag: FLAG_RETENTION, userId: string };
         await this.userService.updateRetention(item.userId, {
@@ -37,6 +42,7 @@ export class VisitRetentionService extends ResourceService<VisitRetentionDto> {
         });
         return await this.repository.deleteOne(id);
     }
+
     async updateRetention(id: string, input: VisitRetentionUpdate) {
         if (input.flag) {
             await this.updateFlag(id, input.flag);
@@ -47,15 +53,17 @@ export class VisitRetentionService extends ResourceService<VisitRetentionDto> {
             eventUpdate.summary = Object.keys(input).filter(x => x !== 'userId').length
               ? (await this.parserService.buildSummary(entity)).data
               : undefined;
-            // todo: Update colorId ( userService.get(userId).colorId )
+            if (input.userId) {
+                const colorId = (await this.userService.findResource(input.userId)).colorId;
+                eventUpdate.colorId = (await this.colorSettingService.findResource(colorId)).colorId;
+            }
             if (Object.keys(eventUpdate).filter(x => eventUpdate[x]).length) {
                 await this.calendarService.updateEvent(entity.calendarId, eventUpdate);
             }
         }
-        const result = await this.parserService.buildSummary(entity);
-        Logger.log(result.data ?? result.error, result.success ? 'SUMMARY' : 'ERROR');
         return entity;
     }
+    //endregion
 
     async updateFlag(id: string, flag: FLAG_RETENTION) {
         const prev = await this.repository.getOne(id) as { flag: FLAG_RETENTION, userId: string };
@@ -75,9 +83,10 @@ export class VisitRetentionService extends ResourceService<VisitRetentionDto> {
         const event = await this.calendarService.getEvent(eventId);
         if (!event) { throw new Error('There is no event with that id'); }
         const update = await this.getInfoFromSummary(event.summary);
-        // todo: update userId from colorId
+        const userId = (await this.userService.getUserByColor(event.colorId)).id;
         const input: VisitRetentionUpdate = {
             ...update,
+            userId,
             date: new Date(event.start),
         };
         return await this.updateResource(entityId, VisitRetentionUpdate.getUnzip(input));
@@ -109,7 +118,7 @@ export class VisitRetentionService extends ResourceService<VisitRetentionDto> {
     async createRetentionFromEvent(event: CalendarEventDto) {
         try {
             const info = await this.getInfoFromSummary(event.summary);
-            const userId = ' '; // todo: take userId
+            const userId = (await this.userService.getUserByColor(event.colorId)).id;
             const input: VisitRetentionInput = {
                 ...info,
                 userId,

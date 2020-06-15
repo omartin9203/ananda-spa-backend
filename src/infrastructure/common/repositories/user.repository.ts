@@ -6,11 +6,8 @@ import { UserModel } from '../models/models/user.model';
 import { STATUS, USER_MODEL_NAME } from '../../../constants/constants';
 import { QueryBuilderService } from '../../core/services/query-builder.service';
 import * as bcrypt from 'bcryptjs';
-import { Query } from 'mongoose';
-import { Field } from 'type-graphql';
-import { strict } from 'assert';
-import { tryCatch } from 'rxjs/internal-compatibility';
 import { fixIdValue } from '../../core/utils/query/fix-filter-value';
+import * as mongoose from 'mongoose';
 
 @Injectable()
 export class UserRepository extends ResourceRepository<UserModel> {
@@ -23,7 +20,7 @@ export class UserRepository extends ResourceRepository<UserModel> {
     }
     async signInSSO(email: string) {
         try {
-            const res = await this.userModel.findOne({ email }).select('id status roles').exec()
+            const res = await this.userModel.findOne({ email }).select('id status roles').exec();
             if (!res) {
                 return null;
             }
@@ -149,5 +146,10 @@ export class UserRepository extends ResourceRepository<UserModel> {
               filter[x] = fixIdValue(filter[x]);
           });
         return filter;
+    }
+    async getUserByColor(colorId: string) {
+        return await this.findOne({
+            colorId: mongoose.Types.ObjectId(colorId),
+        });
     }
 }

@@ -2,7 +2,7 @@ import { Schema } from 'mongoose';
 
 export const ColorSettingSchema: Schema = new Schema({
   colorId: {
-    type: Number,
+    type: String,
     required: true,
   },
   name: {
@@ -14,5 +14,3 @@ export const ColorSettingSchema: Schema = new Schema({
     required: true,
   },
 }, { discriminatorKey: 'type' });
-
-

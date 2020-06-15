@@ -3,7 +3,7 @@ import { Field, InputType } from 'type-graphql';
 @InputType()
 export class ColorSettingInput {
   @Field()
-  colorId: number;
+  colorId: string;
   @Field()
   name: string;
   @Field()

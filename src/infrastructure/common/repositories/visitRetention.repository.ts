@@ -81,7 +81,7 @@ export class VisitRetentionRepository extends ResourceRepository<VisitRetentionM
                                       '$total',
                                   ],
                               },
-                              0,
+                              1,
                           ],
                       },
                   ],
@@ -93,7 +93,7 @@ export class VisitRetentionRepository extends ResourceRepository<VisitRetentionM
             total: 0,
             request: 0,
             personal: 0,
-            performance: 0,
+            performance: 100,
             paginate: withItems ? {
                 items: [],
                 total: 0,
