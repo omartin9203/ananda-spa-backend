@@ -2,6 +2,7 @@ import { Field, InputType } from 'type-graphql';
 import { IsAlpha, IsAlphanumeric, IsDate, IsEmail, IsIn, IsPhoneNumber, IsString, Min } from 'class-validator';
 import { GENDER_OPTIONS, GENDER_OPTIONSS_VALUES, STATUS_VALUES } from '../../../../../constants/constants';
 import { RetentionUserInput } from './retention.user.input';
+import { ColorSettingInput } from '../settings/color/color-setting.input';
 
 
 @InputType('UpdateUserInput')
@@ -55,6 +56,8 @@ export class UpdateUserInput {
     roles?: string[];
     @Field({ nullable: true })
     retention?: RetentionUserInput;
+    @Field({nullable: true})
+    colorId?: ColorSettingInput;
     // @Field({ nullable: true })
     // suspended?: SuspendedDto;
 }

@@ -1,6 +1,7 @@
 import * as mongoose from 'mongoose';
 import { STATUS, STATUS_VALUES, USER_MODEL_NAME } from '../../../../constants/constants';
 import * as bcrypt from 'bcryptjs';
+import { COLOR_SETTING_MODEL_NAME } from '../../../../constants/modules/models_names';
 
 const Schema = mongoose.Schema;
 
@@ -40,6 +41,11 @@ export const UserSchema = new Schema({
             type: Number,
             default: 0,
         },
+    },
+    colorId: {
+        type: Schema.Types.ObjectId,
+        required: false,
+        ref: COLOR_SETTING_MODEL_NAME,
     },
     createdAt: { type: Date, default: Date.now() },
     updatedAt: { type: Date, default: Date.now() },

@@ -3,6 +3,7 @@ import { ResourceDto } from '../../../../core/dtos/resource.dto';
 import { IsDate, IsIn, IsPhoneNumber, IsString } from 'class-validator';
 import { GENDER_OPTIONS } from '../../../../../constants/constants';
 import { RetentionUserDto } from './retention.dto';
+import { ColorSettingDto } from '../settings/color/color-setting.dto';
 
 @ObjectType('UserType')
 export class UserDto extends ResourceDto {
@@ -38,6 +39,8 @@ export class UserDto extends ResourceDto {
     roles: string[];
     @Field()
     retention: RetentionUserDto;
+    @Field({nullable: true})
+    colorId?: ColorSettingDto;
     // @Field({ nullable: true })
     // readonly suspended?: SuspendedDto;
 }

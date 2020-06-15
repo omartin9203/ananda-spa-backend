@@ -77,6 +77,21 @@ type ClientType implements IResourceDto {
   gender: String
 }
 
+type ColorSettingDto implements IResourceDto {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  colorId: Float!
+  name: String!
+  hexcode: String!
+}
+
+input ColorSettingInput {
+  colorId: Float!
+  name: String!
+  hexcode: String!
+}
+
 input CreateClientInput {
   firstname: String!
   lastname: String!
@@ -276,6 +291,7 @@ input CreateUserInput {
   zipCode: String!
   dateOfBirth: DateTime!
   gender: String!
+  colorId: ColorSettingInput
 }
 
 input CreateVisit {
@@ -1254,6 +1270,7 @@ input UpdateUserInput {
   status: String
   roles: [String!]
   retention: RetentionUserInput
+  colorId: ColorSettingInput
 }
 
 input UpdateVisit {
@@ -1321,6 +1338,7 @@ type UserType implements IResourceDto {
   gender: String!
   roles: [String!]!
   retention: RetentionUserDto!
+  colorId: ColorSettingDto
 }
 
 type VisitDto implements IResourceDto {

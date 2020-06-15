@@ -1,6 +1,7 @@
 import { Field, InputType } from 'type-graphql';
 import { IsEmail, IsAlphanumeric, IsAlpha, MinLength, IsPhoneNumber, IsString, IsIn, IsDate } from 'class-validator';
 import { GENDER_OPTIONS, GENDER_OPTIONSS_VALUES } from '../../../../../constants/constants';
+import { ColorSettingInput } from '../settings/color/color-setting.input';
 
 @InputType('CreateUserInput')
 export class UserInput {
@@ -46,4 +47,6 @@ export class UserInput {
   @Field()
   @IsIn(GENDER_OPTIONSS_VALUES)
   gender: string;
+  @Field({nullable: true})
+  colorId?: ColorSettingInput;
 }
