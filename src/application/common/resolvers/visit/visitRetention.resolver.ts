@@ -8,7 +8,7 @@ import { Logger, UseGuards } from '@nestjs/common';
 import { VisitRetentionInput } from '../../dtos/inputs/visitRetention/visitRetention.input';
 import { UserDto } from '../../dtos/dtos/user/user.dto';
 import { VisitRetentionUpdate } from '../../dtos/inputs/visitRetention/visitRetention.update';
-import { FLAG_RETENTION } from '../../../../constants/modules/enums';
+import { FLAG_RETENTION, USER_ROLES } from '../../../../constants/modules/enums';
 import { UserInfoDto } from '../../dtos/dtos/user/user.Info.dto';
 import { ReviewSettingService } from '../../services/settings/review-settings.service';
 import { ServiceSettingService } from '../../services/settings/service-setting.service';
@@ -22,6 +22,8 @@ import { QueryFilterIdDto } from '../../../core/dtos/filter/query-filter/query-f
 import { ClientRetentionDto } from '../../dtos/dtos/visitRetention/client-retention.dto';
 import { formatPhoneNumber } from '../../../../constants/utils';
 import { RetentionPerformanceDto } from '../../dtos/dtos/visitRetention/retention-performance.dto';
+import { RolesGuard } from '../../guard/auth/roles.guard';
+import { Roles } from '../../decorators/auth/roles.decorator';
 
 @Resolver(of => VisitRetentionDto)
 export class VisitRetentionResolver {
@@ -77,6 +79,8 @@ export class VisitRetentionResolver {
     }
 
     @Mutation(() => VisitRetentionDto)
+    @UseGuards(GqlAuthGuard, RolesGuard)
+    @Roles(USER_ROLES.MANAGER, USER_ROLES.ADMIN)
     async createRetention(@Args('input') input: VisitRetentionInput) {
         try {
             // const user: UserDto = await this.userService.getUserInfo(input.userId);
@@ -88,18 +92,39 @@ export class VisitRetentionResolver {
     }
 
     @Mutation(() => VisitRetentionDto)
+    @UseGuards(GqlAuthGuard, RolesGuard)
+    @Roles(USER_ROLES.MANAGER, USER_ROLES.ADMIN)
     async updateRetention(
         @Args({ name: 'id', type: () => ID }) id: string,
         @Args('input') input: VisitRetentionUpdate) {
-        // if (input.flag) {
-        //     await this.services.updateFlag(id, input.flag);
-        // }
-        return await this.services.updateResource(id, input);
+        return await this.services.updateRetention(id, input);
     }
 
     @Mutation(() => VisitRetentionDto)
+    @UseGuards(GqlAuthGuard, RolesGuard)
+    @Roles(USER_ROLES.MANAGER, USER_ROLES.ADMIN)
     async deleteRetention(@Args({ name: 'id', type: () => ID }) id: string) {
         return await this.services.deleteResource(id);
+    }
+
+    @Mutation(() => VisitRetentionDto, {nullable: true})
+    @UseGuards(GqlAuthGuard, RolesGuard)
+    @Roles(USER_ROLES.MANAGER, USER_ROLES.ADMIN)
+    async updateRetentionFromSummary(
+      @Args({ name: 'id', type: () => ID }) id: string,
+      @Args({ name: 'summary', type: () => String }) summary: string,
+    ) {
+        return await this.services.updateRetentionFromSummary(id, summary);
+    }
+
+    @Mutation(() => VisitRetentionDto, {nullable: true})
+    @UseGuards(GqlAuthGuard, RolesGuard)
+    @Roles(USER_ROLES.MANAGER, USER_ROLES.ADMIN)
+    async syncRetention(
+      @Args({ name: 'entityId', type: () => ID }) entityId: string,
+      @Args({ name: 'eventId', type: () => String }) eventId: string,
+    ) {
+        return await this.services.syncRetention(entityId, eventId);
     }
 
     @ResolveProperty(returns => UserInfoDto)

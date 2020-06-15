@@ -1,6 +1,8 @@
 ﻿import { InputType, Field } from 'type-graphql';
 import { FLAG_RETENTION } from '../../../../../constants/modules/enums';
 import { ClientRetentionUpdate } from './ClientRetentionUpdate';
+import { RetentionTreatmentSettingUpdate } from '../settings/retention/treatment/retention-treatment-setting.update';
+import { RetentionAvailabilitySettingUpdate } from '../settings/retention/availability/retention-availability-setting.update';
 
 @InputType()
 export class VisitRetentionUpdate {
@@ -20,4 +22,16 @@ export class VisitRetentionUpdate {
     readonly amount?: string;
     @Field({nullable: true})
     readonly tip?: string;
+    @Field(t => [String], {nullable: true})
+    readonly otherInfo?: string[];
+    static getUnzip(input: VisitRetentionUpdate) {
+        const result: any = {};
+        Object.keys(input).filter(x => x !== 'client').forEach(x => result[x] = input[x]);
+        if (input.client) {
+            Object.keys(input.client).forEach(x => {
+                result[`client.${x}`] = input.client[x];
+            });
+        }
+        return result;
+    }
 }

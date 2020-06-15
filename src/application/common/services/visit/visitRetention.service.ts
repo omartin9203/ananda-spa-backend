@@ -1,44 +1,24 @@
-﻿import { Injectable } from '@nestjs/common';
+﻿import { Injectable, Logger } from '@nestjs/common';
 import { ResourceService } from '../../../core/services/resource.service';
 import { VisitRetentionRepository } from '../../../../infrastructure/common/repositories/visitRetention.repository';
 import { VisitRetentionDto } from '../../dtos/dtos/visitRetention/visitRetention.dto';
 import { FLAG_RETENTION } from '../../../../constants/modules/enums';
 import { UserService } from '../user/user.service';
-import { RetentionSettingsService } from '../settings/retention-settings.service';
-import { RetentionSettingDto } from '../../dtos/dtos/settings/retention/retention-setting.dto';
-import { regexFormatNumber, regexPhone } from '../../../../constants/modules/rules';
-import { formatCurrency, formatPhoneNumber } from '../../../../constants/utils';
 import { RetentionPerformanceDto } from '../../dtos/dtos/visitRetention/retention-performance.dto';
 import { VisitRetentionInput } from '../../dtos/inputs/visitRetention/visitRetention.input';
 import { VisitRetentionUpdate } from '../../dtos/inputs/visitRetention/visitRetention.update';
-
-export interface IParserResponse {
-    classification: 'availability' | 'treatment';
-    response: IParserAvailabilityResponse | IParserTreatmentResponse;
-}
-
-export interface IParserAvailabilityResponse {
-    available: boolean;
-}
-
-export interface IParserTreatmentResponse {
-    readonly services?: string;
-    readonly request: string;
-    readonly amount: string | number;
-    readonly directory: string;
-    readonly tip: string | number;
-    readonly client: {
-        name?: string;
-        phone?: string;
-    };
-}
+import { CalendarEventUpdateDto } from '../../dtos/dtos/calendar/calendar.event.update.dto';
+import { CalendarEventService } from '../calendar/calendar.event.service';
+import { IParserTreatmentResponse, RetentionParserService } from './retention-parser.service';
+import { CalendarEventDto } from '../../dtos/dtos/calendar/calendar.event.dto';
 
 @Injectable()
 export class VisitRetentionService extends ResourceService<VisitRetentionDto> {
     constructor(
       readonly repository: VisitRetentionRepository,
       readonly userService: UserService,
-      readonly settingService: RetentionSettingsService,
+      readonly parserService: RetentionParserService,
+      readonly calendarService: CalendarEventService,
     ) {
         super(repository);
     }
@@ -57,12 +37,26 @@ export class VisitRetentionService extends ResourceService<VisitRetentionDto> {
         });
         return await this.repository.deleteOne(id);
     }
-    async updateResource(id: string, input: VisitRetentionUpdate) {
+    async updateRetention(id: string, input: VisitRetentionUpdate) {
         if (input.flag) {
             await this.updateFlag(id, input.flag);
         }
-        return await this.repository.updateOne(id, input);
+        const entity: VisitRetentionDto = await this.updateResource(id, VisitRetentionUpdate.getUnzip(input));
+        if (entity.calendarId) {
+            const eventUpdate: CalendarEventUpdateDto = {};
+            eventUpdate.summary = Object.keys(input).filter(x => x !== 'userId').length
+              ? (await this.parserService.buildSummary(entity)).data
+              : undefined;
+            // todo: Update colorId ( userService.get(userId).colorId )
+            if (Object.keys(eventUpdate).filter(x => eventUpdate[x]).length) {
+                await this.calendarService.updateEvent(entity.calendarId, eventUpdate);
+            }
+        }
+        const result = await this.parserService.buildSummary(entity);
+        Logger.log(result.data ?? result.error, result.success ? 'SUMMARY' : 'ERROR');
+        return entity;
     }
+
     async updateFlag(id: string, flag: FLAG_RETENTION) {
         const prev = await this.repository.getOne(id) as { flag: FLAG_RETENTION, userId: string };
         if (prev.flag !== flag) {
@@ -71,169 +65,60 @@ export class VisitRetentionService extends ResourceService<VisitRetentionDto> {
         }
     }
 
-    async parser(text: string): Promise<IParserResponse> {
-        const processedText = text.trim().replace(/( )+/, ' ');
-        if (!processedText) { return null; }
-        const setting = await this.settingService.findOne({});
-        if (!setting) { return null; }
-        const available = setting.availability.available.match.some(x => x.toLowerCase() === processedText.toLowerCase());
-        const unavailable = setting.availability.unavailable.match.some(x => x.toLowerCase() === processedText.toLowerCase());
-        if (available || unavailable) {
-            return {
-                classification: 'availability',
-                response: {
-                    available,
-                },
-            };
-        }
-        return {
-            classification: 'treatment',
-            response: this.parserTreatment(processedText, setting),
-        };
-    }
-    parserTreatment(text: string, setting: RetentionSettingDto): IParserTreatmentResponse {
-        const extractPhone = () => {
-            const result = text.match(regexPhone);
-            if (result && result.length) {
-                text = text.replace(regexPhone, '').replace(/( )+/, ' ');
-                return formatPhoneNumber(result.slice(1, 5).join(''));
-            }
-            return undefined;
-        };
-        const extractDirectory = () => {
-            let result = setting.treatment.directory.default;
-            for (const x of setting.treatment.directory.setting) {
-                const replaced = text.replace(this.buildRegex(x.match), '');
-                if (replaced !== text) {
-                    result = x.directoryId;
-                    text = replaced.trim().replace(/( )+/, ' ');
-                    break;
-                }
-            }
-            return result;
-        };
-        const extractService = () => {
-            let result = setting.treatment.services.default;
-            for (const x of setting.treatment.services.setting) {
-                const replaced = text.replace(this.buildRegex(x.match), '');
-                if (replaced !== text) {
-                    result = x.serviceId;
-                    text = replaced.trim().replace(/( )+/, ' ');
-                    break;
-                }
-            }
-            return result;
-        };
-        const extractRequest = () => {
-            let result = FLAG_RETENTION.NORMAL;
-            let replaced = text.replace(this.buildRegex(setting.treatment.request.personalMatch), '');
-            if (replaced !== text) {
-                result = FLAG_RETENTION.PERSONAL;
-                text = replaced.trim().replace(/( )+/, ' ');
-                return result;
-            }
-            replaced = text.replace(this.buildRegex(setting.treatment.request.requestMatch), '');
-            if (replaced !== text) {
-                result = FLAG_RETENTION.REQUEST;
-                text = replaced.trim().replace(/( )+/, ' ');
-                return result;
-            }
-            return result;
-        };
-        const extractAmount = () => {
-            const [ defaultAmount, defaultTip ] = [ setting.treatment.amount.default, setting.treatment.tip.default ];
-            let resultAmount;
-            let resultTip;
-            const extractTypeString = (field: 'amount' | 'tip') => {
-                for (const x of setting.treatment[field].setting.filter(v => v.type === 'string')) {
-                    const replaced = text.replace(this.buildRegex(x.match), '');
-                    if (replaced !== text) {
-                        text = replaced.trim().replace(/( )+/, ' ');
-                        return x.display;
-                    }
-                }
-                return undefined;
-            };
-            resultAmount = extractTypeString('amount');
-            resultTip = extractTypeString('tip');
-            if (!resultAmount || !resultTip) {
-                const regexAmount = new RegExp(setting.treatment.amount.setting
-                    .filter(v => v.type === 'number')
-                    .map(x => x.match.sort((a, b) => Number(a.length < b.length)).join('|'))
-                    .join('|'), 'i')
-                ;
-                const regexTip = new RegExp(setting.treatment.tip.setting
-                  .filter(v => v.type === 'number')
-                  .map(x => x.match.sort((a, b) => Number(a.length < b.length)).join('|'))
-                  .join('|'), 'i')
-                ;
-                const idxAmount = !resultAmount ? text.search(regexAmount) : -1;
-                const idxTip = !resultTip ? text.search(regexTip) : -1;
-                if (idxTip > idxAmount) {
-                    resultTip = extractAmountNumber(regexTip);
-                    resultAmount = idxAmount >= 0 ? extractAmountNumber(regexAmount, false) : resultAmount;
-                } else if (idxAmount > idxTip) {
-                    resultAmount = extractAmountNumber(regexAmount, false);
-                    resultTip = idxTip >= 0 ? extractAmountNumber(regexTip) : resultTip;
-                }
-            }
-            return {
-                amount: resultAmount ?? defaultAmount,
-                tip: resultTip ?? defaultTip,
-            };
-        };
-        const extractAmountNumber = (regex: RegExp, onlyValue = true) => {
-            let mixRegex = new RegExp(`(${regex.source})( )+(${regexFormatNumber.source})`, 'i');
-            let match = text.match(mixRegex);
-            const getResult = (matchResult: string) => {
-                const fix = matchResult.replace(/(\$ )|(\$)|( \$)/, ' ').trim().replace(/( )+/, ' ');
-                let value = fix.replace(regex, '').trim();
-                const type = fix.replace(value, '').trim();
-                value = formatCurrency(Number.parseFloat(value));
-                return onlyValue ? value : `${type} ${value}`;
-            };
-            if (!!match && match.length) {
-                text = text.replace(mixRegex, '').trim().replace(/( )+/, ' ');
-                return getResult(match[0]);
-            }
-            mixRegex = new RegExp(`(${regexFormatNumber.source})( )+(${regex.source})`, 'i');
-            match = text.match(mixRegex);
-            if (!!match && match.length) {
-                text = text.replace(mixRegex, '').trim().replace(/( )+/, ' ');
-                return getResult(match[0]);
-            }
-            match = text.match(regex);
-            text = text.replace(regex, '').trim().replace(/( )+/, ' ');
-            return match && match.length && !onlyValue ? match[0] : undefined;
-        };
-        const extractOtherInfo = () => {
-            text = text.replace(this.buildRegex(setting.treatment.otherInfo), '');
-        };
-        const phone = extractPhone();
-        const { amount, tip } = extractAmount();
-        const directory = extractDirectory();
-        const services = extractService();
-        const request = extractRequest();
-        extractOtherInfo();
-        const name = text.trim().replace(/( )+/, ' ');
-        return {
-            amount,
-            tip,
-            directory,
-            services,
-            request,
-            client: {
-                name,
-                phone,
-            },
-        } as IParserTreatmentResponse;
-    }
-    private buildRegex(matches: string[]) {
-        return new RegExp(matches.sort((a, b) => Number(a.length < b.length)).join('|'), 'i');
-    }
-
     async getPerformanceRetention(filter: any = {}, sort: string = '-date', skip = 0, limit = 10, withItems = true)
       : Promise<RetentionPerformanceDto> {
         return await this.repository.getPerformanceRetention(filter, sort, skip, limit, withItems);
+    }
+
+    async syncRetention(entityId: string, eventId: string): Promise<VisitRetentionDto> {
+        if (!eventId) { throw new Error('Enter event id'); }
+        const event = await this.calendarService.getEvent(eventId);
+        if (!event) { throw new Error('There is no event with that id'); }
+        const update = await this.getInfoFromSummary(event.summary);
+        // todo: update userId from colorId
+        const input: VisitRetentionUpdate = {
+            ...update,
+            date: new Date(event.start),
+        };
+        return await this.updateResource(entityId, VisitRetentionUpdate.getUnzip(input));
+    }
+    async getInfoFromSummary(summary: string) {
+        const parserResponse = await this.parserService.parserSummary(summary);
+        if (parserResponse.classification === 'availability') {
+            throw new Error('The classification of the calendar event was not of the treatment type');
+        }
+        const treatment = parserResponse.response as IParserTreatmentResponse;
+        return {
+            amount: treatment.amount ?? null,
+            tip: treatment.tip ?? null,
+            directoryId: treatment.directoryId,
+            flag: treatment.flag,
+            client: {
+                name: treatment.client.name,
+                phone: treatment.client.phone ?? null,
+            },
+            otherInfo: treatment.otherInfo,
+            serviceId: treatment.serviceId ?? null,
+        };
+    }
+
+    async updateRetentionFromSummary(id: string, summary: string) {
+        const input = await this.getInfoFromSummary(summary);
+        return await this.updateResource(id, VisitRetentionUpdate.getUnzip(input));
+    }
+    async createRetentionFromEvent(event: CalendarEventDto) {
+        try {
+            const info = await this.getInfoFromSummary(event.summary);
+            const userId = ' '; // todo: take userId
+            const input: VisitRetentionInput = {
+                ...info,
+                userId,
+                date: new Date(event.start),
+                calendarId: event.id,
+            };
+            return await this.createResource(input);
+        } catch (e) {
+            return null;
+        }
     }
 }

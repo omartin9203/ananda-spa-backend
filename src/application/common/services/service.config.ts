@@ -13,6 +13,7 @@ import { ReviewSettingService } from './settings/review-settings.service';
 import { ServiceSettingService } from './settings/service-setting.service';
 import { RetentionSettingsService } from './settings/retention-settings.service';
 import { CalendarEventService } from './calendar/calendar.event.service';
+import { RetentionParserService } from './visit/retention-parser.service';
 
 export const ServicesConfig = {
     imports: [
@@ -20,11 +21,11 @@ export const ServicesConfig = {
     providers: [
         ClientService, UserService, FacialFormService, MassageFormService, DiagnosticService, VisitService, FilesService,
         AuthService, VisitRetentionService, ReviewService, ReviewSettingService, TasksService, CalendarEventService,
-        ServiceSettingService, RetentionSettingsService,
+        ServiceSettingService, RetentionSettingsService, RetentionParserService,
     ],
     exports: [
         ClientService, UserService, FacialFormService, MassageFormService, DiagnosticService, VisitService, FilesService,
         AuthService, VisitRetentionService, ReviewService, ReviewSettingService, TasksService, CalendarEventService,
-        ServiceSettingService, RetentionSettingsService,
+        ServiceSettingService, RetentionSettingsService, RetentionParserService,
     ],
 };

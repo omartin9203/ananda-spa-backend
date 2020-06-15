@@ -14,4 +14,5 @@ export class VisitRetentionModel extends ResourceModel {
     readonly amount?: string;
     readonly tip?: string;
     readonly calendarId?: string;
+    readonly otherInfo?: string[];
 }
