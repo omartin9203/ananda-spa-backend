@@ -13,4 +13,6 @@ export class RetentionFilterArgsInput {
   limit?: number = 10;
   // @Field(type => ReviewQuerySortInput, {nullable: true})
   // sort?: ReviewQuerySortInput;
+  @Field({nullable: true})
+  withItems: boolean = true;
 }

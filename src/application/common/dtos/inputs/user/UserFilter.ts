@@ -12,8 +12,8 @@ import { QueryFilterExistsDto } from '../../../../core/dtos/filter/query-filter/
 export class UserFilterInput extends SearcheableFilterInput {
   @Field(type => QueryFilterStringDto, {nullable: true})
   email?: QueryFilterStringDto;
-  @Field(type => QueryFilterStringDto, {nullable: true})
-  userName?: QueryFilterStringDto;
+  // @Field(type => QueryFilterStringDto, {nullable: true})
+  // userName?: QueryFilterStringDto;
   @Field(type => QueryFilterStringDto, {nullable: true})
   firstName?: QueryFilterStringDto;
   @Field(type => QueryFilterStringDto, {nullable: true})
@@ -22,8 +22,8 @@ export class UserFilterInput extends SearcheableFilterInput {
   phone?: QueryFilterStringDto;
   @Field(type => QueryFilterStringDto, {nullable: true})
   streetAddress?: QueryFilterStringDto;
-  @Field(type => QueryFilterStringDto, {nullable: true})
-  address2?: QueryFilterStringDto;
+  // @Field(type => QueryFilterStringDto, {nullable: true})
+  // address2?: QueryFilterStringDto;
   @Field(type => QueryFilterStringDto, {nullable: true})
   city?: QueryFilterStringDto;
   @Field(type => QueryFilterStringDto, {nullable: true})
@@ -41,7 +41,7 @@ export class UserFilterInput extends SearcheableFilterInput {
   @Field(type => QueryFilterIdDto, {nullable: true})
   colorId?: QueryFilterIdDto;
   static getQuery(filter: UserFilterInput) {
-    const query: any = UserFilterInput.getSearchQuery(filter.search, ['email', 'userName', 'firstName', 'lastName', 'phone']);
+    const query: any = UserFilterInput.getSearchQuery(filter.search, ['email', 'firstName', 'lastName', 'phone']);
     Object.getOwnPropertyNames(filter)
       .filter(x => x !== 'search' && Object.getOwnPropertyDescriptor(filter, x).value)
       .forEach(x => query[`${UserFilterInput.fixField(x)}`] = fixSelectors(filter[x]));

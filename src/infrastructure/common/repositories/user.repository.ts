@@ -22,117 +22,63 @@ export class UserRepository extends ResourceRepository<UserModel> {
         super(userModel, querybuilderService);
     }
     async signInSSO(email: string) {
-        // const filter = this.querybuilderService.buildQueryEq(email, ['email']);
-        return await this.userModel.findOne({ email }).select('id status roles').exec()
-            .then(res => {
-                if (!res)
-                    return null;
-                return {
-                    id: res.id,
-                    status: res.status,
-                    roles: res.roles,
-                };
-            })
-            .catch(err => {
+        try {
+            const res = await this.userModel.findOne({ email }).select('id status roles').exec()
+            if (!res) {
                 return null;
-            });
+            }
+            return {
+                id: res.id,
+                status: res.status,
+                roles: res.roles,
+            };
+        } catch (e) {
+            return null;
+        }
     }
     async signUp(user) {
-        const { password, email, userName } = user;
-        const filter = new Query().or([{ email }, { userName }]).getQuery();
-        return await this.userModel.findOne(filter).select('email').exec()
-            .then(async res => {
-                if (res) {
-                    return {
-                        success: false,
-                        message: `This ${res.email === email ? 'email' : 'userName'} is already being used`,
-                        data: null,
-                    };
-                }
-                const hash = await bcrypt.hash(password, 12);
-                return await this.create({ ...user, password: hash })
-                    .then(userCreated => {
-                        if (!userCreated)
-                            return {
-                                success: false,
-                                message: `Error occurred during user creation`,
-                                data: null,
-                            };
-                        return {
-                            success: true,
-                            message: `Success`,
-                            data: {
-                                id: userCreated.id,
-                                status: userCreated.status,
-                                roles: userCreated.roles
-                            },
-                        };
-                    });
-            })
-            .catch(e => {
+        const { password, email } = user;
+        const filter = { email };
+        try {
+            let res = await this.userModel.findOne(filter);
+            if (res) {
+                return {
+                    success: false,
+                    message: `This email is already being used`,
+                    data: null,
+                };
+            }
+            const hash = await bcrypt.hash(password, 12);
+            res = await this.create({ ...user, password: hash });
+            if (!res) {
                 return {
                     success: false,
                     message: `Error occurred during user creation`,
                     data: null,
                 };
-            });
+            }
+            return {
+                success: true,
+                message: `Success`,
+                data: {
+                    id: res.id,
+                    status: res.status,
+                    roles: res.roles,
+                },
+            };
+        } catch (e) {
+            return {
+                success: false,
+                message: `Error occurred during user creation`,
+                data: null,
+            };
+        }
 
     }
-    async signInLocal(unique, password) {
-        const filter = new Query().or([{ email: unique }, { userName: unique }]).getQuery();
+    async signInLocal(email, password) {
         try {
-            const res = await this.userModel.findOne(filter).select('id status password roles').exec();
-            // .then(res => {
-            //   if (!res)
-            //     return {
-            //       success: false,
-            //       message: `Invalid credentials`,
-            //       data: null,
-            //     };
-            //   return bcrypt.compare(password, res.password)
-            //     .then(doMatch => {
-            //       if (doMatch) {
-            //         const success = res.status === STATUS.ACTIVE;
-            //         return {
-            //           success,
-            //           message: success ? `LogIn success` : `Status of this user is ${res.status}`,
-            //           data: !success ? null : {
-            //             id: res.id,
-            //             status: res.status,
-            //             roles: res.roles,
-            //           },
-            //         };
-            //       }
-            //       return {
-            //         success: false,
-            //         message: `Invalid credentials`,
-            //         data: null,
-            //       };
-            //     })
-            //     .catch(err => {
-            //       return {
-            //         success: false,
-            //         message: `Error occurred during credentials verifications`,
-            //         data: null,
-            //       };
-            //     });
-            // })
-            // .catch(err => {
-            //   return {
-            //     success: false,
-            //     message: `Error occurred during credentials verifications`,
-            //     data: null,
-            //   };
-            // });
-            if (!res) {
-                return {
-                    success: false,
-                    message: `Invalid credentials`,
-                    data: null,
-                };
-            }
-            const doMatch = await bcrypt.compare(password, res.password);
-            if (doMatch) {
+            const res = await this.userModel.findOne({ email }).select('id status password roles').exec();
+            if (res && await bcrypt.compare(password, res.password)) {
                 const success = res.status === STATUS.ACTIVE;
                 return {
                     success,
@@ -160,26 +106,12 @@ export class UserRepository extends ResourceRepository<UserModel> {
     async getRolesOfUser(id: string) {
         return this.userModel.findById(id).select('roles').exec()
             .then(res => {
-                if (!res) return [];
+                if (!res) { return []; }
                 return res.roles;
             });
     }
     async getUserInfo(id: string) {
-        return await this.userModel.findById(id).select('id createdAt updatedAt email userName firstName lastName status imgSrc phone roles');
-        // const roles: string[] = [];
-        // user.roles.forEach(a => roles.push(a));
-        // Mongoose
-        // return {
-        //   id: user.id,
-        //   email: user.email,
-        //   userName: user.userName,
-        //   firstName: user.firstName,
-        //   lastName: user.lastName,
-        //   status: user.status,
-        //   imgSrc: user.imgSrc,
-        //   phone: user.phone,
-        //   roles,
-        // };
+        return await this.userModel.findById(id).select('id createdAt updatedAt email firstName lastName status imgSrc phone roles');
     }
     async updateRetention(id: string, total?: number, important?: number) {
         const update = {
@@ -194,21 +126,7 @@ export class UserRepository extends ResourceRepository<UserModel> {
         filter = this.fixFilter(filter);
         const filterResult: Array<{ important: number, total: number }> = await this.userModel.aggregate()
           .match(filter)
-          // .sort(sort)
           .project({
-              // percentageRetention: {
-              //     $min: [
-              //         {
-              //             $multiply: [
-              //                 {
-              //                     $divide: [ '$retention.important', '$retention.total' ],
-              //                 },
-              //                 100,
-              //             ],
-              //         },
-              //         100,
-              //     ],
-              // },
               important: '$retention.important',
               total: '$retention.total',
         });

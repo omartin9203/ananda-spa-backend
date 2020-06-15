@@ -5,8 +5,8 @@ import { ResourceDto } from '../../../../core/dtos/resource.dto';
 export class UserInfoDto extends ResourceDto {
   @Field()
   readonly email: string;
-  @Field()
-  readonly userName: string;
+  // @Field()
+  // readonly userName: string;
   @Field()
   readonly firstName: string;
   @Field()

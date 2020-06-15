@@ -41,7 +41,10 @@ export const VisitRetentionSchema = new Schema({
     amount: String,
     tip: String,
     calendarId: String,
-
+    otherInfo: [{
+        type: String,
+        required: true,
+    }],
 }, { timestamp: true });
 
 export const VisitRetentionFeature = {

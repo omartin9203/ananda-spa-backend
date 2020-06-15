@@ -36,7 +36,7 @@ export class ResourceRepository<TResource extends ResourceModel> implements IRes
   async updateOne( Id: string, input: object ): Promise<TResource> {
     let resource;
     try {
-      resource = await this.resourceModel.findByIdAndUpdate(Id, { ...input, updatedAt: Date.now() }).exec();
+      resource = await this.resourceModel.findByIdAndUpdate(Id, { ...input, updatedAt: Date.now() }, {new: true}).exec();
     } catch (err) {
       throw new InternalServerErrorException(err.message);
     }

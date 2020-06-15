@@ -3,8 +3,8 @@ import { ObjectType, Field } from 'type-graphql';
 import { FLAG_RETENTION } from '../../../../../constants/modules/enums';
 import { UserInfoDto } from '../user/user.Info.dto';
 import { ReviewSettingDto } from '../settings/review/review-setting.dto';
-import { ServiceSettingDto } from '../settings/service/service-setting.dto';
 import { ClientRetentionDto } from './client-retention.dto';
+import { ServiceSettingDto } from '../settings/service/service-setting.dto';
 
 @ObjectType()
 export class VisitRetentionDto extends ResourceDto {
@@ -32,4 +32,6 @@ export class VisitRetentionDto extends ResourceDto {
     readonly tip?: string;
     @Field({nullable: true})
     readonly calendarId?: string;
+    @Field(t => [String], {nullable: true})
+    readonly otherInfo?: string[];
 }
