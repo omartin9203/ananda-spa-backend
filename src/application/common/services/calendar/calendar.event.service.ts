@@ -86,4 +86,28 @@ export class CalendarEventService extends ResourceService<CalendarEventDto> {
     });
     return this.unzipEvent(data);
   }
+  async watchEvent(): Promise<any> {
+    const auth = await this.authorize();
+    const calendar = await google.calendar({
+      version: 'v3',
+      auth,
+    });
+    try {
+      const res = await calendar.events.watch({
+        calendarId: GOOGLE_CALENDAR_ID,
+        requestBody: {
+          id: 'aasdf-123-fghj-qwer-5467a-333',
+          token: 'token123',
+          type: 'web_hook',
+          address: 'http://localhost',
+        },
+      });
+      // tslint:disable-next-line:no-console
+      console.log(res);
+
+    } catch (e) {
+      // tslint:disable-next-line:no-console
+      console.log(e);
+    }
+  }
 }
