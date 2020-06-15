@@ -25,14 +25,14 @@ import { ReviewRepository } from './repositories/review.repository';
 import { BaseSettingFeature } from './models/schemas/settings/base-setting.schema';
 import { ReviewSettingProviders } from './providers/settings/review-setting.provider';
 import { ReviewSettingRepository } from './repositories/settings/review-setting.repository';
-import { ServiceSettingProviders } from './providers/settings/service-setting.provider';
-import { ServiceSettingRepository } from './repositories/settings/service-setting.repository';
-import { RetentionSettingProviders } from './providers/settings/retention-setting.provider';
-import { RetentionSettingRepository } from './repositories/settings/retention-setting.repository';
 import { CalendarEventFeature } from './models/schemas/calendar.event.schema';
 import { CalendarEventRepository } from './repositories/calendar.event.repository';
 import { ColorSettingRepository } from './repositories/settings/color-setting.repository';
 import { ColorSettingProvider } from './providers/settings/color-setting.provider';
+import { RetentionSettingRepository } from './repositories/settings/retention-setting.repository';
+import { ServiceSettingRepository } from './repositories/settings/service-setting.repository';
+import { RetentionSettingProviders } from './providers/settings/retention-setting.provider';
+import { ServiceSettingProviders } from './providers/settings/service-setting.provider';
 
 @Module({
     imports: [
@@ -53,7 +53,7 @@ import { ColorSettingProvider } from './providers/settings/color-setting.provide
     exports: [
         MongooseModule.forFeature([BaseFormFeature, ClientFeature, CalendarEventFeature, UserFeature, RoleFeature, DepartmentFeature]),
         FacialFormRepository, MassageFormRepository, ClientRepository, CalendarEventRepository,
-        VisitRepository, VisitRetentionRepository, ReviewRepository,
+        VisitRepository, VisitRetentionRepository, ReviewRepository, ColorSettingRepository,
         ReviewSettingRepository, ServiceSettingRepository, UserRepository, DiagnosticRepository, RetentionSettingRepository,
         ...FacialFormProviders, ...MassageFormProviders, ...ReviewSettingProviders, ...ServiceSettingProviders, ...RetentionSettingProviders,
     ],

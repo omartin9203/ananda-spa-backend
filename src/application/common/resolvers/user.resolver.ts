@@ -1,4 +1,4 @@
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Parent, Query, ResolveProperty, Resolver } from '@nestjs/graphql';
 import { ID, Int } from 'type-graphql';
 import { UserService } from '../services/user/user.service';
 import { UserDto } from '../dtos/dtos/user/user.dto';
@@ -10,18 +10,18 @@ import { PaginatedClientResponse } from '../dtos/dtos/client/paginate.client.dto
 import { FilterClientsArgsInput } from '../dtos/inputs/args/query.arg.input';
 import { UserFilterInput } from '../dtos/inputs/user/UserFilter';
 import { GqlAuthGuard } from '../guard/auth/graphql.guard';
-import { RolesGuard } from '../guard/auth/roles.guard';
-import { Roles } from '../decorators/auth/roles.decorator';
 import { CurrentUser } from '../decorators/params/current-user.decorator';
-import { QueryFilterStringDto } from '../../core/dtos/filter/query-filter/query-filter-string.dto';
 import { QueryFilterIdDto } from '../../core/dtos/filter/query-filter/query-filter-id.dto';
 import { UserBalanceRetentionDto } from '../dtos/dtos/user/balance/user-balance-retention.dto';
+import { ColorSettingDto } from '../dtos/dtos/settings/color/color-setting.dto';
+import { ColorSettingService } from '../services/settings/color-setting.service';
 
 @Resolver(of => UserDto)
 export class UserResolver {
   constructor(
     // private readonly authorsService: AuthorsService,
     private readonly usersService: UserService,
+    private readonly colorService: ColorSettingService,
   ) {}
 
   @Query(() => UserDto, { name: 'user' })
@@ -86,5 +86,14 @@ export class UserResolver {
     }
     const result = await this.usersService.getBalanceRetention(UserFilterInput.getQuery(input));
     return result;
+  }
+  @ResolveProperty(returns => ColorSettingDto, {nullable: true})
+  async color(@Parent() user) {
+    const { colorId } = user;
+    try {
+       return await this.colorService.findResource(colorId);
+    } catch (e) {
+      return null;
+    }
   }
 }

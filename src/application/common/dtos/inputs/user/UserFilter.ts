@@ -38,6 +38,8 @@ export class UserFilterInput extends SearcheableFilterInput {
   status?: QueryFilterStringDto;
   @Field(type => QueryFilterIdDto, {nullable: true})
   id?: QueryFilterIdDto;
+  @Field(type => QueryFilterIdDto, {nullable: true})
+  colorId?: QueryFilterIdDto;
   static getQuery(filter: UserFilterInput) {
     const query: any = UserFilterInput.getSearchQuery(filter.search, ['email', 'userName', 'firstName', 'lastName', 'phone']);
     Object.getOwnPropertyNames(filter)

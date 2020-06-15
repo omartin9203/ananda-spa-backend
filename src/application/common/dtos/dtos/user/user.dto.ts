@@ -40,7 +40,7 @@ export class UserDto extends ResourceDto {
     @Field()
     retention: RetentionUserDto;
     @Field({nullable: true})
-    colorId?: ColorSettingDto;
+    colorId?: string;
     // @Field({ nullable: true })
     // readonly suspended?: SuspendedDto;
 }

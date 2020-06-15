@@ -48,5 +48,5 @@ export class UserInput {
   @IsIn(GENDER_OPTIONSS_VALUES)
   gender: string;
   @Field({nullable: true})
-  colorId?: ColorSettingInput;
+  colorId?: string;
 }

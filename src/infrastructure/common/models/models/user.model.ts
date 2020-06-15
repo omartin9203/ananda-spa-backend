@@ -30,6 +30,6 @@ export class UserModel extends ResourceModel {
         total: number,
         important: number,
     };
-    readonly colorId?: ColorSettingModel;
+    readonly colorId?: string;
     static ModelName = USER_MODEL_NAME;
 }

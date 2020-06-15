@@ -10,9 +10,10 @@ import { VisitRetentionService } from './visit/visitRetention.service';
 import { ReviewService } from './review/review.service';
 import { TasksService } from './Tasks/tasks.service';
 import { ReviewSettingService } from './settings/review-settings.service';
-import { ServiceSettingService } from './settings/service-setting.service';
-import { RetentionSettingsService } from './settings/retention-settings.service';
 import { CalendarEventService } from './calendar/calendar.event.service';
+import { ColorSettingService } from './settings/color-setting.service';
+import { RetentionSettingsService } from './settings/retention-settings.service';
+import { ServiceSettingService } from './settings/service-setting.service';
 
 export const ServicesConfig = {
     imports: [
@@ -20,11 +21,11 @@ export const ServicesConfig = {
     providers: [
         ClientService, UserService, FacialFormService, MassageFormService, DiagnosticService, VisitService, FilesService,
         AuthService, VisitRetentionService, ReviewService, ReviewSettingService, TasksService, CalendarEventService,
-        ServiceSettingService, RetentionSettingsService,
+        ServiceSettingService, RetentionSettingsService, ColorSettingService,
     ],
     exports: [
         ClientService, UserService, FacialFormService, MassageFormService, DiagnosticService, VisitService, FilesService,
         AuthService, VisitRetentionService, ReviewService, ReviewSettingService, TasksService, CalendarEventService,
-        ServiceSettingService, RetentionSettingsService,
+        ServiceSettingService, RetentionSettingsService, ColorSettingService,
     ],
 };

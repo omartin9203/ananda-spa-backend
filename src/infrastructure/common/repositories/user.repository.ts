@@ -191,9 +191,7 @@ export class UserRepository extends ResourceRepository<UserModel> {
         await this.userModel.findByIdAndUpdate(id, update).exec();
     }
     async getBalanceRetention(filter: any = {}) {
-        if (Object.keys(filter).includes('_id')) {
-            filter._id = fixIdValue(filter._id);
-        }
+        filter = this.fixFilter(filter);
         const filterResult: Array<{ important: number, total: number }> = await this.userModel.aggregate()
           .match(filter)
           // .sort(sort)
@@ -225,5 +223,13 @@ export class UserRepository extends ResourceRepository<UserModel> {
             important,
             percentageRetention: !total ? 0 : Math.trunc(Math.min((important / total * 100), 100)),
         };
+    }
+    fixFilter(filter: any = {}) {
+        Object.keys(filter)
+          .filter(x => ['_id', 'colorId'].some(y => x === y))
+          .forEach(x => {
+              filter[x] = fixIdValue(filter[x]);
+          });
+        return filter;
     }
 }

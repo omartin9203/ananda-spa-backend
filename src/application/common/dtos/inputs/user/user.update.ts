@@ -57,7 +57,7 @@ export class UpdateUserInput {
     @Field({ nullable: true })
     retention?: RetentionUserInput;
     @Field({nullable: true})
-    colorId?: ColorSettingInput;
+    colorId?: string;
     // @Field({ nullable: true })
     // suspended?: SuspendedDto;
 }

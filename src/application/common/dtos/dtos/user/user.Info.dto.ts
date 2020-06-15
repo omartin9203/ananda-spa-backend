@@ -19,5 +19,6 @@ export class UserInfoDto extends ResourceDto {
   readonly phone: string;
   @Field(type => [String])
   roles: string[];
-
+  @Field({nullable: true})
+  colorId?: string;
 }
