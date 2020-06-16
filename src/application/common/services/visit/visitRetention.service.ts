@@ -83,7 +83,8 @@ export class VisitRetentionService extends ResourceService<VisitRetentionDto> {
         const event = await this.calendarService.getEvent(eventId);
         if (!event) { throw new Error('There is no event with that id'); }
         const update = await this.getInfoFromSummary(event.summary);
-        const userId = (await this.userService.getUserByColor(event.colorId)).id;
+        const colorSettingId = (await this.colorSettingService.findOne({colorId: event.colorId})).id;
+        const userId = (await this.userService.getUserByColor(colorSettingId)).id;
         const input: VisitRetentionUpdate = {
             ...update,
             userId,

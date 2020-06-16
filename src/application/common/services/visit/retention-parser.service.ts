@@ -55,7 +55,7 @@ export class RetentionParserService {
       const flag = entity.flag === FLAG_RETENTION.NORMAL
         ? undefined
         : setting.treatment.request[entity.flag === FLAG_RETENTION.REQUEST ? 'requestMatch' : 'personalMatch'].find(x => x);
-      const otherInfo = entity.otherInfo.join(' ');
+      const otherInfo = (entity.otherInfo ?? []).join(' ');
       const summary = [entity.client.name, entity.client.phone, directory, service, amount, tip, flag, otherInfo].filter(x => !!x).join(' ');
       return {
         success: true,
