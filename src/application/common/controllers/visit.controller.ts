@@ -21,7 +21,7 @@ export class VisitsController {
     ) {
        try {
            this.logger.debug(event.body);
-           const calendarEvent = this.calendarEventService.unzipEvent(event.body);
+           const calendarEvent = await this.calendarEventService.getEvent(event.body.id);
            await this.visitRetentionService.createRetentionFromEvent(calendarEvent);
        } catch (e) {
            this.logger.debug(e);
