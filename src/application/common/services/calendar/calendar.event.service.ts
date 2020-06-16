@@ -94,12 +94,14 @@ export class CalendarEventService extends ResourceService<CalendarEventDto> {
         version: 'v3',
         auth,
       });
-      await calendar.events.delete({
+      const res = await calendar.events.delete({
         calendarId: GOOGLE_CALENDAR_ID,
         eventId: Id,
       });
+      if (res) { return true; }
     } catch (e) {
       this.logger.debug(e);
+      return false;
     }
   }
   async watchEvent(): Promise<any> {
