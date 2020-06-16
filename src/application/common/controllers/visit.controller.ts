@@ -1,4 +1,4 @@
-﻿import { Body, Controller, Get, Headers, NotImplementedException, Param, Post, Query, Req, UnauthorizedException } from '@nestjs/common';
+﻿import { Body, Controller, Get, Headers, Logger, NotImplementedException, Param, Post, Query, Req, UnauthorizedException } from '@nestjs/common';
 import { VisitRetentionService } from '../services/visit/visitRetention.service';
 import { VisitRetentionInput } from '../dtos/inputs/visitRetention/visitRetention.input';
 import { UserService } from '../services/user/user.service';
@@ -6,28 +6,26 @@ import { UserDto } from '../dtos/dtos/user/user.dto';
 import { API_KEY } from '../../../constants/constants';
 import { FLAG_RETENTION } from '../../../constants/modules/enums';
 import { RetentionParserService } from '../services/visit/retention-parser.service';
+import { CalendarEventService } from '../services/calendar/calendar.event.service';
 
 @Controller('visit')
 export class VisitsController {
-    constructor(readonly parserService: RetentionParserService, readonly userService: UserService) { }
-
+    constructor(readonly parserService: RetentionParserService, readonly userService: UserService,
+                readonly calendarEventService: CalendarEventService,
+                readonly visitRetentionService: VisitRetentionService) {}
+    private readonly logger = new Logger(VisitsController.name);
     @Post('retention')
     async saveVisitRetention(
-        @Headers('token') apiKey,
-        @Body() input: VisitRetentionInput,
+        @Body() event: any,
         @Req() req: any,
     ) {
-        // if (apiKey !== API_KEY) throw new UnauthorizedException('Unauthorized')
-        // const { id }: UserDto = await this.userService.findOne({
-        //     email: input.user,
-        // });
-        // await this.userService.updateRetention(id, { total: 1, important: input.flag && input.flag != FLAG_RETENTION.NORMAL ? 1 : 0 })
-        // return await this.visitRetentionService.createResource({
-        //     userId: id,
-        //     treatment: input.treatment,
-        //     clientPhone: input.client,
-        //     flag: input.flag,
-        // });
+       try {
+           this.logger.debug(event.body);
+           const calendarEvent = this.calendarEventService.unzipEvent(event.body);
+           await this.visitRetentionService.createRetentionFromEvent(calendarEvent);
+       } catch (e) {
+           this.logger.debug(e);
+       }
     }
 
     @Get('retention/parser')
