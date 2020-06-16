@@ -118,7 +118,8 @@ export class VisitRetentionService extends ResourceService<VisitRetentionDto> {
     async createRetentionFromEvent(event: CalendarEventDto) {
         try {
             const info = await this.getInfoFromSummary(event.summary);
-            const userId = (await this.userService.getUserByColor(event.colorId)).id;
+            const colorSettingId = (await this.colorSettingService.findOne({colorId: event.colorId})).id;
+            const userId = (await this.userService.getUserByColor(colorSettingId)).id;
             const input: VisitRetentionInput = {
                 ...info,
                 userId,
