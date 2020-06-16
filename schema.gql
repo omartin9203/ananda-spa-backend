@@ -39,10 +39,31 @@ type AuthDto {
 }
 
 type BaseFormDto implements IBaseFormDto & IResourceDto {
-  client: ClientType!
+  client: ClientDto!
   id: ID!
   createdAt: DateTime!
   updatedAt: DateTime!
+}
+
+type ClientDto implements IResourceDto {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  firstname: String
+  lastname: String!
+  phone: String!
+  streetaddress: String!
+  city: String!
+  state: String!
+  zipcode: String!
+  email: String!
+  datebirth: DateTime
+  imgSrc: String
+  gender: String
+}
+
+input ClientFilterInput {
+  search: String
 }
 
 type ClientRetentionDto {
@@ -58,23 +79,6 @@ input ClientRetentionInput {
 input ClientRetentionUpdate {
   name: String
   phone: String
-}
-
-type ClientType implements IResourceDto {
-  id: ID!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  firstname: String!
-  lastname: String!
-  phone: String!
-  streetaddress: String!
-  city: String!
-  state: String!
-  zipcode: String!
-  email: String!
-  datebirth: DateTime
-  imgSrc: String
-  gender: String
 }
 
 type ColorSettingDto implements IResourceDto {
@@ -317,7 +321,7 @@ type DiagnosticDto implements IResourceDto {
   id: ID!
   createdAt: DateTime!
   updatedAt: DateTime!
-  client: ClientType
+  client: ClientDto
   performedBy: UserType
   date: DateTime
   typeOfKind: String
@@ -335,7 +339,7 @@ type DiagnosticDto implements IResourceDto {
 }
 
 type FacialFormType implements IBaseFormDto & IResourceDto {
-  client: ClientType!
+  client: ClientDto!
   id: ID!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -410,7 +414,7 @@ type FacialFormType implements IBaseFormDto & IResourceDto {
 }
 
 interface IBaseFormDto {
-  client: ClientType
+  client: ClientDto
 }
 
 interface IResourceDto {
@@ -425,7 +429,7 @@ input LoginInput {
 }
 
 type MassageFormType implements IBaseFormDto & IResourceDto {
-  client: ClientType!
+  client: ClientDto!
   id: ID!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -511,9 +515,9 @@ type MassageFormType implements IBaseFormDto & IResourceDto {
 }
 
 type Mutation {
-  createClient(input: CreateClientInput!): ClientType!
-  updateClient(input: UpdateClientInput!, id: ID!): ClientType!
-  deleteClient(id: ID!): ClientType!
+  createClient(input: CreateClientInput!): ClientDto!
+  updateClient(input: UpdateClientInput!, id: ID!): ClientDto!
+  deleteClient(id: ID!): ClientDto!
   createUser(input: CreateUserInput!): UserType!
   updateUser(input: UpdateUserInput!, id: ID!): UserType!
   deleteUser(id: ID!): UserType!
@@ -568,7 +572,7 @@ type NoteType {
 }
 
 type PaginatedClientResponse {
-  items: [ClientType!]!
+  items: [ClientDto!]!
   total: Int!
   hasMore: Boolean!
   otherInfo: [String!]!
@@ -655,7 +659,7 @@ type ParentConsentType {
 }
 
 type Query {
-  client(id: ID!): ClientType!
+  client(id: ID!): ClientDto!
   clients(limit: Int, skip: Int): PaginatedClientResponse!
   filterClients(query: String = "", skip: Int = 0, limit: Int = 10): PaginatedClientResponse!
   user(id: ID!): UserType!
@@ -1366,7 +1370,7 @@ type VisitDto implements IResourceDto {
   id: ID!
   createdAt: DateTime!
   updatedAt: DateTime!
-  client: ClientType
+  client: ClientDto
   performedBy: UserType
   date: DateTime
   photos: [String!]
