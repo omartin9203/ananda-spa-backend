@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ResourceService } from '../../../core/services/resource.service';
 import { CalendarEventDto } from '../../dtos/dtos/calendar/calendar.event.dto';
 import { CalendarEventRepository } from '../../../../infrastructure/common/repositories/calendar.event.repository';
 import { QueryBuilderService } from '../../../../infrastructure/core/services/query-builder.service';
-import {google} from 'googleapis';
+import { google, GoogleApis } from 'googleapis';
 import { GOOGLE_CALENDAR_CREDENTIALS, GOOGLE_CALENDAR_ID, GOOGLE_CALENDAR_TOKEN } from '../../../../constants';
 import { CalendarEventUpdateDto } from '../../dtos/dtos/calendar/calendar.event.update.dto';
 
@@ -15,6 +15,7 @@ export class CalendarEventService extends ResourceService<CalendarEventDto> {
   ) {
     super(repository);
   }
+  private readonly logger = new Logger(CalendarEventService.name);
   async authorize() {
     const { client_secret, client_id, redirect_uris } = GOOGLE_CALENDAR_CREDENTIALS.installed;
     const oAuth2Client = new google.auth.OAuth2(
@@ -85,5 +86,27 @@ export class CalendarEventService extends ResourceService<CalendarEventDto> {
       requestBody: event,
     });
     return this.unzipEvent(data);
+  }
+  async watchEvent(): Promise<any> {
+    const auth = await this.authorize();
+    const calendar = await google.calendar({
+      version: 'v3',
+      auth,
+    });
+    try {
+      const res = await calendar.events.watch({
+        calendarId: GOOGLE_CALENDAR_ID,
+        requestBody: {
+          id: 'aasdf-123-fghj-qwer-5467a-333',
+          token: 'token-5467a-333',
+          type: 'web_hook',
+          address: 'https://apinest.anandaspa.us/visit/retention',
+        },
+      });
+      this.logger.debug(res);
+
+    } catch (e) {
+      this.logger.debug(e);
+    }
   }
 }
