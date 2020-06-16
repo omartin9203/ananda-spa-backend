@@ -86,12 +86,6 @@ type ColorSettingDto implements IResourceDto {
   hexcode: String!
 }
 
-input ColorSettingInput {
-  colorId: Float!
-  name: String!
-  hexcode: String!
-}
-
 input CreateClientInput {
   firstname: String!
   lastname: String!
@@ -278,20 +272,18 @@ input CreateMassageFormInput {
 
 input CreateUserInput {
   email: String!
-  userName: String!
   firstName: String!
   lastName: String!
   password: String!
   phone: String!
   imgSrc: String!
   streetAddress: String!
-  address2: String
   city: String!
   state: String!
   zipCode: String!
   dateOfBirth: DateTime!
   gender: String!
-  colorId: ColorSettingInput
+  colorId: String
 }
 
 input CreateVisit {
@@ -529,6 +521,8 @@ type Mutation {
   createRetention(input: VisitRetentionInput!): VisitRetentionDto!
   updateRetention(input: VisitRetentionUpdate!, id: ID!): VisitRetentionDto!
   deleteRetention(id: ID!): VisitRetentionDto!
+  updateRetentionFromSummary(summary: String!, id: ID!): VisitRetentionDto
+  syncRetention(eventId: String!, entityId: ID!): VisitRetentionDto
   createReview(input: ReviewInput!): ReviewDto!
   updateReview(input: ReviewUpdate!, id: ID!): ReviewDto!
   deleteReview(id: ID!): ReviewDto!
@@ -537,12 +531,12 @@ type Mutation {
   createReviewSetting(input: ReviewSettingInput!): ReviewSettingDto!
   deleteReviewSetting(id: ID!): ReviewSettingDto!
   updateReviewSetting(input: ReviewSettingUpdate!, id: ID!): ReviewSettingDto!
-  createServiceSetting(input: ServiceSettingInput!): ServiceSettingDto!
-  deleteServiceSetting(id: ID!): ServiceSettingDto!
-  updateServiceSetting(input: ServiceSettingUpdate!, id: ID!): ServiceSettingDto!
   createRetentionSetting(input: RetentionSettingInput!): RetentionSettingDto!
   deleteRetentionSetting(id: ID!): RetentionSettingDto!
   updateRetentionSetting(input: RetentionSettingUpdate!, id: ID!): RetentionSettingDto!
+  createServiceSetting(input: ServiceSettingInput!): ServiceSettingDto!
+  deleteServiceSetting(id: ID!): ServiceSettingDto!
+  updateServiceSetting(input: ServiceSettingUpdate!, id: ID!): ServiceSettingDto!
 }
 
 input NoteInput {
@@ -613,7 +607,6 @@ type PaginatedUserResponse {
   items: [UserType!]!
   total: Int!
   hasMore: Boolean!
-  otherInfo: [String!]!
 }
 
 type PaginatedVisitResponse {
@@ -661,7 +654,8 @@ type Query {
   verifyToken: Boolean!
   getRetention(id: ID!): VisitRetentionDto!
   getRetentions(limit: Int, skip: Int): PaginatedVisitRetentionResponse!
-  filterRetentions(filter: RetentionFilterInput, skip: Int = 0, limit: Int = 10): PaginatedVisitRetentionResponse!
+  filterRetentions(filter: RetentionFilterInput, skip: Int = 0, limit: Int = 10, withItems: Boolean = true): PaginatedVisitRetentionResponse!
+  getPerformanceRetention(filter: RetentionFilterInput, skip: Int = 0, limit: Int = 10, withItems: Boolean = true): RetentionPerformanceDto!
   review(id: ID!): ReviewDto!
   reviews(limit: Int, skip: Int): PaginatedReviewResponse!
   filterReviews(filter: ReviewFilterInput, skip: Int = 0, limit: Int = 10, sort: ReviewQuerySortInput): PaginatedReviewResponse!
@@ -670,10 +664,10 @@ type Query {
   getReviewSetting(id: ID!): ReviewSettingDto!
   getReviewSettings(limit: Int, skip: Int): PaginatedReviewSettingResponse!
   getReviewBalance(id: ID): [ReviewBalanceDto!]!
-  getServiceSetting(id: ID!): ServiceSettingDto!
-  getServiceSettings(limit: Int, skip: Int): PaginatedServiceSettingResponse!
   getRetentionSetting(id: ID!): RetentionSettingDto!
   getRetentionSettings(limit: Int, skip: Int): PaginatedRetentionSettingResponse!
+  getServiceSetting(id: ID!): ServiceSettingDto!
+  getServiceSettings(limit: Int, skip: Int): PaginatedServiceSettingResponse!
 }
 
 input QueryFilterBooleanDto {
@@ -828,6 +822,14 @@ input RetentionFilterInput {
   flag: QueryFilterStringDto
 }
 
+type RetentionPerformanceDto {
+  paginate: PaginatedVisitRetentionResponse
+  personal: Float!
+  request: Float!
+  total: Float!
+  performance: Float!
+}
+
 type RetentionRequestSettingDto {
   default: Boolean!
   personalMatch: [String!]!
@@ -922,8 +924,8 @@ input RetentionTreatmentSettingUpdate {
 }
 
 type RetentionUserDto {
-  total: Float!
-  important: Float!
+  total: Float
+  important: Float
 }
 
 input RetentionUserInput {
@@ -1254,14 +1256,12 @@ input UpdateParentConsentInput {
 
 input UpdateUserInput {
   email: String
-  userName: String
   firstName: String
   lastName: String
   password: String
   phone: String
   imgSrc: String
   streetAddress: String
-  address2: String
   city: String
   state: String
   zipCode: String
@@ -1270,7 +1270,7 @@ input UpdateUserInput {
   status: String
   roles: [String!]
   retention: RetentionUserInput
-  colorId: ColorSettingInput
+  colorId: String
 }
 
 input UpdateVisit {
@@ -1289,12 +1289,10 @@ type UserBalanceRetentionDto {
 input UserFilterInput {
   search: String
   email: QueryFilterStringDto
-  userName: QueryFilterStringDto
   firstName: QueryFilterStringDto
   lastName: QueryFilterStringDto
   phone: QueryFilterStringDto
   streetAddress: QueryFilterStringDto
-  address2: QueryFilterStringDto
   city: QueryFilterStringDto
   state: QueryFilterStringDto
   zipCode: QueryFilterStringDto
@@ -1302,6 +1300,7 @@ input UserFilterInput {
   gender: QueryFilterStringDto
   status: QueryFilterStringDto
   id: QueryFilterIdDto
+  colorId: QueryFilterIdDto
 }
 
 type UserInfoDto implements IResourceDto {
@@ -1309,13 +1308,13 @@ type UserInfoDto implements IResourceDto {
   createdAt: DateTime!
   updatedAt: DateTime!
   email: String!
-  userName: String!
   firstName: String!
   lastName: String!
   status: String!
   imgSrc: String!
   phone: String!
   roles: [String!]!
+  colorId: String
 }
 
 type UserType implements IResourceDto {
@@ -1323,14 +1322,12 @@ type UserType implements IResourceDto {
   createdAt: DateTime!
   updatedAt: DateTime!
   email: String!
-  userName: String!
   firstName: String!
   lastName: String!
   status: String!
   phone: String!
   imgSrc: String!
   streetAddress: String!
-  address2: String
   city: String!
   state: String!
   zipCode: String!
@@ -1338,7 +1335,8 @@ type UserType implements IResourceDto {
   gender: String!
   roles: [String!]!
   retention: RetentionUserDto!
-  colorId: ColorSettingDto
+  colorId: String
+  color: ColorSettingDto
 }
 
 type VisitDto implements IResourceDto {
@@ -1371,6 +1369,7 @@ type VisitRetentionDto implements IResourceDto {
   amount: String
   tip: String
   calendarId: String
+  otherInfo: [String!]
 }
 
 input VisitRetentionInput {
@@ -1383,6 +1382,7 @@ input VisitRetentionInput {
   amount: String
   tip: String
   calendarId: String
+  otherInfo: [String!]
 }
 
 input VisitRetentionUpdate {
@@ -1394,4 +1394,5 @@ input VisitRetentionUpdate {
   client: ClientRetentionUpdate
   amount: String
   tip: String
+  otherInfo: [String!]
 }

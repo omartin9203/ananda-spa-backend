@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ResourceService } from '../../../core/services/resource.service';
 import { CalendarEventDto } from '../../dtos/dtos/calendar/calendar.event.dto';
 import { CalendarEventRepository } from '../../../../infrastructure/common/repositories/calendar.event.repository';
 import { QueryBuilderService } from '../../../../infrastructure/core/services/query-builder.service';
-import {google} from 'googleapis';
+import { google, GoogleApis } from 'googleapis';
 import { GOOGLE_CALENDAR_CREDENTIALS, GOOGLE_CALENDAR_ID, GOOGLE_CALENDAR_TOKEN } from '../../../../constants';
 import { CalendarEventUpdateDto } from '../../dtos/dtos/calendar/calendar.event.update.dto';
 
@@ -15,6 +15,7 @@ export class CalendarEventService extends ResourceService<CalendarEventDto> {
   ) {
     super(repository);
   }
+  private readonly logger = new Logger(CalendarEventService.name);
   async authorize() {
     const { client_secret, client_id, redirect_uris } = GOOGLE_CALENDAR_CREDENTIALS.installed;
     const oAuth2Client = new google.auth.OAuth2(
@@ -97,17 +98,15 @@ export class CalendarEventService extends ResourceService<CalendarEventDto> {
         calendarId: GOOGLE_CALENDAR_ID,
         requestBody: {
           id: 'aasdf-123-fghj-qwer-5467a-333',
-          token: 'token123',
+          token: 'token-5467a-333',
           type: 'web_hook',
-          address: 'http://localhost',
+          address: 'https://apinest.anandaspa.us/visit/retention',
         },
       });
-      // tslint:disable-next-line:no-console
-      console.log(res);
+      this.logger.debug(res);
 
     } catch (e) {
-      // tslint:disable-next-line:no-console
-      console.log(e);
+      this.logger.debug(e);
     }
   }
 }
