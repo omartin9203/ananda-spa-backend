@@ -12,9 +12,10 @@ import { ReviewSettingResolver } from './settings/review-setting.resolver';
 import { AccreditedResolver } from './review/accredited.resolver';
 import {ReviewBalanceResolver} from './review/balance.resolver';
 import { ReviewPerDirectoryResolver } from './review/review-per-directory.resolver';
-import { RetentionPerformanceResolver } from './visit/retention-performance.resolver';
 import { RetentionSettingResolver } from './settings/retention-setting.resolver';
 import { ServiceSettingResolver } from './settings/service-setting.resolver';
+import { ColorSettingResolver } from './settings/color-setting.resolver';
+import { RetentionPerformanceResolver } from './visit/retention-performance.resolver';
 
 export const ResolversConfig = {
     imports: [],
@@ -22,10 +23,12 @@ export const ResolversConfig = {
         ClientResolver, UserResolver, BaseFormResolver, FacialFormResolver, MassageFormResolver, DiagnosticResolver,
         VisitResolver, AuthResolver, VisitRetentionResolver, ReviewResolver, ReviewSettingResolver, AccreditedResolver,
         ReviewBalanceResolver, ReviewPerDirectoryResolver, ServiceSettingResolver, RetentionSettingResolver, RetentionPerformanceResolver,
+        ColorSettingResolver,
     ],
     exports: [
         ClientResolver, UserResolver, BaseFormResolver, FacialFormResolver, MassageFormResolver, DiagnosticResolver,
         VisitResolver, AuthResolver, VisitRetentionResolver, ReviewResolver, ReviewSettingResolver, AccreditedResolver,
         ReviewBalanceResolver, ReviewPerDirectoryResolver, ServiceSettingResolver, RetentionSettingResolver, RetentionPerformanceResolver,
+      ColorSettingResolver,
     ],
 };

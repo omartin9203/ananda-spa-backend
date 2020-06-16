@@ -70,7 +70,7 @@ export class AppModule {
       '|7,Peacock,#039BE5|8,Graphite,#616161|9,Blueberry,#3F51B5' +
       '|10,Basil,#0B8043|11,Tomato,#D60000';
     const colorsGoogle: ColorSettingInput[] = str.split('|').map(x => {
-      const [name, hexcode, colorId] = x.split(',');
+      const [colorId, name, hexcode ] = x.split(',');
       return {
         name,
         hexcode,

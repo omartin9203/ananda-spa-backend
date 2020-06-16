@@ -108,7 +108,7 @@ export class UserRepository extends ResourceRepository<UserModel> {
             });
     }
     async getUserInfo(id: string) {
-        return await this.userModel.findById(id).select('id createdAt updatedAt email firstName lastName status imgSrc phone roles');
+        return await this.userModel.findById(id).select('id createdAt updatedAt email firstName lastName status imgSrc phone roles colorId');
     }
     async updateRetention(id: string, total?: number, important?: number) {
         const update = {
