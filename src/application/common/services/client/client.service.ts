@@ -5,28 +5,19 @@ import { ClientRepository } from '../../../../infrastructure/common/repositories
 import { IPaginatedResponseClass } from '../../../../infrastructure/core/models/interfaces/paginate.interface';
 import { QueryBuilderService } from '../../../../infrastructure/core/services/query-builder.service';
 import { Operators } from '../../../../infrastructure/core/utils/query/operators.enum';
+import { UserDto } from '../../dtos/dtos/user/user.dto';
 
 @Injectable()
 export class ClientService extends ResourceService<ClientDto> {
     constructor(
       private repository: ClientRepository,
-      private readonly queryBuilderService: QueryBuilderService,
     ) {
         super(repository);
     }
-    async filterClients( query: string = '', skip?: number, limit?: number ): Promise<IPaginatedResponseClass<ClientDto>> {
-        // const regex = new RegExp(query, 'si');
-        // Logger.log(regex, 'ClientService:::Regex');
-        // const filter = [
-        //     {firstname: regex},
-        //     {lastname: regex},
-        //     {phone: regex},
-        //     {email: regex},
-        // ];
-        const filter = this.queryBuilderService.buildQueryContains(query, [ 'firstname', 'lastname', 'phone', 'email'], Operators.OR);
-        const total = await this.repository.count(filter, true);
+    async filter( filter: any, skip?: number, limit?: number ): Promise<IPaginatedResponseClass<ClientDto>> {
+        const total = await this.repository.count(filter);
         return {
-            items: await this.repository.find(filter, skip, limit),
+            items: (await this.repository.find(filter, skip, limit)),
             total,
             hasMore: limit + skip < total,
         };

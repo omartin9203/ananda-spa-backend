@@ -8,6 +8,7 @@ import { UpdateClientInputDto } from '../dtos/inputs/client/client.update';
 import { Logger } from '@nestjs/common';
 import { FilterClientsArgsInput } from '../dtos/inputs/args/query.arg.input';
 import { validateOrReject, validate } from 'class-validator';
+import { ClientFilterInput } from '../dtos/inputs/client/client-filter.input';
 
 @Resolver(of => ClientDto)
 export class ClientResolver {
@@ -36,9 +37,11 @@ export class ClientResolver {
     // @Args({ name: 'skip', type: () => Int, nullable: true }) skip: number,
     // @Args({name: 'limit', type: () => Int, nullable: true }) limit: number,
   ) {
-    return query !== ''
-      ? await this.clientService.filterClients(query.toLowerCase(), skip, limit)
-      : await this.clientService.getAll(skip, limit);
+    const filter = query !== ''
+      ? ClientFilterInput.getQuery({search: query})
+      : undefined;
+    const result = await this.clientService.filter(filter, skip, limit);
+    return result;
   }
   @Mutation(() => ClientDto)
   async createClient(@Args('input') input: CreateClientInputDto) {
