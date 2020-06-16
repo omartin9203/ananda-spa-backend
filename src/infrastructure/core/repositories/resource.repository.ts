@@ -61,7 +61,7 @@ export class ResourceRepository<TResource extends ResourceModel> implements IRes
     try {
       resource = await this.resourceModel.findOne(filter).exec();
     } catch (error) {
-      throw new NotFoundException('Could not find resource.');
+      throw new NotFoundException(error.toString());
     }
     if (!resource) {
       throw new NotFoundException('Could not find resource.');

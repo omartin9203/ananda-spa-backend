@@ -10,6 +10,8 @@ import { MulterModule } from '@nestjs/platform-express';
 import { APP_GUARD, APP_PIPE } from '@nestjs/core';
 import { ScheduleModule } from 'nest-schedule';
 import { FacialFormService } from './application/common/services/form/facial/facial-form.service';
+import { ColorSettingService } from './application/common/services/settings/color-setting.service';
+import { ColorSettingInput } from './application/common/dtos/inputs/settings/color/color-setting.input';
 
 const { URI, OPTIONS } = process.env.NODE_ENV === 'production' ? CONNECTION.ATLAS : CONNECTION.LOCAL;
 
@@ -57,4 +59,32 @@ const { URI, OPTIONS } = process.env.NODE_ENV === 'production' ? CONNECTION.ATLA
     // },
   ],
 })
-export class AppModule { }
+export class AppModule {
+  constructor(readonly colorService: ColorSettingService) {
+    this.initialize();
+  }
+  async initialize() {
+    const str =
+      '1,Lavender,#7986CB|2,Sage,#33B679|3,Grape,#8E24AA' +
+      '|4,Flamingo,#E67C73|5,Banana,#F6C026|6,Tangerine,#F5511D' +
+      '|7,Peacock,#039BE5|8,Graphite,#616161|9,Blueberry,#3F51B5' +
+      '|10,Basil,#0B8043|11,Tomato,#D60000';
+    const colorsGoogle: ColorSettingInput[] = str.split('|').map(x => {
+      const [name, hexcode, colorId] = x.split(',');
+      return {
+        name,
+        hexcode,
+        colorId,
+      };
+    });
+    for (const x of colorsGoogle) {
+      try {
+        await this.colorService.findOne(x);
+      } catch (e) {
+        if (e.message.message === 'Could not find resource.') {
+          await this.colorService.createResource(x);
+        }
+      }
+    }
+  }
+}
