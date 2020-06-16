@@ -127,6 +127,7 @@ export class VisitRetentionService extends ResourceService<VisitRetentionDto> {
             };
             return await this.createResource(input);
         } catch (e) {
+            Logger.debug(e, 'error create retention');
             return null;
         }
     }
