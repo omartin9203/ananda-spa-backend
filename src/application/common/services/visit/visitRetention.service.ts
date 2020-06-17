@@ -133,4 +133,18 @@ export class VisitRetentionService extends ResourceService<VisitRetentionDto> {
             return null;
         }
     }
+    async loadRetentionEventsFromCalendar() {
+        try {
+            const startDate = new Date();
+            startDate.setHours(7, 0, 0);
+            startDate.setDate(startDate.getDate() - 1);
+            const endDate = new Date();
+            const events = await this.calendarService.getEvents(startDate, endDate);
+            for (const event of events) {
+                 await this.createRetentionFromEvent(event);
+            }
+        } catch (e) {
+           Logger.debug(e);
+        }
+    }
 }
