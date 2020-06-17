@@ -98,11 +98,6 @@ export class AuthService {
   }
 
   async validateFirebaseToken(tokenId: string): Promise<DecodedIdToken | undefined> {
-    const serviceAccount = GOOGLE_FIREBASE_CREDENTIALS;
-    admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount),
-      databaseURL: GOOGLE_FIREBASE_DATABASE_URL,
-    });
     try {
       return  await admin.auth().verifyIdToken(tokenId);
     } catch (e) {
