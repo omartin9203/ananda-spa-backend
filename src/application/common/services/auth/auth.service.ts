@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { sign } from 'jsonwebtoken';
 import { UserService } from '../user/user.service';
 import { API_KEY, PROVIDER, STATUS } from '../../../../constants/constants';
@@ -6,6 +6,8 @@ import { JwtService } from '@nestjs/jwt';
 import { AuthDto } from '../../dtos/dtos/auth/auth-data.dto';
 import { AuthSSODto } from '../../dtos/dtos/auth/sso-auth-data.dto';
 import { awaitExpression } from '@babel/types';
+import { GOOGLE_FIREBASE_CREDENTIALS, GOOGLE_FIREBASE_DATABASE_URL } from '../../../../constants';
+import * as admin from 'firebase-admin';
 
 @Injectable()
 export class AuthService {
@@ -92,5 +94,21 @@ export class AuthService {
 
   async getUserInfo(userId: string) {
     return await this.usersService.getUserInfo(userId);
+  }
+  async validateFirebaseToken(tokenId: string) {
+    const serviceAccount = GOOGLE_FIREBASE_CREDENTIALS;
+    admin.initializeApp({
+      credential: admin.credential.cert(serviceAccount),
+      databaseURL: GOOGLE_FIREBASE_DATABASE_URL,
+    });
+    admin.auth().verifyIdToken(tokenId)
+      .then(decodedToken => {
+        const uid = decodedToken.uid;
+        return true;
+        // ...
+      }).catch(error => {
+      Logger.debug(error);
+      return false;
+    });
   }
 }
