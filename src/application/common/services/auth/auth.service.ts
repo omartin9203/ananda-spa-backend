@@ -62,28 +62,28 @@ export class AuthService {
   }
 
   async validateSignUp(user: object): Promise<AuthDto> {
-    const responseStatus = await this.usersService.signUp(user);
-    if (!responseStatus.success) {
-      return {
-        success: false,
-        message: responseStatus.message,
-      };
-      // return null;
-    }
-    const payload = {
-      providerData: {
-        thirdPartyId: responseStatus.data.id,
-        provider: PROVIDER.LOCAL,
-      },
-      sub: responseStatus.data.id,
-    };
-    const jwt = this.jwtService.sign(payload);
-    return {
-      success: true,
-      message: responseStatus.message,
-      jwt,
-      id: responseStatus.data.id,
-    };
+    return await this.usersService.signUp(user);
+    // if (!responseStatus.success) {
+    //   return {
+    //     success: false,
+    //     message: responseStatus.message,
+    //   };
+    //   // return null;
+    // }
+    // const payload = {
+    //   providerData: {
+    //     thirdPartyId: responseStatus.data.id,
+    //     provider: PROVIDER.LOCAL,
+    //   },
+    //   sub: responseStatus.data.id,
+    // };
+    // const jwt = this.jwtService.sign(payload);
+    // return {
+    //   success: true,
+    //   message: responseStatus.message,
+    //   // jwt,
+    //   // id: responseStatus.data.id,
+    // };
   }
 
   async getRoles(userId: string) {
