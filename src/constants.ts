@@ -1,3 +1,5 @@
+import { ServiceAccount } from 'firebase-admin';
+
 export const URI_BASE = process.env.NODE_ENV === 'production' ? 'https://apinest.anandaspa.us/' : 'http://localhost:3000/';
 export const URI_HELPER = {
   callback: {
@@ -127,5 +129,27 @@ export const GOOGLE_CALENDAR_TOKEN = {
 };
 
 export const GOOGLE_CALENDAR_ID = 'ph60s613mi84rsmkcgq397v38s@group.calendar.google.com';
+export const GOOGLE_FIREBASE_CREDENTIALS: ServiceAccount = {
+    projectId: 'ananda-spa-staff',
+    privateKey: '-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDLCQ+YhSzHRC+K\n' +
+      '4QrZdCDICRi+/s8NGRpX6r3bSTe2LHmOCk1WDrA56vOYMieIFgPeZWqFKuNuD8Yw\ndi4ym6Ftev+cmW2f0DBszODh4nyDaLtgEaZ4XdwI' +
+      'RZ/GSyLwjKOsDtrn8g4YkikI\nvIaOZZjKYb6doCIdTXO9dblTOHqTk8S+WAwN7bfbDLr/cq+HM/GL7h2q8C6adPJN\nuvCGqfOpNFHt6Qh' +
+      'hVawokXc4C3+5AFDb+NX3hro/Cmalt6LGSlRwtxYJu8lmKRSy\nbwuly6vOdMXXH/oTOufce6ndlg98CLRpgkGPscEGAbm4RL7qgXONFttW' +
+      'li84d+qj\nk58N6JydAgMBAAECggEAAPu3U8XrLl22UsTHnqvSYSCyw/tCFIR3X7t4X5pqtZOb\nt2awwX9SQGRSvkvyWHLVTpQbxVaPEK' +
+      'LFsKHGzzDbS72DXdoDcW91wETUgVwogtOj\netHuwTk+OALOTtGIfQPlChmo7qjIqtiQg9juf7wyORPDfVPullzRgeewgjo0kDl3\n/3RB' +
+      'papvhcI6OA+5BGba+AJI2WjWQb/1rpRWcLNSlyem4WkBCsEaXh0e+eX7duU6\nk6Uo4zzslmNlJ0ywP8PWd1LDED2GHY56iwbfzHBp7KEt' +
+      'tblQ6qv5uQWospbaJFZe\nIdu8qwRHBUqMpRVlGjCPvXQotzbc3HRdAawmjJmTqQKBgQDro87MepPVqiFvn55z\nUmWdpDQPV+NendRxTIC' +
+      'fp0/3VpCZNdcJM2+ljb4Okdo4bABWDu4yHWPEuHxybKIu\niJnXLf2l+vwnUGn8VpA45YX6XmkrIBc0y6OELgSbFwGEiIuqMpNaAABBQd' +
+      'im1wK4\nByiTpyaX91bvy3i8ANMX8oOUDwKBgQDclBB88HoOtQea7pSy/DL6HFK9iibEt7Sx\nVnZsFGfV13hC2C3M/kEyS9HowfXbQQY' +
+      '822aIukXYbCMb3kChKyE5z7GuKdK0UtEC\nDIzA8H8aMplqNkTPdwTkTczoG3MRn5BkPxrHznclZ1CWF5PmthOwPCOf1DuWl5Ct\n7KVM' +
+      'DgPokwKBgQDPsgmj9+L4MEXaYmHCGf1RDpuIbpoNGqZW2uyATHPSea1oLamF\nBZ5B2QaNRweGNcOyFuTirT7z9PxTyubEh0i5/mKU+v1' +
+      'oFZvle9MRI1WNEcw248kw\nktFkvz72CDghPk2ETaHNcTTIUCaLH/bYiA6+3lTJG4y4PasEYuGtOOe7BwKBgBWS\n/dHai3WoyyeiMjU' +
+      'Xab0AzC7xtj0DYs79j/OeQ1GtE3wmPMSSEbpjpBJJ9kwNnhiR\ntQOmhHJYkU6GfHfHCibnY4+PU6aDeyHiLFoqq6PaUxsKV8ya7YWO/n' +
+      '2tQaH1o1/K\ntEnardigtEcZ40Nrh51zJGDbl0Bxbps0TC6WKFe1AoGBAM/oi822Wh+tT+38edR8\nQcPtGqkZ3S7ZN1FWR8go5K/VdD9a' +
+      '+sdax3ICAHlB4U1nN+/nIHwC4pmYbWJiaKha\nfL0XPmeN9qw6iDxK87WL+TN34Tzof82eCXGHV+QXP5UolmtJKhqb1qiBsVdsa+sH\n79' +
+      'EEOM4Avr9ydP0wqKUDpVNq\n-----END PRIVATE KEY-----\n',
+    clientEmail: 'firebase-adminsdk-h73if@ananda-spa-staff.iam.gserviceaccount.com',
+    };
+export const GOOGLE_FIREBASE_DATABASE_URL = 'https://ananda-spa-staff.firebaseio.com';
 
 //endregion
