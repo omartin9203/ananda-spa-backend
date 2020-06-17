@@ -34,6 +34,7 @@
     "class-validator": "^0.10.2",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
+    "firebase-admin": "^8.12.1",
     "googleapis": "^52.1.0",
     "graphql": "^14.5.5",
     "graphql-tools": "^4.0.5",
