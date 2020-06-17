@@ -20,8 +20,8 @@ export class VisitsController {
         @Req() req: any,
     ) {
        try {
-           this.logger.debug(event.body);
-           const calendarEvent = this.calendarEventService.unzipEvent(event.body);
+           this.logger.debug(event);
+           const calendarEvent = await this.calendarEventService.getEvent(event.id);
            await this.visitRetentionService.createRetentionFromEvent(calendarEvent);
        } catch (e) {
            this.logger.debug(e);

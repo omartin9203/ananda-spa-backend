@@ -44,6 +44,7 @@ export const VisitRetentionSchema = new Schema({
     otherInfo: [{
         type: String,
         required: true,
+        default: [],
     }],
 }, { timestamp: true });
 

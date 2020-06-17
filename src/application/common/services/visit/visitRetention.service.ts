@@ -83,7 +83,8 @@ export class VisitRetentionService extends ResourceService<VisitRetentionDto> {
         const event = await this.calendarService.getEvent(eventId);
         if (!event) { throw new Error('There is no event with that id'); }
         const update = await this.getInfoFromSummary(event.summary);
-        const userId = (await this.userService.getUserByColor(event.colorId)).id;
+        const colorSettingId = (await this.colorSettingService.findOne({colorId: event.colorId})).id;
+        const userId = (await this.userService.getUserByColor(colorSettingId)).id;
         const input: VisitRetentionUpdate = {
             ...update,
             userId,
@@ -118,7 +119,8 @@ export class VisitRetentionService extends ResourceService<VisitRetentionDto> {
     async createRetentionFromEvent(event: CalendarEventDto) {
         try {
             const info = await this.getInfoFromSummary(event.summary);
-            const userId = (await this.userService.getUserByColor(event.colorId)).id;
+            const colorSettingId = (await this.colorSettingService.findOne({colorId: event.colorId})).id;
+            const userId = (await this.userService.getUserByColor(colorSettingId)).id;
             const input: VisitRetentionInput = {
                 ...info,
                 userId,
@@ -127,7 +129,22 @@ export class VisitRetentionService extends ResourceService<VisitRetentionDto> {
             };
             return await this.createResource(input);
         } catch (e) {
+            Logger.debug(e, 'error create retention');
             return null;
+        }
+    }
+    async loadRetentionEventsFromCalendar() {
+        try {
+            const startDate = new Date();
+            startDate.setHours(7, 0, 0);
+            startDate.setDate(startDate.getDate() - 1);
+            const endDate = new Date();
+            const events = await this.calendarService.getEvents(startDate, endDate);
+            for (const event of events) {
+                 await this.createRetentionFromEvent(event);
+            }
+        } catch (e) {
+           Logger.debug(e);
         }
     }
 }

@@ -108,8 +108,8 @@ export class VisitRetentionResolver {
     }
 
     @Mutation(() => VisitRetentionDto, {nullable: true})
-    @UseGuards(GqlAuthGuard, RolesGuard)
-    @Roles(USER_ROLES.MANAGER, USER_ROLES.ADMIN)
+    // @UseGuards(GqlAuthGuard, RolesGuard)
+    // @Roles(USER_ROLES.MANAGER, USER_ROLES.ADMIN)
     async updateRetentionFromSummary(
       @Args({ name: 'id', type: () => ID }) id: string,
       @Args({ name: 'summary', type: () => String }) summary: string,

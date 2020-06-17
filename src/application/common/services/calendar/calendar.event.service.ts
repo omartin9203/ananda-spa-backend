@@ -87,6 +87,23 @@ export class CalendarEventService extends ResourceService<CalendarEventDto> {
     });
     return this.unzipEvent(data);
   }
+  async deleteEvent(Id) {
+    try {
+      const auth = await this.authorize();
+      const calendar = await google.calendar({
+        version: 'v3',
+        auth,
+      });
+      const res = await calendar.events.delete({
+        calendarId: GOOGLE_CALENDAR_ID,
+        eventId: Id,
+      });
+      if (res) { return true; }
+    } catch (e) {
+      this.logger.debug(e);
+      return false;
+    }
+  }
   async watchEvent(): Promise<any> {
     const auth = await this.authorize();
     const calendar = await google.calendar({
