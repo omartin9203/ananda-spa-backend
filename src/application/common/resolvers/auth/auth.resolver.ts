@@ -16,7 +16,7 @@ export class AuthResolver {
 
   @Query(() => AuthDto)
   async logIn(@Args('input', new ValidationPipe()) input: LoginInput) {
-    return await this.authService.validateLocalLogin(input.unique, input.password);
+    return await this.authService.validateLogin(LoginInput.validation(input));
   }
   @Mutation(() => AuthDto)
   async signUp(@Args('input', new ValidationPipe()) input: UserInput) {

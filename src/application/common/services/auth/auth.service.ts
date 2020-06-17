@@ -1,11 +1,12 @@
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
-import { sign } from 'jsonwebtoken';
+import { Injectable } from '@nestjs/common';
 import { UserService } from '../user/user.service';
-import { API_KEY, PROVIDER, STATUS } from '../../../../constants/constants';
+import { PROVIDER } from '../../../../constants/constants';
 import { JwtService } from '@nestjs/jwt';
 import { AuthDto } from '../../dtos/dtos/auth/auth-data.dto';
 import { AuthSSODto } from '../../dtos/dtos/auth/sso-auth-data.dto';
-import { awaitExpression } from '@babel/types';
+import { LoginInput } from '../../dtos/inputs/auth/login.input';
+import { IJwtPayload } from '../../../../infrastructure/common/models/interfaces/auth/jwt-payload.interface';
+import { IPayloadAuth } from '../../dtos/dtos/auth/payload.dto';
 
 @Injectable()
 export class AuthService {
@@ -21,10 +22,7 @@ export class AuthService {
         };
       }
       const payload = {
-        providerData: {
-          thirdPartyId,
-          provider,
-        },
+        provider: PROVIDER.LOCAL,
         sub: responseStatus.data.id,
       };
 
@@ -45,10 +43,10 @@ export class AuthService {
         message: responseStatus.message,
       };
     }
-    const payload = {
+    const payload: IPayloadAuth = {
       providerData: {
-        thirdPartyId: responseStatus.data.id,
         provider: PROVIDER.LOCAL,
+        thirdPartyId: responseStatus.data.id,
       },
       sub: responseStatus.data.id,
     };
@@ -59,6 +57,36 @@ export class AuthService {
       jwt,
       id: responseStatus.data.id,
     };
+  }
+
+  async validateExternalLogin(input: LoginInput) {
+    // todo: verifyToken
+    const responseStatus = await this.usersService.signInSSO(input.email);
+    if (!responseStatus.success) {
+      return responseStatus as AuthDto;
+    }
+    const payload: IPayloadAuth = {
+      providerData: {
+        provider: input.provider,
+        thirdPartyId: responseStatus.data.id, // todo: uid
+      },
+      sub: responseStatus.data.id,
+    };
+
+    const jwt = this.jwtService.sign(payload);
+    return {
+      success: true,
+      message: responseStatus.message,
+      jwt,
+      id: responseStatus.data.id,
+    };
+  }
+
+  async validateLogin(input: LoginInput): Promise<AuthDto> {
+    if (input.provider === PROVIDER.LOCAL) {
+      return await this.validateLocalLogin(input.email, input.password);
+    }
+    return await this.validateExternalLogin(input);
   }
 
   async validateSignUp(user: object): Promise<AuthDto> {
