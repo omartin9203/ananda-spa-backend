@@ -22,9 +22,14 @@ export class UserService extends ResourceService<UserDto> {
     }
     async updateResource(id, input: UpdateUserInput) {
       try {
+        const user = await this.findResource(id);
         if (input.status === STATUS.CANCELED || STATUS.INACTIVE) {
-          await this.colorSettingService.updateResource(input.colorId, { available: true });
+          await this.colorSettingService.updateResource(user.colorId, { available: true });
           input.colorId = null;
+        }
+        if (input.colorId) {
+          await this.colorSettingService.updateResource(user.colorId, {available: true});
+          await this.colorSettingService.updateResource(input.colorId, { available: false });
         }
         const entity = await this.repository.updateOne(id, input);
         return  entity;
@@ -35,9 +40,8 @@ export class UserService extends ResourceService<UserDto> {
     }
     async deleteResource(id) {
       try {
-        const user = await this.findResource(id);
-        await this.colorSettingService.updateResource(user.colorId, {available: true});
         const  entity = await this.repository.deleteOne(id);
+        await this.colorSettingService.updateResource(entity.colorId, {available: true});
         return  entity;
       } catch (e) {
         Logger.debug(' Delete User Error: ', e);
