@@ -11,22 +11,36 @@ import { UserFilterInput } from '../../dtos/inputs/user/UserFilter';
 import { RetentionUserInput } from '../../dtos/inputs/user/retention.user.input';
 import { UserBalanceRetentionDto } from '../../dtos/dtos/user/balance/user-balance-retention.dto';
 import { UpdateUserInput } from '../../dtos/inputs/user/user.update';
+import { ColorSettingService } from '../settings/color-setting.service';
 
 @Injectable()
 export class UserService extends ResourceService<UserDto> {
     constructor(private readonly repository: UserRepository,
+                private readonly colorSettingService: ColorSettingService,
                 private readonly queryBuilderService: QueryBuilderService) {
         super(repository);
     }
     async updateResource(id, input: UpdateUserInput) {
       try {
         if (input.status === STATUS.CANCELED || STATUS.INACTIVE) {
+          await this.colorSettingService.updateResource(input.colorId, { available: true });
           input.colorId = null;
         }
         const entity = await this.repository.updateOne(id, input);
         return  entity;
       } catch (e) {
         Logger.debug(' Update User Error: ', e);
+        return  e;
+      }
+    }
+    async deleteResource(id) {
+      try {
+        const user = await this.findResource(id);
+        await this.colorSettingService.updateResource(user.colorId, {available: true});
+        const  entity = await this.repository.deleteOne(id);
+        return  entity;
+      } catch (e) {
+        Logger.debug(' Delete User Error: ', e);
         return  e;
       }
     }
