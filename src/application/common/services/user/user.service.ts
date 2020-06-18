@@ -22,9 +22,7 @@ export class UserService extends ResourceService<UserDto> {
     }
     async updateResource(id, input: UpdateUserInput) {
       try {
-        if (input.status === STATUS.CANCELED || STATUS.INACTIVE) {
-          input.colorId = null;
-        }
+        input.colorId = (input.status === STATUS.CANCELED || STATUS.INACTIVE) ? null : input.colorId;
         if (input.colorId !== undefined) {
           const user = await this.findResource(id);
           if (user.colorId) {
