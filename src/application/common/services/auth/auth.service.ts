@@ -1,13 +1,9 @@
-import { Injectable } from '@nestjs/common';
-import { BadRequestException, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
-import { sign } from 'jsonwebtoken';
+import { BadRequestException, ForbiddenException, HttpException, Injectable } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { PROVIDER } from '../../../../constants/constants';
 import { JwtService } from '@nestjs/jwt';
 import { AuthDto } from '../../dtos/dtos/auth/auth-data.dto';
 import { AuthSSODto } from '../../dtos/dtos/auth/sso-auth-data.dto';
-import { awaitExpression } from '@babel/types';
-import { GOOGLE_FIREBASE_CREDENTIALS, GOOGLE_FIREBASE_DATABASE_URL } from '../../../../constants';
 import * as admin from 'firebase-admin';
 import DecodedIdToken = admin.auth.DecodedIdToken;
 import { LoginInput } from '../../dtos/inputs/auth/login.input';
@@ -65,15 +61,24 @@ export class AuthService {
   }
 
   async validateExternalLogin(input: LoginInput) {
-    // todo: verifyToken
-    const responseStatus = await this.usersService.signInSSO(input.email);
+    if (!input.tokenId) {
+      throw new BadRequestException('TokenId is required');
+    }
+    const decoded = await this.validateFirebaseToken(input.tokenId);
+    if (!decoded) {
+      throw new ForbiddenException('Verify token error', '403');
+    }
+    if (!decoded.email) {
+      throw new ForbiddenException('Can`t obtain email from token', '403');
+    }
+    const responseStatus = await this.usersService.signInSSO(decoded.email);
     if (!responseStatus.success) {
       return responseStatus as AuthDto;
     }
     const payload: IPayloadAuth = {
       providerData: {
         provider: input.provider,
-        thirdPartyId: responseStatus.data.id, // todo: uid
+        thirdPartyId: decoded.uid,
       },
       sub: responseStatus.data.id,
     };
