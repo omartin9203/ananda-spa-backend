@@ -4,5 +4,5 @@ export class ColorSettingModel extends BaseSettingModel {
   readonly colorId: string;
   readonly name: string;
   readonly hexcode: string;
-  readonly avialable: boolean;
+  readonly available?: boolean;
 }

@@ -9,6 +9,6 @@ export class ColorSettingDto extends ResourceDto {
   name: string;
   @Field()
   hexcode: string;
-  @Field()
-  available: boolean;
+  @Field({nullable: true})
+  available?: boolean;
 }
