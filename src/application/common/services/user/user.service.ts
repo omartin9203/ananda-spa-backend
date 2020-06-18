@@ -1,4 +1,4 @@
-import { Injectable, NotImplementedException } from '@nestjs/common';
+import { Injectable, Logger, NotImplementedException } from '@nestjs/common';
 import { ResourceService } from '../../../core/services/resource.service';
 import { UserDto } from '../../dtos/dtos/user/user.dto';
 import { UserRepository } from '../../../../infrastructure/common/repositories/user.repository';
@@ -19,11 +19,16 @@ export class UserService extends ResourceService<UserDto> {
         super(repository);
     }
     async updateUser(id, input: UpdateUserInput) {
-      if (input.status === STATUS.CANCELED || STATUS.INACTIVE) {
-        input.colorId = null;
+      try {
+        if (input.status === STATUS.CANCELED || STATUS.INACTIVE) {
+          input.colorId = null;
+        }
+        const entity = await this.updateResource(id, input);
+        return  entity;
+      } catch (e) {
+        Logger.debug(' Update User Error: ', e);
+        return  e;
       }
-      const entity = await this.updateResource(id, input);
-      return  entity;
     }
     async signInSSO(email: string) {
       try {
