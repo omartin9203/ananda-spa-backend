@@ -8,4 +8,6 @@ export class ColorSettingUpdate {
   name?: string;
   @Field({nullable: true})
   hexcode?: string;
+  @Field({nullable: true})
+  available?: boolean;
 }

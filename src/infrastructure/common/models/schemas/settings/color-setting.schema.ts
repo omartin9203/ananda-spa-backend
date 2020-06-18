@@ -13,4 +13,8 @@ export const ColorSettingSchema: Schema = new Schema({
     type: String,
     required: true,
   },
+  available: {
+    type: Boolean,
+    required: true,
+  },
 }, { discriminatorKey: 'type' });
