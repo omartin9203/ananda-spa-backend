@@ -18,12 +18,12 @@ export class UserService extends ResourceService<UserDto> {
                 private readonly queryBuilderService: QueryBuilderService) {
         super(repository);
     }
-    async updateUser(id, input: UpdateUserInput) {
+    async updateResource(id, input: UpdateUserInput) {
       try {
         if (input.status === STATUS.CANCELED || STATUS.INACTIVE) {
           input.colorId = null;
         }
-        const entity = await this.updateResource(id, input);
+        const entity = await this.repository.updateOne(id, input);
         return  entity;
       } catch (e) {
         Logger.debug(' Update User Error: ', e);
