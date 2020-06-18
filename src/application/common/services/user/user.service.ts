@@ -1,4 +1,4 @@
-import { Injectable, NotImplementedException } from '@nestjs/common';
+import { Injectable, Logger, NotImplementedException } from '@nestjs/common';
 import { ResourceService } from '../../../core/services/resource.service';
 import { UserDto } from '../../dtos/dtos/user/user.dto';
 import { UserRepository } from '../../../../infrastructure/common/repositories/user.repository';
@@ -10,12 +10,25 @@ import { Operators } from '../../../../infrastructure/core/utils/query/operators
 import { UserFilterInput } from '../../dtos/inputs/user/UserFilter';
 import { RetentionUserInput } from '../../dtos/inputs/user/retention.user.input';
 import { UserBalanceRetentionDto } from '../../dtos/dtos/user/balance/user-balance-retention.dto';
+import { UpdateUserInput } from '../../dtos/inputs/user/user.update';
 
 @Injectable()
 export class UserService extends ResourceService<UserDto> {
     constructor(private readonly repository: UserRepository,
                 private readonly queryBuilderService: QueryBuilderService) {
         super(repository);
+    }
+    async updateResource(id, input: UpdateUserInput) {
+      try {
+        if (input.status === STATUS.CANCELED || STATUS.INACTIVE) {
+          input.colorId = null;
+        }
+        const entity = await this.repository.updateOne(id, input);
+        return  entity;
+      } catch (e) {
+        Logger.debug(' Update User Error: ', e);
+        return  e;
+      }
     }
     async signInSSO(email: string) {
       try {
