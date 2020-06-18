@@ -18,32 +18,24 @@ export class UserService extends ResourceService<UserDto> {
         super(repository);
     }
     async updateResource(id, input: UpdateUserInput) {
-      try {
-        input.colorId = (input.status === STATUS.CANCELED || STATUS.INACTIVE) ? null : input.colorId;
-        if (input.colorId !== undefined) {
-          const user = await this.findResource(id);
-          if (user.colorId) {
-            await this.colorSettingService.updateResource(user.colorId, {available: true});
-          }
-          if (input.colorId) {
-            await this.colorSettingService.updateResource(input.colorId, { available: false });
-          }
+      input.colorId = (input.status === STATUS.CANCELED || STATUS.INACTIVE) ? null : input.colorId;
+      if (input.colorId !== undefined) {
+        const user = await this.findResource(id);
+        if (user.colorId) {
+          await this.colorSettingService.updateResource(user.colorId, {available: true});
         }
-        return await this.repository.updateOne(id, input);
-      } catch (e) {
-        Logger.debug(' Update User Error: ', e);
-        return  e;
+        if (input.colorId) {
+          await this.colorSettingService.updateResource(input.colorId, { available: false });
+        }
       }
+      return await this.repository.updateOne(id, input);
     }
     async deleteResource(id) {
-      try {
-        const  entity = await this.repository.deleteOne(id);
+      const entity = await this.repository.deleteOne(id);
+      if (entity.colorId) {
         await this.colorSettingService.updateResource(entity.colorId, {available: true});
-        return  entity;
-      } catch (e) {
-        Logger.debug(' Delete User Error: ', e);
-        return  e;
       }
+      return  entity;
     }
     async signInSSO(email: string) {
       try {
