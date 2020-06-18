@@ -35,11 +35,14 @@ export class VisitRetentionService extends ResourceService<VisitRetentionDto> {
     }
 
     async deleteResource(id: string): Promise<VisitRetentionDto> {
-        const item = await this.repository.getOne(id) as { flag: FLAG_RETENTION, userId: string };
+        const item = await this.repository.getOne(id) as { flag: FLAG_RETENTION, userId: string, calendarId: string};
         await this.userService.updateRetention(item.userId, {
             important: -Number(item.flag !== FLAG_RETENTION.NORMAL),
             total: -1,
         });
+        if (item.calendarId) {
+            await this.calendarService.deleteEvent(item.calendarId);
+        }
         return await this.repository.deleteOne(id);
     }
 
