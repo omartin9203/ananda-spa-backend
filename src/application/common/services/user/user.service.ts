@@ -1,34 +1,41 @@
-import { Injectable, Logger, NotImplementedException } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ResourceService } from '../../../core/services/resource.service';
 import { UserDto } from '../../dtos/dtos/user/user.dto';
 import { UserRepository } from '../../../../infrastructure/common/repositories/user.repository';
 import { QueryBuilderService } from '../../../../infrastructure/core/services/query-builder.service';
 import { STATUS } from '../../../../constants/constants';
 import { IPaginatedResponseClass } from '../../../../infrastructure/core/models/interfaces/paginate.interface';
-import { ClientDto } from '../../dtos/dtos/client/client.dto';
-import { Operators } from '../../../../infrastructure/core/utils/query/operators.enum';
-import { UserFilterInput } from '../../dtos/inputs/user/UserFilter';
 import { RetentionUserInput } from '../../dtos/inputs/user/retention.user.input';
 import { UserBalanceRetentionDto } from '../../dtos/dtos/user/balance/user-balance-retention.dto';
 import { UpdateUserInput } from '../../dtos/inputs/user/user.update';
+import { ColorSettingService } from '../settings/color-setting.service';
 
 @Injectable()
 export class UserService extends ResourceService<UserDto> {
     constructor(private readonly repository: UserRepository,
+                private readonly colorSettingService: ColorSettingService,
                 private readonly queryBuilderService: QueryBuilderService) {
         super(repository);
     }
     async updateResource(id, input: UpdateUserInput) {
-      try {
-        if (input.status === STATUS.CANCELED || STATUS.INACTIVE) {
-          input.colorId = null;
+      input.colorId = (input.status === STATUS.CANCELED || STATUS.INACTIVE) ? null : input.colorId;
+      if (input.colorId !== undefined) {
+        const user = await this.findResource(id);
+        if (user.colorId) {
+          await this.colorSettingService.updateResource(user.colorId, {available: true});
         }
-        const entity = await this.repository.updateOne(id, input);
-        return  entity;
-      } catch (e) {
-        Logger.debug(' Update User Error: ', e);
-        return  e;
+        if (input.colorId) {
+          await this.colorSettingService.updateResource(input.colorId, { available: false });
+        }
       }
+      return await this.repository.updateOne(id, input);
+    }
+    async deleteResource(id) {
+      const entity = await this.repository.deleteOne(id);
+      if (entity.colorId) {
+        await this.colorSettingService.updateResource(entity.colorId, {available: true});
+      }
+      return  entity;
     }
     async signInSSO(email: string) {
       try {
