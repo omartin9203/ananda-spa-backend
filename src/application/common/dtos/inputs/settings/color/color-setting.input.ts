@@ -8,4 +8,6 @@ export class ColorSettingInput {
   name: string;
   @Field()
   hexcode: string;
+  @Field()
+  available: boolean;
 }
