@@ -97,7 +97,7 @@ export class VisitRetentionResolver {
     async updateRetention(
         @Args({ name: 'id', type: () => ID }) id: string,
         @Args('input') input: VisitRetentionUpdate) {
-        return await this.services.updateRetention(id, input);
+        return await this.services.updateRetentionAndEvent(id, input);
     }
 
     @Mutation(() => VisitRetentionDto)
