@@ -10,12 +10,20 @@ import { Operators } from '../../../../infrastructure/core/utils/query/operators
 import { UserFilterInput } from '../../dtos/inputs/user/UserFilter';
 import { RetentionUserInput } from '../../dtos/inputs/user/retention.user.input';
 import { UserBalanceRetentionDto } from '../../dtos/dtos/user/balance/user-balance-retention.dto';
+import { UpdateUserInput } from '../../dtos/inputs/user/user.update';
 
 @Injectable()
 export class UserService extends ResourceService<UserDto> {
     constructor(private readonly repository: UserRepository,
                 private readonly queryBuilderService: QueryBuilderService) {
         super(repository);
+    }
+    async updateUser(id, input: UpdateUserInput) {
+      if (input.status === STATUS.CANCELED || STATUS.INACTIVE) {
+        input.colorId = null;
+      }
+      const entity = await this.updateResource(id, input);
+      return  entity;
     }
     async signInSSO(email: string) {
       try {
