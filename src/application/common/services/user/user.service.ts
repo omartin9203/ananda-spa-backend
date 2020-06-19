@@ -18,7 +18,7 @@ export class UserService extends ResourceService<UserDto> {
         super(repository);
     }
     async updateResource(id, input: UpdateUserInput) {
-      input.colorId = (input.status === STATUS.CANCELED || STATUS.INACTIVE) ? null : input.colorId;
+      input.colorId = (input.status === STATUS.CANCELED) ? null : input.colorId;
       if (input.colorId !== undefined) {
         const user = await this.findResource(id);
         if (user.colorId) {
@@ -31,7 +31,7 @@ export class UserService extends ResourceService<UserDto> {
       return await this.repository.updateOne(id, input);
     }
     async deleteResource(id) {
-      const entity = await this.repository.deleteOne(id);
+      const entity = await this.repository.updateOne(id, {status: STATUS.CANCELED});
       if (entity.colorId) {
         await this.colorSettingService.updateResource(entity.colorId, {available: true});
       }
