@@ -6,7 +6,6 @@ import { ReviewInput } from '../dtos/inputs/review/review.input';
 import { UserService } from '../services/user/user.service';
 import { AccreditedInputType } from '../dtos/inputs/review/accredited/accredited.input';
 import { ColorSettingService } from '../services/settings/color-setting.service';
-import { UserDto } from '../dtos/dtos/user/user.dto';
 
 @Controller('review')
 export class ReviewController {
