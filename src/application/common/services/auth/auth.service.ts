@@ -8,6 +8,7 @@ import * as admin from 'firebase-admin';
 import DecodedIdToken = admin.auth.DecodedIdToken;
 import { LoginInput } from '../../dtos/inputs/auth/login.input';
 import { IPayloadAuth } from '../../dtos/dtos/auth/payload.dto';
+import { AuthSignUpDto } from '../../dtos/dtos/auth/auth-signup-dto';
 
 @Injectable()
 export class AuthService {
@@ -99,29 +100,15 @@ export class AuthService {
     return await this.validateExternalLogin(input);
   }
 
-  async validateSignUp(user: object): Promise<AuthDto> {
-    return await this.usersService.signUp(user);
-    // if (!responseStatus.success) {
-    //   return {
-    //     success: false,
-    //     message: responseStatus.message,
-    //   };
-    //   // return null;
-    // }
-    // const payload = {
-    //   providerData: {
-    //     thirdPartyId: responseStatus.data.id,
-    //     provider: PROVIDER.LOCAL,
-    //   },
-    //   sub: responseStatus.data.id,
-    // };
-    // const jwt = this.jwtService.sign(payload);
-    // return {
-    //   success: true,
-    //   message: responseStatus.message,
-    //   // jwt,
-    //   // id: responseStatus.data.id,
-    // };
+  async validateSignUp(user: object): Promise<AuthSignUpDto> {
+    const data = await this.usersService.signUp(user);
+    return {
+      success: data.success,
+      message: data.message,
+      userId: data.data?.id,
+      roles: data.data?.roles,
+      status: data.data?.status,
+    };
   }
 
   async getRoles(userId: string) {
