@@ -7,6 +7,7 @@ import { GuardConfig } from './guard/guard.config';
 import { ServicesConfig } from './services/service.config';
 import { ResolversConfig } from './resolvers/resolvers.config';
 import { VisitsController } from './controllers/visit.controller';
+import { ReviewController } from './controllers/review.controller';
 
 @Module({
     imports: [
@@ -19,6 +20,6 @@ import { VisitsController } from './controllers/visit.controller';
     exports: [
         ...ServicesConfig.exports, ...GuardConfig.exports, ...ResolversConfig.exports,
     ],
-    controllers: [AuthController, VisitsController],
+    controllers: [AuthController, VisitsController, ReviewController],
 })
 export class ApplicationCommonModule { }
