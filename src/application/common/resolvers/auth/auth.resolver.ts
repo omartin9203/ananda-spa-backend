@@ -7,6 +7,7 @@ import { Logger, UseGuards, ValidationPipe } from '@nestjs/common';
 import { UserInfoDto } from '../../dtos/dtos/user/user.Info.dto';
 import { CurrentUser } from '../../decorators/params/current-user.decorator';
 import { GqlAuthGuard } from '../../guard/auth/graphql.guard';
+import { AuthSignUpDto } from '../../dtos/dtos/auth/auth-signup-dto';
 
 @Resolver(of => AuthDto)
 export class AuthResolver {
@@ -18,7 +19,7 @@ export class AuthResolver {
   async logIn(@Args('input', new ValidationPipe()) input: LoginInput) {
     return await this.authService.validateLogin(LoginInput.validation(input));
   }
-  @Mutation(() => AuthDto)
+  @Mutation(() => AuthSignUpDto)
   async signUp(@Args('input', new ValidationPipe()) input: UserInput) {
     return await this.authService.validateSignUp(input);
   }
