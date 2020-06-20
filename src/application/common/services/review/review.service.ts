@@ -72,10 +72,10 @@ export class ReviewService extends ResourceService<ReviewDto> {
     }
 
     async getSetting(directoryId: string) {
-        const setting = await this.reviewSettingService.findOne(directoryId);
+        const setting = await this.reviewSettingService.findResource(directoryId);
         return {
-            bonus: setting.bonus,
-            payment: setting.payment,
+            bonus: setting?.bonus ?? 1,
+            payment: setting?.payment ?? 0,
         };
     }
 
