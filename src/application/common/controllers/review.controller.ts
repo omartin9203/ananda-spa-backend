@@ -17,31 +17,32 @@ export class ReviewController {
   @Post('feedback')
   async saveFeedbackReview(
     @Body() feedback: any,
-    @Req() req: any,
   ) {
     try {
       const directoryId = (await this.reviewSettingService.getAll(0, 10))
-        .items.find(x => x.directoryName.toUpperCase() === DIRECTORY_NAME.ANANDASPA).id;
-      const colorId = (await this.colorSettingService.findOne({colorId: feedback.body.facialistId})).id || undefined;
-      const review = {
-        client: feedback.body.clientId,
-        date: new Date(),
-        text: feedback.body.extractions,
-        stars: feedback.body.rating,
-        directoryId,
-      } as ReviewInput;
-      const res = await this.reviewService.createReview(review);
-      if (colorId) {
-        const employee = (await this.userService.findOne({colorId})).id || undefined;
-        if (employee) {
-          const accredited = {
-            accreditedDate: new Date(),
-            accreditedToEmployee: true,
-            employeeId: employee,
-          } as AccreditedInputType;
-          await this.reviewService.accreditReview(res.id, accredited);
+        .items.find(x => x.directoryName.toLocaleLowerCase().startsWith('ananda'))?.id;
+      if (directoryId) {
+        const colorId = (await this.colorSettingService.findOne({colorId: feedback.facialistId}))?.id;
+        const review = {
+          client: feedback.clientId,
+          date: new Date(),
+          text: feedback.extractions,
+          stars: feedback.rating,
+          directoryId,
+        } as ReviewInput;
+        if (colorId) {
+          const employee = (await this.userService.findOne({colorId}))?.id;
+          if (employee) {
+            review.accredited = {
+              accreditedDate: new Date(),
+              accreditedToEmployee: true,
+              employeeId: employee,
+            } as AccreditedInputType;
+          }
         }
+        await this.reviewService.createReview(review);
       }
+
     } catch (e) {
       this.logger.debug(e);
     }
