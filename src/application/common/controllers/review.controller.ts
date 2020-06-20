@@ -6,6 +6,7 @@ import { ReviewInput } from '../dtos/inputs/review/review.input';
 import { UserService } from '../services/user/user.service';
 import { AccreditedInputType } from '../dtos/inputs/review/accredited/accredited.input';
 import { ColorSettingService } from '../services/settings/color-setting.service';
+import { FeedbackInputType } from '../dtos/inputs/review/feedback/feedback.input';
 
 @Controller('review')
 export class ReviewController {
@@ -16,7 +17,7 @@ export class ReviewController {
   private readonly logger = new Logger(ReviewController.name);
   @Post('feedback')
   async saveFeedbackReview(
-    @Body() feedback: any,
+    @Body() feedback: FeedbackInputType,
   ) {
     try {
       const directoryId = (await this.reviewSettingService.getAll(0, 10))
