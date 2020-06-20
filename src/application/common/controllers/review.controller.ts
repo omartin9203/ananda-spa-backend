@@ -1,7 +1,6 @@
 import { Body, Controller, Logger, Post, Req } from '@nestjs/common';
 import { ReviewService } from '../services/review/review.service';
 import { ReviewSettingService } from '../services/settings/review-settings.service';
-import { DIRECTORY_NAME } from '../../../constants/constants';
 import { ReviewInput } from '../dtos/inputs/review/review.input';
 import { UserService } from '../services/user/user.service';
 import { AccreditedInputType } from '../dtos/inputs/review/accredited/accredited.input';
