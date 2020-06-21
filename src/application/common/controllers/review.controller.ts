@@ -1,4 +1,4 @@
-import { Body, Controller, Headers, Logger, Post, Req } from '@nestjs/common';
+import { Body, Controller, Headers, Logger, Post, Req, UnauthorizedException } from '@nestjs/common';
 import { ReviewService } from '../services/review/review.service';
 import { ReviewSettingService } from '../services/settings/review-settings.service';
 import { ReviewInput } from '../dtos/inputs/review/review.input';
@@ -7,6 +7,7 @@ import { AccreditedInputType } from '../dtos/inputs/review/accredited/accredited
 import { ColorSettingService } from '../services/settings/color-setting.service';
 import { FeedbackInputType } from '../dtos/inputs/review/feedback/feedback.input';
 import { API_KEY } from '../../../constants';
+import { UnauthorizedError } from 'type-graphql';
 
 @Controller('review')
 export class ReviewController {
@@ -47,6 +48,7 @@ export class ReviewController {
         }
       } else {
         // Do something
+        return new UnauthorizedException();
         this.logger.debug('authorization filed');
       }
     } catch (e) {
