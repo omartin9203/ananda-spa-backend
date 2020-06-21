@@ -12,7 +12,7 @@ export class ServiceSettingResolver {
   constructor(private readonly service: ServiceSettingService) {
   }
 
-  @Query(() => ServiceSettingDto)
+  @Query(() => ServiceSettingDto, {nullable: true})
   async getServiceSetting(@Args({ name: 'id', type: () => ID }) id: string) {
     return await this.service.findResource(id);
   }

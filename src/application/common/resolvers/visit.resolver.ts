@@ -30,7 +30,7 @@ export class VisitResolver {
     private readonly diagnosticService: DiagnosticService,
   ) {}
 
-  @Query(() => VisitDto, { name: 'visit' })
+  @Query(() => VisitDto, { name: 'visit', nullable: true })
   async getVisit(@Args({ name: 'id', type: () => ID }) id: string) {
     return await this.service.findResource(id);
   }

@@ -28,7 +28,7 @@ export class ReviewResolver {
         private readonly reviewSettingService: ReviewSettingService,
     ) { }
 
-    @Query(() => ReviewDto, { name: 'review' })
+    @Query(() => ReviewDto, { name: 'review', nullable: true })
     async getReview(@Args({ name: 'id', type: () => ID }) id: string) {
         return await this.service.findResource(id);
     }

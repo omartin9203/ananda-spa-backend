@@ -12,7 +12,7 @@ export class RetentionSettingResolver {
   constructor(private readonly service: RetentionSettingsService) {
   }
 
-  @Query(() => RetentionSettingDto)
+  @Query(() => RetentionSettingDto, {nullable: true})
   async getRetentionSetting(@Args({ name: 'id', type: () => ID }) id: string) {
     return await this.service.findResource(id);
   }

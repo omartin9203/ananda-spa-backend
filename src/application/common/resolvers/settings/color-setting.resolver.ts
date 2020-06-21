@@ -12,7 +12,7 @@ export class ColorSettingResolver {
   constructor(private readonly service: ColorSettingService) {
   }
 
-  @Query(() => ColorSettingDto)
+  @Query(() => ColorSettingDto, {nullable: true})
   async getColorSetting(@Args({ name: 'id', type: () => ID }) id: string) {
     return await this.service.findResource(id);
   }

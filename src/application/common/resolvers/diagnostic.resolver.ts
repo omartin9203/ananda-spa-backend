@@ -19,7 +19,7 @@ export class DiagnosticResolver {
     private readonly userService: UserService,
   ) { }
 
-  @Query(() => DiagnosticDto, { name: 'diagnostic' })
+  @Query(() => DiagnosticDto, { name: 'diagnostic', nullable: true })
   async getDiagnostic(@Args({ name: 'id', type: () => ID }) id: string) {
     return await this.service.findResource(id);
   }

@@ -17,7 +17,7 @@ export class ClientResolver {
     private readonly clientService: ClientService,
   ) {}
 
-  @Query(() => ClientDto, { name: 'client' })
+  @Query(() => ClientDto, { name: 'client', nullable: true })
   async getClient(@Args({ name: 'id', type: () => ID }) id: string) {
     return await this.clientService.findResource(id);
   }

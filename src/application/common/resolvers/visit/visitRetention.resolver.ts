@@ -34,7 +34,7 @@ export class VisitRetentionResolver {
         private readonly serviceSettingService: ServiceSettingService,
     ) { }
 
-    @Query(() => VisitRetentionDto)
+    @Query(() => VisitRetentionDto, {nullable: true})
     async getRetention(@Args({ name: 'id', type: () => ID }) id: string) {
         return await this.services.findResource(id);
     }

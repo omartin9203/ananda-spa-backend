@@ -19,7 +19,7 @@ export class FacialFormResolver extends BaseFormResolver {
     super(clientService);
   }
 
-  @Query(() => FacialFormDto, { name: 'facial' })
+  @Query(() => FacialFormDto, { name: 'facial', nullable: true })
   async getFacial(@Args({ name: 'id', type: () => ID }) id: string) {
     return await this.facialFormService.findResource(id);
   }

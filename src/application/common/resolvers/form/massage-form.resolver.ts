@@ -19,7 +19,7 @@ export class MassageFormResolver extends BaseFormResolver {
     super(clientService);
   }
 
-  @Query(() => MassageFormDto, { name: 'massage' })
+  @Query(() => MassageFormDto, { name: 'massage', nullable: true })
   async getMassage(@Args({ name: 'id', type: () => ID }) id: string) {
     return await this.massageFormService.findResource(id);
   }

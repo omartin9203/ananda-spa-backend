@@ -12,7 +12,7 @@ export class ReviewSettingResolver {
     constructor(private readonly service: ReviewSettingService) {
     }
 
-    @Query(() => ReviewSettingDto)
+    @Query(() => ReviewSettingDto, {nullable: true})
     async getReviewSetting(@Args({ name: 'id', type: () => ID }) id: string) {
         return await this.service.findResource(id);
     }

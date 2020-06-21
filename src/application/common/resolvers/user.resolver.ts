@@ -24,7 +24,7 @@ export class UserResolver {
     private readonly colorService: ColorSettingService,
   ) {}
 
-  @Query(() => UserDto, { name: 'user' })
+  @Query(() => UserDto, { name: 'user', nullable: true })
   async getUser(@Args({ name: 'id', type: () => ID }) id: string) {
     return await this.usersService.findResource(id);
   }
