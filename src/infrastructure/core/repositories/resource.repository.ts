@@ -21,7 +21,7 @@ export class ResourceRepository<TResource extends ResourceModel> implements IRes
   async create( input: object ): Promise<TResource> {
     let resource = new this.resourceModel({...input});
     resource = await resource.save();
-    return this.unzip(resource);
+    return resource;
   }
   async getOne(id: string) {
     const resource = await this.resourceModel.findById(id).lean();
