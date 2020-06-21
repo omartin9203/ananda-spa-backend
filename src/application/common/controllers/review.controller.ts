@@ -46,6 +46,7 @@ export class ReviewController {
           await this.reviewService.createReview(review);
         }
       } else {
+        // Do something
         this.logger.debug('authorization filed');
       }
     } catch (e) {
