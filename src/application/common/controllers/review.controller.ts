@@ -21,35 +21,30 @@ export class ReviewController {
     @Headers('token') apiKey,
     @Body() feedback: FeedbackInputType,
   ) {
+    if (apiKey !== API_KEY) { return new UnauthorizedException(); }
     try {
-      if (apiKey === API_KEY) {
-        const directoryId = (await this.reviewSettingService.getAll(0, 10))
-          .items.find(x => x.directoryName.toLocaleLowerCase().startsWith('ananda'))?.id;
-        if (directoryId) {
-          const colorId = (await this.colorSettingService.findOne({colorId: feedback.facialistId}))?.id;
-          const review = {
-            client: feedback.clientId,
-            date: new Date(),
-            text: feedback.extractions,
-            stars: feedback.rating,
-            directoryId,
-          } as ReviewInput;
-          if (colorId) {
-            const employee = (await this.userService.findOne({colorId}))?.id;
-            if (employee) {
-              review.accredited = {
-                accreditedDate: new Date(),
-                accreditedToEmployee: true,
-                employeeId: employee,
-              } as AccreditedInputType;
-            }
+      const directoryId = (await this.reviewSettingService.getAll(0, 10))
+        .items.find(x => x.directoryName.toLocaleLowerCase().startsWith('ananda'))?.id;
+      if (directoryId) {
+        const colorId = (await this.colorSettingService.findOne({colorId: feedback.facialistId}))?.id;
+        const review = {
+          client: feedback.clientId,
+          date: new Date(),
+          text: feedback.extractions,
+          stars: feedback.rating,
+          directoryId,
+        } as ReviewInput;
+        if (colorId) {
+          const employee = (await this.userService.findOne({colorId}))?.id;
+          if (employee) {
+            review.accredited = {
+              accreditedDate: new Date(),
+              accreditedToEmployee: true,
+              employeeId: employee,
+            } as AccreditedInputType;
           }
-          await this.reviewService.createReview(review);
         }
-      } else {
-        // Do something
-        return new UnauthorizedException();
-        this.logger.debug('authorization filed');
+        await this.reviewService.createReview(review);
       }
     } catch (e) {
       this.logger.debug(e);
