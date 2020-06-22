@@ -28,7 +28,7 @@ export class ReviewResolver {
         private readonly reviewSettingService: ReviewSettingService,
     ) { }
 
-    @Query(() => ReviewDto, { name: 'review' })
+    @Query(() => ReviewDto, { name: 'review', nullable: true })
     async getReview(@Args({ name: 'id', type: () => ID }) id: string) {
         return await this.service.findResource(id);
     }
@@ -83,31 +83,31 @@ export class ReviewResolver {
         return result.map(x => ({...x, skip, limit}));
     }
 
-    @Mutation(() => ReviewDto)
+    @Mutation(() => ReviewDto, {nullable: true})
     async createReview(@Args('input') input: ReviewInput) {
         return await this.service.createResource(input);
     }
 
-    @Mutation(() => ReviewDto)
+    @Mutation(() => ReviewDto, {nullable: true})
     async updateReview(
         @Args({ name: 'id', type: () => ID }) id: string,
         @Args('input') input: ReviewUpdate) {
         return await this.service.updateResource(id, input);
     }
 
-    @Mutation(() => ReviewDto)
+    @Mutation(() => ReviewDto, {nullable: true})
     async deleteReview(@Args({ name: 'id', type: () => ID }) id: string) {
         return await this.service.deleteResource(id);
     }
 
-    @Mutation(() => ReviewDto)
+    @Mutation(() => ReviewDto, {nullable: true})
     async accreditReview(
         @Args({ name: 'id', type: () => ID }) id: string,
         @Args('input') input: AccreditedInputType) {
         return await this.service.accreditReview(id, input);
     }
 
-    @Mutation(() => ReviewDto)
+    @Mutation(() => ReviewDto, {nullable: true})
     async updateAccreditedReview(
         @Args({ name: 'id', type: () => ID }) id: string,
         @Args('input') input: AccreditedUpdate) {

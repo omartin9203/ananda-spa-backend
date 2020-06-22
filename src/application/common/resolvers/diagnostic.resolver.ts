@@ -10,6 +10,7 @@ import { ClientDto } from '../dtos/dtos/client/client.dto';
 import { ClientService } from '../services/client/client.service';
 import { UserDto } from '../dtos/dtos/user/user.dto';
 import { UserService } from '../services/user/user.service';
+import { ColorSettingDto } from '../dtos/dtos/settings/color/color-setting.dto';
 
 @Resolver(of => DiagnosticDto)
 export class DiagnosticResolver {
@@ -19,7 +20,7 @@ export class DiagnosticResolver {
     private readonly userService: UserService,
   ) { }
 
-  @Query(() => DiagnosticDto, { name: 'diagnostic' })
+  @Query(() => DiagnosticDto, { name: 'diagnostic', nullable: true })
   async getDiagnostic(@Args({ name: 'id', type: () => ID }) id: string) {
     return await this.service.findResource(id);
   }
@@ -32,17 +33,17 @@ export class DiagnosticResolver {
     return await this.service.getAll(skip, limit);
   }
 
-  @Mutation(() => DiagnosticDto)
+  @Mutation(() => DiagnosticDto, {nullable: true})
   async createDiagnostic(@Args('input') input: CreateDiagnosticInputDto) {
     return await this.service.createResource(input);
   }
-  @Mutation(() => DiagnosticDto)
+  @Mutation(() => DiagnosticDto, {nullable: true})
   async updateDiagnostic(
     @Args({ name: 'id', type: () => ID }) id: string,
     @Args('input') input: UpdateDiagnosticDto) {
     return await this.service.updateResource(id, input);
   }
-  @Mutation(() => DiagnosticDto)
+  @Mutation(() => DiagnosticDto, {nullable: true})
   async deleteDiagnostic(@Args({ name: 'id', type: () => ID }) id: string) {
     return await this.service.deleteResource(id);
   }

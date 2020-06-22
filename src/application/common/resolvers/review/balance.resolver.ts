@@ -12,7 +12,7 @@ export class ReviewBalanceResolver {
         private readonly reviewSettingService: ReviewSettingService,
     ) { }
 
-    @Query(() => [ReviewBalanceDto])
+    @Query(() => [ReviewBalanceDto], {nullable: true})
     async getReviewBalance(@Args({ name: 'id', type: () => ID, nullable: true }) id?: string) {
         return await this.reviewService.getbalance(id);
     }

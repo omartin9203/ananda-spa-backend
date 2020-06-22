@@ -6,13 +6,14 @@ import { PaginatedRetentionSettingResponse } from '../../dtos/dtos/settings/rete
 import { RetentionSettingInput } from '../../dtos/inputs/settings/retention/retention-setting.input';
 import { RetentionSettingUpdate } from '../../dtos/inputs/settings/retention/retention-setting.update';
 import { RETENTION_SETTING_MODEL_NAME } from '../../../../constants/modules/models_names';
+import { ColorSettingDto } from '../../dtos/dtos/settings/color/color-setting.dto';
 
 @Resolver(of => RetentionSettingDto)
 export class RetentionSettingResolver {
   constructor(private readonly service: RetentionSettingsService) {
   }
 
-  @Query(() => RetentionSettingDto)
+  @Query(() => RetentionSettingDto, {nullable: true})
   async getRetentionSetting(@Args({ name: 'id', type: () => ID }) id: string) {
     return await this.service.findResource(id);
   }
@@ -25,15 +26,15 @@ export class RetentionSettingResolver {
     return await this.service.getAll(skip, limit, { type: RETENTION_SETTING_MODEL_NAME });
   }
 
-  @Mutation(() => RetentionSettingDto)
+  @Mutation(() => RetentionSettingDto, {nullable: true})
   async createRetentionSetting(@Args('input') input: RetentionSettingInput) {
     return await this.service.createResource(input);
   }
-  @Mutation(() => RetentionSettingDto)
+  @Mutation(() => RetentionSettingDto, {nullable: true})
   async deleteRetentionSetting(@Args({ name: 'id', type: () => ID }) id: string) {
     return await this.service.deleteResource(id);
   }
-  @Mutation(() => RetentionSettingDto)
+  @Mutation(() => RetentionSettingDto, {nullable: true})
   async updateRetentionSetting(
     @Args({ name: 'id', type: () => ID }) id: string,
     @Args('input') input: RetentionSettingUpdate) {

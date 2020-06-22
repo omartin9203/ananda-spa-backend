@@ -19,7 +19,7 @@ export class FacialFormResolver extends BaseFormResolver {
     super(clientService);
   }
 
-  @Query(() => FacialFormDto, { name: 'facial' })
+  @Query(() => FacialFormDto, { name: 'facial', nullable: true })
   async getFacial(@Args({ name: 'id', type: () => ID }) id: string) {
     return await this.facialFormService.findResource(id);
   }
@@ -32,15 +32,15 @@ export class FacialFormResolver extends BaseFormResolver {
     return await this.facialFormService.getAll(skip, limit, {type: FACIALFORM_MODEL_NAME});
   }
 
-  @Mutation(() => FacialFormDto)
+  @Mutation(() => FacialFormDto, {nullable: true})
   async createFacial(@Args('input') input: FacialFormInput) {
     return await this.facialFormService.createResource(input);
   }
-  @Mutation(() => FacialFormDto)
+  @Mutation(() => FacialFormDto, {nullable: true})
   async deleteFacial( @Args({ name: 'id', type: () => ID }) id: string ) {
     return await this.facialFormService.deleteResource(id);
   }
-  @Mutation(() => FacialFormDto)
+  @Mutation(() => FacialFormDto, {nullable: true})
   async updateFacial(
     @Args({ name: 'id', type: () => ID }) id: string,
     @Args('input') input: UpdateFacialFormInput) {
