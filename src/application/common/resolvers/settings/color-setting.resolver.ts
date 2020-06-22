@@ -25,15 +25,15 @@ export class ColorSettingResolver {
     return await this.service.getAll(skip, limit, { type: COLOR_SETTING_MODEL_NAME });
   }
 
-  @Mutation(() => ColorSettingDto)
+  @Mutation(() => ColorSettingDto, {nullable: true})
   async createColorSetting(@Args('input') input: ColorSettingInput) {
     return await this.service.createResource(input);
   }
-  @Mutation(() => ColorSettingDto)
+  @Mutation(() => ColorSettingDto, {nullable: true})
   async deleteColorSetting(@Args({ name: 'id', type: () => ID }) id: string) {
     return await this.service.deleteResource(id);
   }
-  @Mutation(() => ColorSettingDto)
+  @Mutation(() => ColorSettingDto, {nullable: true})
   async updateColorSetting(
     @Args({ name: 'id', type: () => ID }) id: string,
     @Args('input') input: ColorSettingUpdate) {

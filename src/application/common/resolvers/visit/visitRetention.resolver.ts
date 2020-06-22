@@ -24,6 +24,7 @@ import { formatPhoneNumber } from '../../../../constants/utils';
 import { RolesGuard } from '../../guard/auth/roles.guard';
 import { Roles } from '../../decorators/auth/roles.decorator';
 import { RetentionPerformanceDto } from '../../dtos/dtos/visitRetention/retention-performance.dto';
+import { ColorSettingDto } from '../../dtos/dtos/settings/color/color-setting.dto';
 
 @Resolver(of => VisitRetentionDto)
 export class VisitRetentionResolver {
@@ -78,7 +79,7 @@ export class VisitRetentionResolver {
         return await this.services.getPerformanceRetention(RetentionFilterInput.getQuery(filter), '-date', skip, limit, withItems);
     }
 
-    @Mutation(() => VisitRetentionDto)
+    @Mutation(() => VisitRetentionDto, {nullable: true})
     @UseGuards(GqlAuthGuard, RolesGuard)
     @Roles(USER_ROLES.MANAGER, USER_ROLES.ADMIN)
     async createRetention(@Args('input') input: VisitRetentionInput) {
@@ -91,7 +92,7 @@ export class VisitRetentionResolver {
         }
     }
 
-    @Mutation(() => VisitRetentionDto)
+    @Mutation(() => VisitRetentionDto, {nullable: true})
     @UseGuards(GqlAuthGuard, RolesGuard)
     @Roles(USER_ROLES.MANAGER, USER_ROLES.ADMIN)
     async updateRetention(
@@ -100,7 +101,7 @@ export class VisitRetentionResolver {
         return await this.services.updateRetentionAndEvent(id, input);
     }
 
-    @Mutation(() => VisitRetentionDto)
+    @Mutation(() => VisitRetentionDto, {nullable: true})
     @UseGuards(GqlAuthGuard, RolesGuard)
     @Roles(USER_ROLES.MANAGER, USER_ROLES.ADMIN)
     async deleteRetention(@Args({ name: 'id', type: () => ID }) id: string) {

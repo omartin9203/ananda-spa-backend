@@ -9,6 +9,7 @@ import { Logger } from '@nestjs/common';
 import { FilterClientsArgsInput } from '../dtos/inputs/args/query.arg.input';
 import { validateOrReject, validate } from 'class-validator';
 import { ClientFilterInput } from '../dtos/inputs/client/client-filter.input';
+import { ColorSettingDto } from '../dtos/dtos/settings/color/color-setting.dto';
 
 @Resolver(of => ClientDto)
 export class ClientResolver {
@@ -43,17 +44,17 @@ export class ClientResolver {
     const result = await this.clientService.filter(filter, skip, limit);
     return result;
   }
-  @Mutation(() => ClientDto)
+  @Mutation(() => ClientDto, {nullable: true})
   async createClient(@Args('input') input: CreateClientInputDto) {
     return await this.clientService.createResource(input);
   }
-  @Mutation(() => ClientDto)
+  @Mutation(() => ClientDto, {nullable: true})
   async updateClient(
     @Args({ name: 'id', type: () => ID }) id: string,
     @Args('input') input: UpdateClientInputDto) {
     return await this.clientService.updateResource(id, input);
   }
-  @Mutation(() => ClientDto)
+  @Mutation(() => ClientDto, {nullable: true})
   async deleteClient( @Args({ name: 'id', type: () => ID }) id: string ) {
     return await this.clientService.deleteResource(id);
   }

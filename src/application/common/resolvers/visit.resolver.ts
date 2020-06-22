@@ -18,6 +18,7 @@ import { MassageFormDto } from '../dtos/dtos/form/massage/massage-form.dto';
 import { DiagnosticService } from '../services/diagnostic/diagnostic.service';
 import { DiagnosticDto } from '../dtos/dtos/diagnostic/diagnostic.dto';
 import { CreateDiagnosticInputDto } from '../dtos/inputs/diagnostic/diagnostic.input';
+import { ColorSettingDto } from '../dtos/dtos/settings/color/color-setting.dto';
 
 @Resolver(of => VisitDto)
 export class VisitResolver {
@@ -46,7 +47,7 @@ export class VisitResolver {
     return await this.service.getAll(skip, limit);
   }
 
-  @Mutation(() => VisitDto)
+  @Mutation(() => VisitDto, {nullable: true})
   async createVisit(@Args('input') input: CreateVisit) {
     const diagnostic: DiagnosticDto = await this.diagnosticService.createResource({
       ...input.diagnostic,
@@ -57,14 +58,14 @@ export class VisitResolver {
     Logger.log(diagnostic, 'diagnostic');
     return await this.service.createResource({ ...input, diagnosticId: diagnostic.id });
   }
-  @Mutation(() => VisitDto)
+  @Mutation(() => VisitDto, {nullable: true})
   async updateVisit(
     @Args({ name: 'id', type: () => ID }) id: string,
     @Args('input') input: UpdateVisit) {
     return await this.service.updateResource(id, input);
   }
 
-  @Mutation(() => VisitDto)
+  @Mutation(() => VisitDto, {nullable: true})
   async deleteVisit( @Args({ name: 'id', type: () => ID }) id: string ) {
     return await this.service.deleteResource(id);
   }

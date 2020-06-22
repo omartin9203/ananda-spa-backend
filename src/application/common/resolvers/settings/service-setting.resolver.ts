@@ -6,6 +6,7 @@ import { ServiceSettingService } from '../../services/settings/service-setting.s
 import { PaginatedServiceSettingResponse } from '../../dtos/dtos/settings/service/service-setting.paginate.dto';
 import { ServiceSettingInput } from '../../dtos/inputs/settings/service/service-setting.input';
 import { ServiceSettingUpdate } from '../../dtos/inputs/settings/service/service-setting.update';
+import { ColorSettingDto } from '../../dtos/dtos/settings/color/color-setting.dto';
 
 @Resolver(of => ServiceSettingDto)
 export class ServiceSettingResolver {
@@ -25,15 +26,15 @@ export class ServiceSettingResolver {
     return await this.service.getAll(skip, limit, { type: SERVICE_SETTING_MODEL_NAME });
   }
 
-  @Mutation(() => ServiceSettingDto)
+  @Mutation(() => ServiceSettingDto, {nullable: true})
   async createServiceSetting(@Args('input') input: ServiceSettingInput) {
     return await this.service.createResource(input);
   }
-  @Mutation(() => ServiceSettingDto)
+  @Mutation(() => ServiceSettingDto, {nullable: true})
   async deleteServiceSetting(@Args({ name: 'id', type: () => ID }) id: string) {
     return await this.service.deleteResource(id);
   }
-  @Mutation(() => ServiceSettingDto)
+  @Mutation(() => ServiceSettingDto, {nullable: true})
   async updateServiceSetting(
     @Args({ name: 'id', type: () => ID }) id: string,
     @Args('input') input: ServiceSettingUpdate) {

@@ -38,17 +38,17 @@ export class UserResolver {
     return await this.usersService.getAll(skip, limit);
   }
 
-  @Mutation(() => UserDto)
+  @Mutation(() => UserDto, {nullable: true})
   async createUser(@Args('input') input: UserInput) {
     return await this.usersService.createResource(input);
   }
-  @Mutation(() => UserDto)
+  @Mutation(() => UserDto, {nullable: true})
   async updateUser(
     @Args({ name: 'id', type: () => ID }) id: string,
     @Args('input') input: UpdateUserInput) {
     return await this.usersService.updateResource(id, input);
   }
-  @Mutation(() => UserDto)
+  @Mutation(() => UserDto, {nullable: true})
   async deleteUser( @Args({ name: 'id', type: () => ID }) id: string ) {
     return await this.usersService.deleteResource(id);
   }

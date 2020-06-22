@@ -6,6 +6,7 @@ import { ID, Int } from "type-graphql";
 import { ReviewSettingInput } from "../../dtos/inputs/settings/review/review-setting.input";
 import { REVIEW_SETTING_MODEL_NAME } from "../../../../constants/modules/models_names";
 import { PaginatedReviewSettingResponse } from "../../dtos/dtos/settings/review/review-setting.paginate.dto";
+import { ColorSettingDto } from '../../dtos/dtos/settings/color/color-setting.dto';
 
 @Resolver(of => ReviewSettingDto)
 export class ReviewSettingResolver {
@@ -25,15 +26,15 @@ export class ReviewSettingResolver {
         return await this.service.getAll(skip, limit, { type: REVIEW_SETTING_MODEL_NAME });
     }
 
-    @Mutation(() => ReviewSettingDto)
+    @Mutation(() => ReviewSettingDto, {nullable: true})
     async createReviewSetting(@Args('input') input: ReviewSettingInput) {
         return await this.service.createResource(input);
     }
-    @Mutation(() => ReviewSettingDto)
+    @Mutation(() => ReviewSettingDto, {nullable: true})
     async deleteReviewSetting(@Args({ name: 'id', type: () => ID }) id: string) {
         return await this.service.deleteResource(id);
     }
-    @Mutation(() => ReviewSettingDto)
+    @Mutation(() => ReviewSettingDto, {nullable: true})
     async updateReviewSetting(
         @Args({ name: 'id', type: () => ID }) id: string,
         @Args('input') input: ReviewSettingUpdate) {

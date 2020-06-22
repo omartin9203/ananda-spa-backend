@@ -32,15 +32,15 @@ export class MassageFormResolver extends BaseFormResolver {
     return await this.massageFormService.getAll(skip, limit, {type: MASSAGEFORM_MODEL_NAME});
   }
 
-  @Mutation(() => MassageFormDto)
+  @Mutation(() => MassageFormDto, {nullable: true})
   async createMassage(@Args('input') input: MassageFormInput) {
     return await this.massageFormService.createResource(input);
   }
-  @Mutation(() => MassageFormDto)
+  @Mutation(() => MassageFormDto, {nullable: true})
   async deleteMassage( @Args({ name: 'id', type: () => ID }) id: string ) {
     return await this.massageFormService.deleteResource(id);
   }
-  @Mutation(() => MassageFormDto)
+  @Mutation(() => MassageFormDto, {nullable: true})
   async updateMassage(
     @Args({ name: 'id', type: () => ID }) id: string,
     @Args('input') input: UpdateMassageFormInput) {
