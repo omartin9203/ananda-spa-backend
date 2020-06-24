@@ -151,5 +151,6 @@ export const GOOGLE_FIREBASE_CREDENTIALS: ServiceAccount = {
     clientEmail: 'firebase-adminsdk-h73if@ananda-spa-staff.iam.gserviceaccount.com',
     };
 export const GOOGLE_FIREBASE_DATABASE_URL = 'https://ananda-spa-staff.firebaseio.com';
-
+export const YELP_BEARER_API_TOKEN = 'h35r9qU1NUhyIMfq94zD3y4G6L9nhBdFh9gWSak4F2Z2OG8hMW' +
+  'Slb76YZtds-H9l73NFcL-pMZM25P4OIAbWuV4-Ot7xBYNQH2dMCeiTEJ629n45-t-Pnbop_CzyXnYx';
 //endregion
