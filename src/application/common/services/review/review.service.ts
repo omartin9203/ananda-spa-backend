@@ -12,6 +12,8 @@ import * as puppeteer from 'puppeteer';
 import { QueryFilterIdDto } from '../../../core/dtos/filter/query-filter/query-filter-id.dto';
 import { PaginatedReviewResponse } from '../../dtos/dtos/review/paginate.review.dto';
 import { AxiosResponse } from 'axios';
+import { YELP_BEARER_API_TOKEN } from '../../../../constants';
+import { Field } from 'type-graphql';
 
 @Injectable()
 export class ReviewService extends ResourceService<ReviewDto> {
@@ -186,6 +188,37 @@ export class ReviewService extends ResourceService<ReviewDto> {
             Logger.log(e, 'error');
             return false;
         }
+    }
+    async getYelpReviewsFromApi(): Promise<boolean> {
+        try {
+            const headersRequest = {
+                'Content-Type': 'application/json', // afaik this one is not needed
+                'Authorization': `Bearer ${YELP_BEARER_API_TOKEN}`,
+            };
+            const directoryId = (await this.reviewSettingService.getAll(0, 10)).items.find(x => x.directoryName.toLowerCase()
+              .startsWith('yelp')).id;
+            if (directoryId) {
+                const { data }  = await this.httpService.get('https://api.yelp.com/v3/businesses/G34cjPlo5IQwuXjAgOGbVQ/reviews',
+                  { headers: headersRequest }).toPromise();
+                const reviews = data.reviews;
+                for (const item of reviews) {
+                    const review = {
+                        client: item.user.name,
+                        externalId: item.id,
+                        date: item.time_created,
+                        text: item.text,
+                        stars: item.rating,
+                        directoryId,
+                    } as ReviewInput;
+                    await this.createReview(review);
+                }
+            }
+            return true;
+        } catch (e) {
+            Logger.debug(e);
+            return false;
+        }
+
     }
 
     async getReviewUsersBalance(filter: any) {

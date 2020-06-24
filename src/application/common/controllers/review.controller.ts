@@ -1,4 +1,4 @@
-import { Body, Controller, Headers, Logger, Post, Req, UnauthorizedException } from '@nestjs/common';
+import { Body, Controller, Headers, HttpStatus, Logger, Post, Req, Res, UnauthorizedException } from '@nestjs/common';
 import { ReviewService } from '../services/review/review.service';
 import { ReviewSettingService } from '../services/settings/review-settings.service';
 import { ReviewInput } from '../dtos/inputs/review/review.input';
@@ -6,8 +6,8 @@ import { UserService } from '../services/user/user.service';
 import { AccreditedInputType } from '../dtos/inputs/review/accredited/accredited.input';
 import { ColorSettingService } from '../services/settings/color-setting.service';
 import { FeedbackInputType } from '../dtos/inputs/review/feedback/feedback.input';
+import { Response } from 'express';
 import { API_KEY } from '../../../constants';
-import { UnauthorizedError } from 'type-graphql';
 
 @Controller('review')
 export class ReviewController {
@@ -20,6 +20,7 @@ export class ReviewController {
   async saveFeedbackReview(
     @Headers('token') apiKey,
     @Body() feedback: FeedbackInputType,
+    @Res() res: Response,
   ) {
     if (apiKey !== API_KEY) { return new UnauthorizedException(); }
     try {
@@ -44,7 +45,10 @@ export class ReviewController {
             } as AccreditedInputType;
           }
         }
-        await this.reviewService.createReview(review);
+        const result = await this.reviewService.createReview(review);
+        if (result) {
+          return res.status(HttpStatus.OK).json(result);
+        }
       }
     } catch (e) {
       this.logger.debug(e);
