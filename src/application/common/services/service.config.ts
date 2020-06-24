@@ -15,6 +15,7 @@ import { ColorSettingService } from './settings/color-setting.service';
 import { RetentionSettingsService } from './settings/retention-settings.service';
 import { ServiceSettingService } from './settings/service-setting.service';
 import { RetentionParserService } from './visit/retention-parser.service';
+import { EmailService } from './email/email.service';
 
 export const ServicesConfig = {
     imports: [
@@ -22,11 +23,11 @@ export const ServicesConfig = {
     providers: [
         ClientService, UserService, FacialFormService, MassageFormService, DiagnosticService, VisitService, FilesService,
         AuthService, VisitRetentionService, ReviewService, ReviewSettingService, TasksService, CalendarEventService,
-        ServiceSettingService, RetentionSettingsService, RetentionParserService, ColorSettingService,
+        ServiceSettingService, RetentionSettingsService, RetentionParserService, ColorSettingService, EmailService,
     ],
     exports: [
         ClientService, UserService, FacialFormService, MassageFormService, DiagnosticService, VisitService, FilesService,
         AuthService, VisitRetentionService, ReviewService, ReviewSettingService, TasksService, CalendarEventService,
-        ServiceSettingService, RetentionSettingsService, RetentionParserService, ColorSettingService,
+        ServiceSettingService, RetentionSettingsService, RetentionParserService, ColorSettingService, EmailService,
     ],
 };
