@@ -6,7 +6,12 @@ import { MailerService } from '@nestjs-modules/mailer';
 export class EmailService {
   constructor(private readonly mailerService: MailerService) {}
   async sendEmail(input: EmailInput): Promise<void> {
-    this.mailerService.sendMail(input).then(() => {
+    const mailOptions = {
+      to: input.to.join(','),
+      subject: input.subject,
+      html: input.html,
+    };
+    this.mailerService.sendMail(mailOptions).then(() => {
       Logger.debug('success');
     })
       .catch((e) => {
