@@ -1,15 +1,9 @@
 import { Controller, Get, UseGuards, Res, Req, Logger, Body, Post, Headers, UnauthorizedException, Param } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { LoginInput } from '../dtos/inputs/auth/login.input';
 import { AuthService } from '../services/auth/auth.service';
-import * as ls from 'local-storage';
 import { UI_URI_HELPER } from '../../../constants/constants';
-import { FeedbackInputType } from '../dtos/inputs/review/feedback/feedback.input';
 import { API_KEY } from '../../../constants';
-import { ReviewInput } from '../dtos/inputs/review/review.input';
-import { AccreditedInputType } from '../dtos/inputs/review/accredited/accredited.input';
 import { UserService } from '../services/user/user.service';
-import { AuthDto } from '../dtos/dtos/auth/auth-data.dto';
 
 @Controller('auth')
 export class AuthController {
