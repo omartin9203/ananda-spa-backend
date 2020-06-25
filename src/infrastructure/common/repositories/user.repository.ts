@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { ResourceRepository } from '../../core/repositories/resource.repository';
@@ -151,5 +151,10 @@ export class UserRepository extends ResourceRepository<UserModel> {
         return await this.findOne({
             colorId: mongoose.Types.ObjectId(colorId),
         });
+    }
+    async resetPassword(id: string, password: string): Promise<boolean> {
+        const hash = await bcrypt.hash(password, 12);
+        const result = await this.updateOne(id, {password: hash});
+        return !!result;
     }
 }
