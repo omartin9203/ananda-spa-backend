@@ -1,18 +1,19 @@
-import { BadRequestException, ForbiddenException, HttpException, Injectable } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { PROVIDER } from '../../../../constants/constants';
 import { JwtService } from '@nestjs/jwt';
 import { AuthDto } from '../../dtos/dtos/auth/auth-data.dto';
 import { AuthSSODto } from '../../dtos/dtos/auth/sso-auth-data.dto';
 import * as admin from 'firebase-admin';
-import DecodedIdToken = admin.auth.DecodedIdToken;
 import { LoginInput } from '../../dtos/inputs/auth/login.input';
 import { IPayloadAuth } from '../../dtos/dtos/auth/payload.dto';
 import { AuthSignUpDto } from '../../dtos/dtos/auth/auth-signup-dto';
+import { EmailService } from '../email/email.service';
+import DecodedIdToken = admin.auth.DecodedIdToken;
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly usersService: UserService, private readonly jwtService: JwtService) { }
+  constructor(private readonly usersService: UserService, private readonly jwtService: JwtService, readonly emailService: EmailService) { }
 
   async validateOAuthLogin(profile: any, provider: PROVIDER): Promise<AuthSSODto> {
       const { thirdPartyId, email} = profile;
@@ -127,13 +128,34 @@ export class AuthService {
     }
   }
 
-  async forgotPassword(email: string, redirect: string): Promise<boolean> {
-    const result = await this.usersService.findOne({email});
-    if (!result) {
-      throw new ForbiddenException('Invalid email');
+  async forgotPassword(email: string, redirect: string): Promise<{success: boolean, message: string}> {
+    try {
+      const user = await this.usersService.findOne({email});
+      if (!user) {
+        return {
+          success: false,
+          message: 'The email is not registered',
+        };
+      }
+      const href: string = [redirect, '/', user.id].join('').replace('//', '/');
+      const html = `
+          <h1>Hi! ${[user.firstName, user.lastName].join(' ')}</h1>
+          <br />
+          <a href="${href}">
+            <button>Reset Password</button>
+          </a>
+        `;
+      // todo: build html
+      return await this.emailService.sendEmail({
+        to: [email],
+        html,
+        subject: 'Your Password Reset Instructions',
+      });
+    } catch (e) {
+      return {
+        success: false,
+        message: e.message,
+      };
     }
-    const href: string = [redirect, '/', result.id].join('').replace('//', '/');
-    // todo: send email
-    return true;
   }
 }

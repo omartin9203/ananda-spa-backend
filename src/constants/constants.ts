@@ -8,8 +8,8 @@ export const URI_HELPER = {
   },
 };
 
-export const UI_URI_BASE = process.env.NODE_ENV === 'production' ? 'https://staff.anandaspa.us/' : 'http://localhost:8080/'
-// export const UI_URI_BASE = process.env.NODE_ENV === 'production' ? 'https://staff.anandaspa.us/' : 'https://staff.anandaspa.us/'
+export const UI_URI_BASE = process.env.NODE_ENV === 'production' ? 'https://staff.anandaspa.us/' : 'http://localhost:8080/';
+// export const UI_URI_BASE = process.env.NODE_ENV === 'production' ? 'https://staff.anandaspa.us/' : 'https://staff.anandaspa.us/';
 export const UI_URI_HELPER = {
   AUTH: {
     login: {
@@ -114,7 +114,7 @@ export const GENDER_OPTIONSS_VALUES = [GENDER_OPTIONS.MALE, GENDER_OPTIONS.FEMAL
 export enum TREATMENT {
   FACIAL = 'FACIAL',
   MASSAGE = 'MASSAGE',
-  HAIR_REMOVERS = 'HAIR_REMOVERS'
+  HAIR_REMOVERS = 'HAIR_REMOVERS',
 }
 export const TREATMENT_VALUES = [TREATMENT.FACIAL, TREATMENT.MASSAGE];
 
