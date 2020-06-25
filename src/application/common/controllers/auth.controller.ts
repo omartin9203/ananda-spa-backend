@@ -4,6 +4,10 @@ import { AuthService } from '../services/auth/auth.service';
 import { UI_URI_HELPER } from '../../../constants/constants';
 import { API_KEY } from '../../../constants';
 import { UserService } from '../services/user/user.service';
+import { CurrentUser } from '../decorators/params/current-user.decorator';
+import { UserInfoDto } from '../dtos/dtos/user/user.Info.dto';
+import { AuthDto } from '../dtos/dtos/auth/auth-data.dto';
+import { ResetPasswordInput } from '../dtos/inputs/auth/reset-password.input';
 
 @Controller('auth')
 export class AuthController {
@@ -31,35 +35,24 @@ export class AuthController {
     return 'JWT is working!';
   }
 
-  @Post('password/reset/:id')
+  @Post('password/reset')
+  @UseGuards(AuthGuard('jwt'))
   async resetPassword(
-    @Headers('token') apiKey,
-    @Param('id') id: string,
-    @Body() { password }: { password: string; },
-  ) {
-    if (apiKey !== API_KEY) { throw new UnauthorizedException(); }
-    let success = false;
-    let message = 'Error at reset password';
-    try {
-      success = await this.userService.resetPassword(id, password);
-    } catch (e) {
-      Logger.debug(e);
-      message = e.message ?? message;
-    }
-    return {
-      success,
-      message: success ? 'Ok' : message,
-    };
+    @Req() { user }: any,
+    @Body() { password }: ResetPasswordInput,
+  ): Promise<AuthDto> {
+    return await this.authService.resetPassword(user.id, password);
   }
 
-  @Get('password/forgot')
+  @Post('password/forgot')
   async forgotPassword(
     @Headers('token') apiKey,
-    @Body() { email, redirect }: { email: string, redirect: string },
+    @Body() { email, redirect, param }: { email: string, redirect: string, param: string },
+    @Req() req: any,
   ) {
     if (apiKey !== API_KEY) { throw new UnauthorizedException(); }
     try {
-      return await this.authService.forgotPassword(email, redirect);
+      return await this.authService.forgotPassword(email, redirect, param);
     } catch (e) {
       Logger.debug(e);
       return {

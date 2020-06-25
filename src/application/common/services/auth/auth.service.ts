@@ -128,7 +128,38 @@ export class AuthService {
     }
   }
 
-  async forgotPassword(email: string, redirect: string): Promise<{success: boolean, message: string}> {
+  async resetPassword(id: string, password: string): Promise<AuthDto> {
+    try {
+      const success = await this.usersService.resetPassword(id, password);
+      if (!success) {
+        return {
+          success: false,
+          message: 'Invalid Id',
+        };
+      }
+      const payload: IPayloadAuth = {
+        providerData: {
+          provider: PROVIDER.LOCAL,
+          thirdPartyId: id,
+        },
+        sub: id,
+      };
+      const jwt = this.jwtService.sign(payload);
+      return {
+        success: true,
+        message: 'OK',
+        jwt,
+        id,
+      } as AuthDto;
+    } catch (e) {
+      return {
+        success: false,
+        message: e.message,
+      };
+    }
+  }
+
+  async forgotPassword(email: string, redirect: string, param: string): Promise<{success: boolean, message: string}> {
     try {
       const user = await this.usersService.findOne({email});
       if (!user) {
@@ -137,7 +168,15 @@ export class AuthService {
           message: 'The email is not registered',
         };
       }
-      const href: string = [redirect, '/', user.id].join('').replace('//', '/');
+      const payload: IPayloadAuth = {
+        providerData: {
+          provider: PROVIDER.LOCAL,
+          thirdPartyId: user.id,
+        },
+        sub: user.id,
+      };
+      const jwt = this.jwtService.sign(payload);
+      const href: string = `${redirect}?${param}=${jwt}`;
       const html = `
           <h1>Hi! ${[user.firstName, user.lastName].join(' ')}</h1>
           <br />

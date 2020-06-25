@@ -8,11 +8,14 @@ import { UserInfoDto } from '../../dtos/dtos/user/user.Info.dto';
 import { CurrentUser } from '../../decorators/params/current-user.decorator';
 import { GqlAuthGuard } from '../../guard/auth/graphql.guard';
 import { AuthSignUpDto } from '../../dtos/dtos/auth/auth-signup-dto';
+import { UserService } from '../../services/user/user.service';
+import { ResetPasswordInput } from '../../dtos/inputs/auth/reset-password.input';
 
 @Resolver(of => AuthDto)
 export class AuthResolver {
   constructor(
     private readonly authService: AuthService,
+    private readonly userService: UserService,
   ) {}
 
   @Query(() => AuthDto)
@@ -33,5 +36,14 @@ export class AuthResolver {
   @UseGuards(GqlAuthGuard)
   async verifyToken() {
     return true;
+  }
+
+  @Mutation(() => AuthDto)
+  @UseGuards(GqlAuthGuard)
+  async resetPassword(
+    @CurrentUser() user,
+    @Args('input') { password }: ResetPasswordInput,
+  ) {
+    return await this.authService.resetPassword(user.id, password);
   }
 }
