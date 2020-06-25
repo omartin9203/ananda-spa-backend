@@ -64,17 +64,14 @@ export class AuthController {
     @Body() { email, redirect }: { email: string, redirect: string },
   ) {
     if (apiKey !== API_KEY) { throw new UnauthorizedException(); }
-    let success = false;
-    let message = 'Error at forgot password';
     try {
-      success = await this.authService.forgotPassword(email, redirect);
+      return await this.authService.forgotPassword(email, redirect);
     } catch (e) {
       Logger.debug(e);
-      message = e.message ?? message;
+      return {
+        success: false,
+        message: e.message ?? 'Error at forgot password',
+      };
     }
-    return {
-      success,
-      message: success ? 'Ok' : message,
-    };
   }
 }
