@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { ForbiddenException, Injectable, Logger } from '@nestjs/common';
 import { ResourceService } from '../../../core/services/resource.service';
 import { UserDto } from '../../dtos/dtos/user/user.dto';
 import { UserRepository } from '../../../../infrastructure/common/repositories/user.repository';
@@ -84,5 +84,9 @@ export class UserService extends ResourceService<UserDto> {
     }
     async getUserByColor(colorId: string) {
       return await this.repository.getUserByColor(colorId);
+    }
+
+    async resetPassword(id: string, password: string) {
+      return await this.repository.resetPassword(id, password);
     }
 }

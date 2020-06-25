@@ -126,4 +126,14 @@ export class AuthService {
       return undefined;
     }
   }
+
+  async forgotPassword(email: string, redirect: string): Promise<boolean> {
+    const result = await this.usersService.findOne({email});
+    if (!result) {
+      throw new ForbiddenException('Invalid email');
+    }
+    const href: string = [redirect, '/', result.id].join('').replace('//', '/');
+    // todo: send email
+    return true;
+  }
 }
