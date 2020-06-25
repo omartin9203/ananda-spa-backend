@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@hapi/joi": "^16.1.7",
+    "@nestjs-modules/mailer": "^1.5.1",
     "@nestjs/common": "^6.0.0",
     "@nestjs/core": "^6.0.0",
     "@nestjs/graphql": "^6.5.1",
@@ -38,6 +39,7 @@
     "googleapis": "^52.1.0",
     "graphql": "^14.5.5",
     "graphql-tools": "^4.0.5",
+    "handlebars": "^4.7.6",
     "jsonwebtoken": "^8.5.1",
     "local-storage": "^2.0.0",
     "mongo-gridfs": "^1.1.0",
@@ -46,6 +48,7 @@
     "mongoose-materialized": "^0.2.0",
     "multer": "^1.4.2",
     "nest-schedule": "^0.6.4",
+    "nodemailer": "^6.4.10",
     "passport": "^0.4.0",
     "passport-google-oauth20": "^2.0.0",
     "passport-jwt": "^4.0.0",

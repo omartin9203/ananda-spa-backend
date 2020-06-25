@@ -12,6 +12,10 @@ import { ScheduleModule } from 'nest-schedule';
 import { FacialFormService } from './application/common/services/form/facial/facial-form.service';
 import { ColorSettingService } from './application/common/services/settings/color-setting.service';
 import { ColorSettingInput } from './application/common/dtos/inputs/settings/color/color-setting.input';
+import { EmailService } from './application/common/services/email/email.service';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
+import { MAILER_FROM_DEFAULT, MAILER_TEMPLATE_ROUTE, MAILER_TRANSPORT } from './constants';
 
 const { URI, OPTIONS } = process.env.NODE_ENV === 'production' ? CONNECTION.ATLAS : CONNECTION.LOCAL;
 
@@ -21,6 +25,19 @@ const { URI, OPTIONS } = process.env.NODE_ENV === 'production' ? CONNECTION.ATLA
     ScheduleModule.register(),
     MulterModule.register({
       dest: './images',
+    }),
+    MailerModule.forRoot({
+      transport: MAILER_TRANSPORT,
+      defaults: {
+        from: MAILER_FROM_DEFAULT,
+      },
+      template: {
+        dir: __dirname + MAILER_TEMPLATE_ROUTE,
+        adapter: new PugAdapter(),
+        options: {
+          strict: true,
+        },
+      },
     }),
 
     // UserModule,

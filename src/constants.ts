@@ -153,4 +153,29 @@ export const GOOGLE_FIREBASE_CREDENTIALS: ServiceAccount = {
 export const GOOGLE_FIREBASE_DATABASE_URL = 'https://ananda-spa-staff.firebaseio.com';
 export const YELP_BEARER_API_TOKEN = 'h35r9qU1NUhyIMfq94zD3y4G6L9nhBdFh9gWSak4F2Z2OG8hMW' +
   'Slb76YZtds-H9l73NFcL-pMZM25P4OIAbWuV4-Ot7xBYNQH2dMCeiTEJ629n45-t-Pnbop_CzyXnYx';
-//endregion
+
+// NodeMailer
+export const NODEMAILER_HOST = 'smtp.gmail.com';
+export const NODEMAILER_TYPE = 'OAuth2';
+export const NODEMAILER_USER = 'contact@anandaspamiami.com';
+export const NODEMAILER_CLIENTID = '639665884326-5jvmtdhs4ifha6e9j3eanovdsf3bjuji' +
+  '.apps.googleusercontent.com';
+export const NODEMAILER_CLIENTSECRET = 'Bq3rWlreKARYKuE4lPKtOooA';
+export const NODEMAILER_REFRESHTOKEN = '1/_eim3SumpBsCquSqJgjqEtqQq6wcS7XzhfMUiXmXyMs';
+export const MAILER_FROM_DEFAULT = '"Ananda Spa" <contact@anandaspamiami.com>';
+export const MAILER_TEMPLATE_ROUTE = '/templates';
+export const MAILER_TRANSPORT = {
+  host: NODEMAILER_HOST,
+  port: 465,
+  secure: true,
+
+  auth: {
+    type: NODEMAILER_TYPE,
+    user: NODEMAILER_USER,
+    clientId: NODEMAILER_CLIENTID,
+    clientSecret: NODEMAILER_CLIENTSECRET,
+    refreshToken: NODEMAILER_REFRESHTOKEN,
+  },
+};
+
+// endregion
