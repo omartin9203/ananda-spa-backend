@@ -10,10 +10,16 @@ import { IPayloadAuth } from '../../dtos/dtos/auth/payload.dto';
 import { AuthSignUpDto } from '../../dtos/dtos/auth/auth-signup-dto';
 import { EmailService } from '../email/email.service';
 import DecodedIdToken = admin.auth.DecodedIdToken;
+import { TemplateBuilderService } from '../../../core/services/template-builder.service';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly usersService: UserService, private readonly jwtService: JwtService, readonly emailService: EmailService) { }
+  constructor(
+    private readonly usersService: UserService,
+    private readonly jwtService: JwtService,
+    readonly emailService: EmailService,
+    readonly templateBuilderService: TemplateBuilderService
+  ) { }
 
   async validateOAuthLogin(profile: any, provider: PROVIDER): Promise<AuthSSODto> {
       const { thirdPartyId, email} = profile;
@@ -184,7 +190,14 @@ export class AuthService {
             <button>Reset Password</button>
           </a>
         `;
-      // todo: build html
+      // // todo: build html
+      // this.templateBuilderService.buildTemplate<{firstname: string, lastname: string, url: string}>(
+      //   {
+      //     firstname: user.firstName,
+      //     lastname: user.lastName,
+      //     url: href,
+      //   }, 'path to template',
+      //   );
       return await this.emailService.sendEmail({
         to: [email],
         html,
