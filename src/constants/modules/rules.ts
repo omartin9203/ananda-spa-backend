@@ -33,7 +33,10 @@ const isGmail = (email: string) =>
   /^.+@gmail\.com$/.test(email) || 'Only gmail are allowed';
 
 const isFormatNumber = (value: string) => regexFormatNumber.test(value);
-const regexFormatNumber = /((\$ |\$)(\d+\.\d+|\d+))|((\d+\.\d+|\d+)(( \$)|(\$))?)/;
+
+const regexFormatNumber = /((\$ |\$)(\d+\.\d+|\d+))|((?<!\/)(\d+\.\d+|\d+)(( \$)|(\$)|(?= |$)))/;
+// /((\$ |\$)(\d+\.\d+|\d+))|((\d+\.\d+|\d+)(( \$)|(\$))?)/;
+
 const regexPhone = /(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?/;
 
 export {

@@ -38,6 +38,14 @@ type AuthDto {
   id: String
 }
 
+type AuthSignUpDto {
+  success: Boolean!
+  message: String!
+  userId: String
+  status: String
+  roles: [String!]
+}
+
 type BaseFormDto implements IBaseFormDto & IResourceDto {
   client: ClientType!
   id: ID!
@@ -88,18 +96,21 @@ type ColorSettingDto implements IResourceDto {
   colorId: String!
   name: String!
   hexcode: String!
+  available: Boolean
 }
 
 input ColorSettingInput {
   colorId: String!
   name: String!
   hexcode: String!
+  available: Boolean
 }
 
 input ColorSettingUpdate {
   colorId: String
   name: String
   hexcode: String
+  available: Boolean
 }
 
 input CreateClientInput {
@@ -413,6 +424,13 @@ type FacialFormType implements IBaseFormDto & IResourceDto {
   parentsConsent: ParentConsentType
 }
 
+input FeedbackInputType {
+  extractions: String!
+  rating: Float!
+  clientId: String!
+  facialistId: String!
+}
+
 interface IBaseFormDto {
   client: ClientType
 }
@@ -517,47 +535,48 @@ type MassageFormType implements IBaseFormDto & IResourceDto {
 }
 
 type Mutation {
-  createClient(input: CreateClientInput!): ClientType!
-  updateClient(input: UpdateClientInput!, id: ID!): ClientType!
-  deleteClient(id: ID!): ClientType!
-  createUser(input: CreateUserInput!): UserType!
-  updateUser(input: UpdateUserInput!, id: ID!): UserType!
-  deleteUser(id: ID!): UserType!
-  createFacial(input: CreateFacialFormInput!): FacialFormType!
-  deleteFacial(id: ID!): FacialFormType!
-  updateFacial(input: UpdateFacialFormInput!, id: ID!): FacialFormType!
-  createMassage(input: CreateMassageFormInput!): MassageFormType!
-  deleteMassage(id: ID!): MassageFormType!
-  updateMassage(input: UpdateMassageFormInput!, id: ID!): MassageFormType!
-  createDiagnostic(input: CreateDiagnosticInput!): DiagnosticDto!
-  updateDiagnostic(input: UpdateDiagnosticDto!, id: ID!): DiagnosticDto!
-  deleteDiagnostic(id: ID!): DiagnosticDto!
-  createVisit(input: CreateVisit!): VisitDto!
-  updateVisit(input: UpdateVisit!, id: ID!): VisitDto!
-  deleteVisit(id: ID!): VisitDto!
-  signUp(input: CreateUserInput!): AuthDto!
-  createRetention(input: VisitRetentionInput!): VisitRetentionDto!
-  updateRetention(input: VisitRetentionUpdate!, id: ID!): VisitRetentionDto!
-  deleteRetention(id: ID!): VisitRetentionDto!
+  createClient(input: CreateClientInput!): ClientType
+  updateClient(input: UpdateClientInput!, id: ID!): ClientType
+  deleteClient(id: ID!): ClientType
+  createUser(input: CreateUserInput!): UserType
+  updateUser(input: UpdateUserInput!, id: ID!): UserType
+  deleteUser(id: ID!): UserType
+  createFacial(input: CreateFacialFormInput!): FacialFormType
+  deleteFacial(id: ID!): FacialFormType
+  updateFacial(input: UpdateFacialFormInput!, id: ID!): FacialFormType
+  createMassage(input: CreateMassageFormInput!): MassageFormType
+  deleteMassage(id: ID!): MassageFormType
+  updateMassage(input: UpdateMassageFormInput!, id: ID!): MassageFormType
+  createDiagnostic(input: CreateDiagnosticInput!): DiagnosticDto
+  updateDiagnostic(input: UpdateDiagnosticDto!, id: ID!): DiagnosticDto
+  deleteDiagnostic(id: ID!): DiagnosticDto
+  createVisit(input: CreateVisit!): VisitDto
+  updateVisit(input: UpdateVisit!, id: ID!): VisitDto
+  deleteVisit(id: ID!): VisitDto
+  signUp(input: CreateUserInput!): AuthSignUpDto!
+  resetPassword(input: ResetPasswordInput!): AuthDto!
+  createRetention(input: VisitRetentionInput!): VisitRetentionDto
+  updateRetention(input: VisitRetentionUpdate!, id: ID!): VisitRetentionDto
+  deleteRetention(id: ID!): VisitRetentionDto
   updateRetentionFromSummary(summary: String!, id: ID!): VisitRetentionDto
   syncRetention(eventId: String!, entityId: ID!): VisitRetentionDto
-  createReview(input: ReviewInput!): ReviewDto!
-  updateReview(input: ReviewUpdate!, id: ID!): ReviewDto!
-  deleteReview(id: ID!): ReviewDto!
-  accreditReview(input: AccreditedInputType!, id: ID!): ReviewDto!
-  updateAccreditedReview(input: AccreditedUpdate!, id: ID!): ReviewDto!
-  createReviewSetting(input: ReviewSettingInput!): ReviewSettingDto!
-  deleteReviewSetting(id: ID!): ReviewSettingDto!
-  updateReviewSetting(input: ReviewSettingUpdate!, id: ID!): ReviewSettingDto!
-  createRetentionSetting(input: RetentionSettingInput!): RetentionSettingDto!
-  deleteRetentionSetting(id: ID!): RetentionSettingDto!
-  updateRetentionSetting(input: RetentionSettingUpdate!, id: ID!): RetentionSettingDto!
-  createServiceSetting(input: ServiceSettingInput!): ServiceSettingDto!
-  deleteServiceSetting(id: ID!): ServiceSettingDto!
-  updateServiceSetting(input: ServiceSettingUpdate!, id: ID!): ServiceSettingDto!
-  createColorSetting(input: ColorSettingInput!): ColorSettingDto!
-  deleteColorSetting(id: ID!): ColorSettingDto!
-  updateColorSetting(input: ColorSettingUpdate!, id: ID!): ColorSettingDto!
+  createReview(input: ReviewInput!): ReviewDto
+  updateReview(input: ReviewUpdate!, id: ID!): ReviewDto
+  deleteReview(id: ID!): ReviewDto
+  accreditReview(input: AccreditedInputType!, id: ID!): ReviewDto
+  updateAccreditedReview(input: AccreditedUpdate!, id: ID!): ReviewDto
+  createReviewSetting(input: ReviewSettingInput!): ReviewSettingDto
+  deleteReviewSetting(id: ID!): ReviewSettingDto
+  updateReviewSetting(input: ReviewSettingUpdate!, id: ID!): ReviewSettingDto
+  createRetentionSetting(input: RetentionSettingInput!): RetentionSettingDto
+  deleteRetentionSetting(id: ID!): RetentionSettingDto
+  updateRetentionSetting(input: RetentionSettingUpdate!, id: ID!): RetentionSettingDto
+  createServiceSetting(input: ServiceSettingInput!): ServiceSettingDto
+  deleteServiceSetting(id: ID!): ServiceSettingDto
+  updateServiceSetting(input: ServiceSettingUpdate!, id: ID!): ServiceSettingDto
+  createColorSetting(input: ColorSettingInput!): ColorSettingDto
+  deleteColorSetting(id: ID!): ColorSettingDto
+  updateColorSetting(input: ColorSettingUpdate!, id: ID!): ColorSettingDto
 }
 
 input NoteInput {
@@ -661,41 +680,41 @@ type ParentConsentType {
 }
 
 type Query {
-  client(id: ID!): ClientType!
+  client(id: ID!): ClientType
   clients(limit: Int, skip: Int): PaginatedClientResponse!
   filterClients(query: String = "", skip: Int = 0, limit: Int = 10): PaginatedClientResponse!
-  user(id: ID!): UserType!
+  user(id: ID!): UserType
   users(limit: Int, skip: Int): PaginatedUserResponse!
   filterUsers(limit: Int, skip: Int, filter: UserFilterInput): PaginatedUserResponse!
   getUserBalanceRetention(filter: UserFilterInput): UserBalanceRetentionDto!
-  facial(id: ID!): FacialFormType!
+  facial(id: ID!): FacialFormType
   facials(limit: Int, skip: Int): PaginatedFacialFormResponse!
-  massage(id: ID!): MassageFormType!
+  massage(id: ID!): MassageFormType
   massages(limit: Int, skip: Int): PaginatedMassageFormResponse!
-  diagnostic(id: ID!): DiagnosticDto!
+  diagnostic(id: ID!): DiagnosticDto
   diagnostics(limit: Int, skip: Int): PaginatedDiagnosticResponse!
-  visit(id: ID!): VisitDto!
+  visit(id: ID!): VisitDto
   visits(limit: Int, skip: Int): PaginatedVisitResponse!
   logIn(input: LoginInput!): AuthDto!
   userInfo: UserInfoDto!
   verifyToken: Boolean!
-  getRetention(id: ID!): VisitRetentionDto!
+  getRetention(id: ID!): VisitRetentionDto
   getRetentions(limit: Int, skip: Int): PaginatedVisitRetentionResponse!
   filterRetentions(filter: RetentionFilterInput, skip: Int = 0, limit: Int = 10, withItems: Boolean = true): PaginatedVisitRetentionResponse!
   getPerformanceRetention(filter: RetentionFilterInput, skip: Int = 0, limit: Int = 10, withItems: Boolean = true): RetentionPerformanceDto!
-  review(id: ID!): ReviewDto!
+  review(id: ID!): ReviewDto
   reviews(limit: Int, skip: Int): PaginatedReviewResponse!
   filterReviews(filter: ReviewFilterInput, skip: Int = 0, limit: Int = 10, sort: ReviewQuerySortInput): PaginatedReviewResponse!
   getReviewUsersBalance: [ReviewUserBalance!]!
   filterReviewsPerDirectory(filter: ReviewFilterInput, skip: Int = 0, limit: Int = 10, sort: ReviewQuerySortInput): [ReviewPerDirectoryDto!]!
-  getReviewSetting(id: ID!): ReviewSettingDto!
+  getReviewSetting(id: ID!): ReviewSettingDto
   getReviewSettings(limit: Int, skip: Int): PaginatedReviewSettingResponse!
-  getReviewBalance(id: ID): [ReviewBalanceDto!]!
-  getRetentionSetting(id: ID!): RetentionSettingDto!
+  getReviewBalance(id: ID): [ReviewBalanceDto!]
+  getRetentionSetting(id: ID!): RetentionSettingDto
   getRetentionSettings(limit: Int, skip: Int): PaginatedRetentionSettingResponse!
-  getServiceSetting(id: ID!): ServiceSettingDto!
+  getServiceSetting(id: ID!): ServiceSettingDto
   getServiceSettings(limit: Int, skip: Int): PaginatedServiceSettingResponse!
-  getColorSetting(id: ID!): ColorSettingDto!
+  getColorSetting(id: ID!): ColorSettingDto
   getColorSettings(limit: Int, skip: Int): PaginatedColorSettingResponse!
 }
 
@@ -744,6 +763,10 @@ input RecommendedProductInput {
 type RecommendedProductType {
   daytime: String
   nightime: String
+}
+
+input ResetPasswordInput {
+  password: String!
 }
 
 type ResourceDto implements IResourceDto {

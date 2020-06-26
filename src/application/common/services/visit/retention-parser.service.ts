@@ -156,16 +156,16 @@ export class RetentionParserService {
       resultAmount = extractTypeString('amount');
       resultTip = extractTypeString('tip');
       if (!resultAmount || !resultTip) {
-        const regexAmount = new RegExp(setting.treatment.amount.setting
+        let options = new Array<string>();
+        setting.treatment.amount.setting
           .filter(v => v.type === 'number')
-          .map(x => x.match.sort((a, b) => Number(a.length < b.length)).join('|'))
-          .join('|'), 'i')
-        ;
-        const regexTip = new RegExp(setting.treatment.tip.setting
+          .forEach(x => options.push(...x.match));
+        const regexAmount = this.buildRegex(options.sort((a, b) => Number(a.length < b.length)), 'gi');
+        options = new Array<string>();
+        setting.treatment.tip.setting
           .filter(v => v.type === 'number')
-          .map(x => x.match.sort((a, b) => Number(a.length < b.length)).join('|'))
-          .join('|'), 'i')
-        ;
+          .forEach(x => options.push(...x.match));
+        const regexTip = this.buildRegex(options.sort((a, b) => Number(a.length < b.length)), 'gi');
         const idxAmount = !resultAmount ? text.search(regexAmount) : -1;
         const idxTip = !resultTip ? text.search(regexTip) : -1;
         if (idxTip > idxAmount) {
@@ -191,22 +191,25 @@ export class RetentionParserService {
         value = formatCurrency(Number.parseFloat(value));
         return onlyValue ? value : `${type} ${value}`;
       };
-      if (!!match && match.length) {
+      let result;
+      if (match) {
         text = text.replace(mixRegex, '').trim().replace(/( )+/, ' ');
-        return getResult(match[0]);
-      }
-      mixRegex = new RegExp(`(${regexFormatNumber.source})( )+(${regex.source})`, 'i');
-      match = text.match(mixRegex);
-      if (!!match && match.length) {
-        text = text.replace(mixRegex, '').trim().replace(/( )+/, ' ');
-        return getResult(match[0]);
+        result = getResult(match[0]);
+      } else {
+        mixRegex = new RegExp(`(${regexFormatNumber.source})( )+(${regex.source})`, 'i');
+        match = text.match(mixRegex);
+        if (match) {
+          text = text.replace(mixRegex, '').trim().replace(/( )+/, ' ');
+          result = getResult(match[0]);
+        }
       }
       match = text.match(regex);
       text = fixText(text.replace(regex, ''));
-      return match && match.length && !onlyValue ? match[0] : undefined;
+      return match && !onlyValue ? [result, ...match].filter(x => x).join(' ') : result;
+      // return match && match.length && !onlyValue ? match.join(' ') : undefined;
     };
     const extractOtherInfo = () => {
-      const regex = this.buildRegex(setting.treatment.otherInfo, 'g');
+      const regex = this.buildRegex(setting.treatment.otherInfo, 'gi');
       const result = text.match(regex);
       text = fixText(text.replace(regex, ''));
       return result;
